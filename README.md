@@ -13,6 +13,7 @@ experience) and the application will prompt them with potential candidates, base
 
 **Potential APIs to use**
 - https://docs.servicenow.com/en-US/bundle/vancouver-api-reference/page/integrate/inbound-rest/concept/hr-core-api.html
+- https://github.com/SubmergedDuck/wandrhr-rest-apitest
 
 **Potential technical problems blocking progress**
 - Format of user-uploaded resume. Because resume formats are diverse, it's possible that our application cannot properly
