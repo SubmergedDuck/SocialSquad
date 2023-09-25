@@ -1,6 +1,6 @@
 # SkillSquad
 CSC207 Project
-**Problem domain:**
+**Problem domain**
 We want to develop a public human resource system for job-seekers and recruiters to find their match. 
 
 **How the system works**
