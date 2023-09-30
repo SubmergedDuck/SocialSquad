@@ -1,4 +1,4 @@
-# SkillSquad
+# SocialSquad
 CSC207 Project
 
 **Problem domain**
