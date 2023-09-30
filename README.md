@@ -1,22 +1,35 @@
 # SocialSquad
 CSC207 Project
 
-**Problem domain**
+**Project domain**
+
+An interactive social media that allows people to create events and gather offline.
 
 
+**Brief description**
+- Registered users can start real-time small gathering events open for other users to join.
+- Registered users can also search up and join offline events that are nearby.
+- See diagram:
+  ![Main Idea Image](MainIdea.jpg)
 
-**How the system works**
-- Job-seekers can upload their resumes through the interface. The application will process the resume to store key 
-information such as name, age, education, ect.
-- Recruiters have a separate interface, where they can set key information about desired candidates (e.g. education and
-experience) and the application will prompt them with potential candidates, based on their uploaded resumes.
+**Links to API documentation**
+- Bing Maps
 
-**Potential APIs to use**
-- https://developers.google.com/maps/documentation/directions
-- https://developers.google.com/maps/documentation/routes
+  https://learn.microsoft.com/en-us/bingmaps/
 
-**Potential technical problems blocking progress**
-- Format of user-uploaded resume. Because resume formats are diverse, it's possible that our application cannot properly
-handle all types, thereby causing some troubles in processing data for storing. We are thinking to put restrictions on
-the format of resumes that the users are allowed to upload, or even further, provide them with a web form to fill in
-their information, rather than uploading.
+
+**Screenshot of trying the API**
+
+**List of potential technical difficulties**
+1. Update the map in real time.
+
+When a user starts an event, the event location will be added to the application's map, other users will see this event 
+instantly on their Map view. We want to enforce this feature by automatically update information shown by the API as 
+soon as an event is created. We don't know if it is possible at this point.
+
+2. Events "pinned" on the map move as user moves the map on their view
+
+When looking for an event to join, users not only can use the Search feature, but also casually look around on their Map
+View. The Map View (rendered by the API) should show any events happening within the View as pins. When the user move 
+their View, the map pins should also change. Some may disappear as their location is out of the current View, some may 
+appear as their location is now inside the View, some may move within the View.
