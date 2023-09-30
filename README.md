@@ -23,7 +23,7 @@ An interactive social media that allows people to create events and gather offli
 **Screenshot of trying the API**
 
 Calling from Hopscotch
-![Screenshot](Screenshot.png)
+![Screenshot](TryingAPIHoppscotch.png)
 
 Calling from Intellij
 ![Trying API](TryingApi.png)
