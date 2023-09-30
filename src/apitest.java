@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.regex.*;
 
 public class apitest {
 
@@ -12,6 +14,9 @@ public class apitest {
 
             // Create a URL object with the API endpoint
             URL url = new URL(apiUrl);
+
+            // Print out our input
+            System.out.println("API Request:\n" + apiUrl);
 
             // Open a connection to the URL
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -35,6 +40,24 @@ public class apitest {
 
                 // Print the API response
                 System.out.println("API Response:\n" + response.toString());
+
+                // Regex
+                String pattern = "(\\d{1,5})\\s([NSEW]{2})\\s([\\w\\s]+),\\s([\\w\\s]+),\\s([A-Z]{2})\\s(\\d{5}),\\s(\\w+\\s?\\w*)";
+
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(response.toString());
+
+                if (m.find()) {
+                    System.out.println("Specific item from response: \n" + "Location: " + m.group(0));  // m.group(0) represents the entire matched sequence
+                } else {
+                    System.out.println("No match found.");
+                }
+
+
+                //for (String s : x.split(",")) {
+                    //System.out.println(s);
+                //}
+
             } else {
                 System.out.println("API Request failed with response code: " + responseCode);
             }
