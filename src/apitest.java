@@ -8,7 +8,7 @@ public class apitest {
     public static void main(String[] args) {
         try {
             // Note: "47.64054,-122.12934" is the point in the map and "An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K" is the key
-            String apiUrl = "http://dev.virtualearth.net/REST/v1/Locations/47.64054,-122.12934?o=xml&key=An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
+            String apiUrl = "http://dev.virtualearth.net/REST/v1/Locations/47.64054,-122.12934?o=json&key=An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
 
             // Create a URL object with the API endpoint
             URL url = new URL(apiUrl);
