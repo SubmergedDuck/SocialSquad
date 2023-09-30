@@ -21,6 +21,7 @@ An interactive social media that allows people to create events and gather offli
 
 
 **Screenshot of trying the API**
+![Trying API](TryingApi.png)
 
 **List of potential technical difficulties**
 1. Update the map in real time.
