@@ -16,6 +16,7 @@ An interactive social media that allows people to create events and gather offli
 - Bing Maps
 
   https://learn.microsoft.com/en-us/bingmaps/
+
   https://learn.microsoft.com/en-us/bingmaps/rest-services/locations/find-a-location-by-point (specific API used in the java code)
 
 
