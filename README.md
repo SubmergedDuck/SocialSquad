@@ -35,7 +35,7 @@ When a user starts an event, the event location will be added to the application
 instantly on their Map view. We want to enforce this feature by automatically update information shown by the API as 
 soon as an event is created. We don't know if it is possible at this point.
 
-2. Events "pinned" on the map move as user moves the map on their view
+2. Events "pinned" on the map move as user moves the map on their view.
 
 When looking for an event to join, users not only can use the Search feature, but also casually look around on their Map
 View. The Map View (rendered by the API) should show any events happening within the View as pins. When the user move 
