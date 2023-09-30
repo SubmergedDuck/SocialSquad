@@ -53,11 +53,6 @@ public class apitest {
                     System.out.println("No match found.");
                 }
 
-
-                //for (String s : x.split(",")) {
-                    //System.out.println(s);
-                //}
-
             } else {
                 System.out.println("API Request failed with response code: " + responseCode);
             }
