@@ -10,7 +10,7 @@ An interactive social media that allows people to create events and gather offli
 - Registered users can start real-time small gathering events open for other users to join.
 - Registered users can also search up and join offline events that are nearby.
 - See diagram:
-  ![img.png](img.png)
+  ![Main Idea Image](MainIdea.jpg)
 
 **Links to API documentation**
 - Google Directions
