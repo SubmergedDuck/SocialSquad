@@ -31,4 +31,60 @@ public class CommonEvent implements Event {
         this.privacy = privacy;
         this.capacity = capacity;
     }
+
+
+    @Override
+    public Organizer getOwner() {
+        return owner;
+    }
+
+    @Override
+    public Integer getEventID() {
+        return eventID;
+    }
+
+    @Override
+    public String getEventName() {
+        return eventName;
+    }
+
+    @Override
+    public Location getLocation() {
+        return location;
+    }
+
+    @Override
+    public ArrayList<Integer> getPeopleJoined() {
+        return peopleJoined;
+    }
+
+    @Override
+    public ArrayList<Integer> getPeopleWaitlisted() {
+        return peopleWaitlisted;
+    }
+
+    @Override
+    public String getTime() {
+        return time;
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public Boolean getPrivacy() {
+        return privacy;
+    }
+
+    @Override
+    public Integer getCapacity() {
+        return capacity;
+    }
 }
