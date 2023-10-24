@@ -1,1 +1,1 @@
-userid, username, password ,age, sex, contact, createdEvents, joinedEvents, location?
+userID, username, password ,age, sex, contact, createdEvents(ID), joinedEvents(ID), last_updated_location
