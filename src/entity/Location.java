@@ -1,4 +1,4 @@
 package entity;
 
-public class Location {
+public interface Location {
 }

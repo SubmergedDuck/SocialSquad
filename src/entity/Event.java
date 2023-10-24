@@ -1,4 +1,4 @@
 package entity;
 
-public class Event {
+public interface Event {
 }

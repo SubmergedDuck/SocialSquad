@@ -1,4 +1,4 @@
 package entity;
 
-public class RestrictedEvent extends Event {
+public interface RestrictedEvent extends Event {
 }

@@ -1,4 +1,4 @@
 package entity;
 
-public class Organizer extends User {
+public interface Organizer extends User {
 }

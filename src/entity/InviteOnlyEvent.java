@@ -1,4 +1,4 @@
 package entity;
 
-public class InviteOnlyEvent extends Event {
+public interface InviteOnlyEvent extends Event {
 }

@@ -1,6 +1,4 @@
 package entity;
 
-public class User {
-
-
+public interface User {
 }
