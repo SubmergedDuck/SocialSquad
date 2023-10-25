@@ -1,4 +1,4 @@
 package entity;
 
-public class CommonLocation {
+public class CommonLocation implements Location {
 }
