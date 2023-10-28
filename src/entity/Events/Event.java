@@ -1,4 +1,7 @@
-package entity;
+package entity.Events;
+
+import entity.Location.Location;
+import entity.Users.Organizer;
 
 import java.util.ArrayList;
 

@@ -1,11 +1,8 @@
 package view;
-import entity.User;
+import entity.Users.User;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.border.*;
 import javax.swing.*;
 import java.util.*;
 import java.io.*;
