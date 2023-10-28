@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class CommonRestrictedEvent extends CommonEvent implements RestrictedEvent{
 
-    private final Integer AgeRestriction;
-    private final String SexRestriction;
+    private final Integer ageRestriction;
+    private final String sexRestriction;
 
     public CommonRestrictedEvent(Integer eventID, String eventName, Organizer owner, Location location,
                                  ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted,
@@ -17,18 +17,18 @@ public class CommonRestrictedEvent extends CommonEvent implements RestrictedEven
         super(eventID, eventName, owner, location, peopleJoined, peopleWaitlisted, time, type,
                 description, privacy, capacity);
 
-        this.AgeRestriction = ageRestriction;
-        this.SexRestriction = sexRestriction;
+        this.ageRestriction = ageRestriction;
+        this.sexRestriction = sexRestriction;
     }
 
 
     @Override
     public Integer getAgeRestriction() {
-        return AgeRestriction;
+        return ageRestriction;
     }
 
     @Override
     public String getSexRestriction() {
-        return SexRestriction;
+        return sexRestriction;
     }
 }
