@@ -1,15 +1,12 @@
 package use_case.signup;
 
-import entity.Events.Event;
 import entity.Users.User;
 import entity.Users.UserFactory;
-import java.util.ArrayList;
 
 public class SignupInteractor {
     final SignupUserDataAccessInterface userDataAccessObject;
     final SignupOutputBoundary userPresenter;
     final UserFactory userFactory;
-
     public SignupInteractor(SignupUserDataAccessInterface userDataAccessObject, SignupOutputBoundary userPresenter, UserFactory userFactory){
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
@@ -31,17 +28,10 @@ public class SignupInteractor {
             userPresenter.prepareFailView("Invalid sex");
         } else {
             // All the inputs are good.
-            ArrayList<Event> joinedEvents = new ArrayList<>();
-            ArrayList<Event> createdEvents = new ArrayList<>();
-            User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), joinedEvents,
-                    createdEvents, signupInputData.getRealName(), signupInputData.getContact());
-
+            User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
+                    signupInputData.getSex(), signupInputData.getRealName(), signupInputData.getContact());
+            userDataAccessObject.save(user);
+            userPresenter.prepareSuccessView();
         }
-
-
-        /*
-        CommonUser(username, password, joinedEvents, createdEvents, age, sex, userid,
-                contact, location);
-         */
     }
 }
