@@ -84,6 +84,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     // Initializing a Location from String read from CSV
                     Location location = locationFactory.makeLocation(locationString); // locaitonString is a list of coordinates
 
+                    //TODO: update this create function since userFactory has changed
                     User user = userFactory.create(username, password, eventsJoined, eventsCreated, age, sex, userID, contact, location);
                     usernameToUser.put(username, user);
                 }
