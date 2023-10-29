@@ -1,4 +1,6 @@
 package interface_adapter.search_event;
 
-public class SearchEventViewModel {
+import interface_adapter.ViewModel;
+
+public class SearchEventViewModel extends ViewModel {
 }

@@ -1,4 +1,6 @@
 package interface_adapter.join_event;
 
-public class JoinEventViewModel {
+import interface_adapter.ViewModel;
+
+public class JoinEventViewModel extends ViewModel {
 }
