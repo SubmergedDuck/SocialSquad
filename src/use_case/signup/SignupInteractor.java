@@ -31,7 +31,9 @@ public class SignupInteractor {
             User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
                     signupInputData.getSex(), signupInputData.getRealName(), signupInputData.getContact());
             userDataAccessObject.save(user);
-            userPresenter.prepareSuccessView();
+            SignupOutputData signupOutputData = new SignupOutputData(signupInputData.getUsername());
+
+            userPresenter.prepareSuccessView(signupOutputData);
         }
     }
 }

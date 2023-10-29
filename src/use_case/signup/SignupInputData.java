@@ -16,7 +16,7 @@ public class SignupInputData {
 
     final private String contact;
 
-    public SignupInputData(String username, String realName, String password, String repeatPassword, String age, String sex, String contact{
+    public SignupInputData(String username, String realName, String password, String repeatPassword, String age, String sex, String contact){
         //Strings are inputted in the textbox.
         this.username = username;
         this.realName = realName;
@@ -29,7 +29,7 @@ public class SignupInputData {
 
     String getUsername(){return username;}
 
-    String getRealName(){return }
+    String getRealName(){return realName;}
 
     String getPassword(){return password;}
 
@@ -46,7 +46,7 @@ public class SignupInputData {
 
     String getSex(){return sex;}
 
-    String getContact(){return getContact();}
+    String getContact(){return contact;}
 
     boolean inputsEmpty(){
         return (username != "") && (realName != "") && (password != "") &&
