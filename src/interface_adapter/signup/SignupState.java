@@ -3,6 +3,8 @@ package interface_adapter.signup;
 public class SignupState {
 
     private String username = "";
+
+    private String signUpError = null;
     private String usernameError = null;
     private String password = "";
     private String passwordError = null;
@@ -16,11 +18,15 @@ public class SignupState {
         passwordError = copy.passwordError;
         repeatPassword = copy.repeatPassword;
         repeatPasswordError = copy.repeatPasswordError;
+
+        signUpError = copy.signUpError;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
     public SignupState() {
     }
+
+    private String getSignUpError(){ return signUpError;}
 
     public String getUsername() {
         return username;
@@ -45,6 +51,9 @@ public class SignupState {
     public String getRepeatPasswordError() {
         return repeatPasswordError;
     }
+
+
+    public void setSignUpError(String signUpError){ this.signUpError = signUpError;}
 
     public void setUsername(String username) {
         this.username = username;
