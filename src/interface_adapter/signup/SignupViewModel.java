@@ -1,4 +1,6 @@
 package interface_adapter.signup;
 
-public class SignupViewModel {
+import interface_adapter.ViewModel;
+
+public class SignupViewModel extends ViewModel {
 }
