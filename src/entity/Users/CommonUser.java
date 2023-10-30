@@ -6,29 +6,34 @@ import entity.Events.Event;
 import java.util.ArrayList;
 
 public class CommonUser implements User {
-    private final String username;
+
+    static int nextUserID = 1;
+
+    private final int ID;
+    private final String realName;
     private final String password;
     private ArrayList<Event> joinedEvents = new ArrayList<>();
     private ArrayList<Event> createdEvents = new ArrayList<>();
     private final Integer age;
     private final String sex;
-    private final String realName;
     private final String contact;
     private final Location location = null;
 
 
-    public CommonUser(String username, String password, Integer age, String sex, String realName, String contact) {
-        this.username = username;
+    public CommonUser(String userRealName, String password, Integer age, String sex, String realName, String contact) {
+        this.ID = nextUserID;
+        this.realName = userRealName;
         this.password = password;
         this.age = age;
         this.sex = sex;
-        this.realName = realName;
         this.contact = contact;
+        nextUserID += 1; //get ready for the ID of the next user
     }
 
+
     @Override
-    public String getUsername() {
-        return username;
+    public String getUserRealName() {
+        return this.realName;
     }
 
     @Override
@@ -57,8 +62,8 @@ public class CommonUser implements User {
     }
 
     @Override
-    public String getRealName() {
-        return realName;
+    public int getUserID() {
+        return this.ID;
     }
 
     @Override
