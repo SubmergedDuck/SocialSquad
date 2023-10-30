@@ -6,7 +6,7 @@ import entity.Location.Location;
 import java.util.ArrayList;
 
 public interface User {
-    String getUsername();
+    String getUserRealName();
     String getPassword();
     ArrayList<Event> getJoinedEvents();
     ArrayList<Event> getCreatedEvents();
