@@ -22,9 +22,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     private final Map<String,User> usernameToUser = new HashMap<>();
     private final FileEventsDataAccessObject fileEventsDataAccessObject;
     private final LocationFactory locationFactory;
-
-
-
     private UserFactory userFactory;
 
     public FileUserDataAccessObject(String csvPath, FileEventsDataAccessObject fileEventsDataAccessObject, LocationFactory locationFactory, UserFactory userFactory) throws IOException {
@@ -129,7 +126,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     };
                 }
 
-                String locationString = String.valueOf(location.getCoordinates()); // location is saved by coordinates [lattitude, longtitude]
+                String locationString = String.valueOf(location.getCoordinates()); // location is saved by coordinates: lattitude, longtitude
 
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                         user.getUsername(), user.getPassword(), user.getAge(), user.getSex(), user.getContact(), eventsJoinedID, eventsCreatedID, locationString);
