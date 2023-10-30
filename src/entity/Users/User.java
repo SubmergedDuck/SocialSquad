@@ -6,13 +6,12 @@ import entity.Location.Location;
 import java.util.ArrayList;
 
 public interface User {
-    String getUserRealName();
+    String getUsername();
     String getPassword();
     ArrayList<Event> getJoinedEvents();
     ArrayList<Event> getCreatedEvents();
     int getAge();
     String getSex();
-    int getUserID();
     String getContact();
     Location getLocation();
 }
