@@ -66,4 +66,15 @@ public class CommonUser implements User {
     public Location getLocation() {
         return location;
     }
+
+    @Override
+    public void setCreatedEvents(ArrayList<Event> eventsCreated) {
+        this.createdEvents = eventsCreated;
+    }
+
+    @Override
+    public void setJoinedEvents(ArrayList<Event> eventsJoined) {
+        this.joinedEvents = eventsJoined;
+
+    }
 }

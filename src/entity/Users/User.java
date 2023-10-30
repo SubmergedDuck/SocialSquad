@@ -14,4 +14,8 @@ public interface User {
     String getSex();
     String getContact();
     Location getLocation();
+
+    void setCreatedEvents(ArrayList<Event> eventsCreated);
+
+    void setJoinedEvents(ArrayList<Event> eventsJoined);
 }
