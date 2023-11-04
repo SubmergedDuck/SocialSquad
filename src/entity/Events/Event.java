@@ -6,8 +6,7 @@ import entity.Users.Organizer;
 import java.util.ArrayList;
 
 public interface Event {
-
-    Organizer getOwner();
+    Integer getOwnerID();
     Integer getEventID();
     String getEventName();
     Location getLocation();

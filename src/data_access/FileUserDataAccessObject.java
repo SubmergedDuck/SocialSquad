@@ -77,6 +77,15 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     ArrayList<Event> eventsJoined = fileEventsDataAccessObject.makeEvents(eventJoinedIDs);
 
                     // Initializing an ArrayList<Event> from String read from CSV
+
+
+
+
+
+
+
+
+
                     //TODO: do the same thing as for eventsJoined
                     ArrayList<Integer> eventCreatedIDs = new ArrayList<>();
                     ArrayList<Event> eventsCreated = fileEventsDataAccessObject.makeEvents(eventJoinedIDs);
@@ -126,7 +135,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
                 String locationString = String.valueOf(location.getCoordinates()); // location is saved by coordinates [lattitude, longtitude]
 
-                String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s", user.getUserID(),
+                String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                         user.getUsername(), user.getPassword(), user.getAge(), user.getSex(), user.getContact(), eventsCreatedID, eventsJoinedID, locationString);
                 writer.write(line);
                 writer.newLine();

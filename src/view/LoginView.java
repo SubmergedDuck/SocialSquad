@@ -8,7 +8,6 @@ import java.util.*;
 import java.io.*;
 public class LoginView extends JFrame{
 
-
         private JTextField txtUser;
         private JPasswordField txtPass;
         private JTextField longID;

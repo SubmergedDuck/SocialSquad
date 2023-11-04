@@ -1,1 +1,1 @@
-eventID, eventName, eventSettings, owner, ownerID, location, private?, ageRestriction, sexRestriction, capacity, peopleJoined, peopleWaitlisted, peopleInvited, time, type, description
+eventID, eventName, owner, location, private?, ageRestriction, sexRestriction, capacity, peopleJoined, peopleWaitlisted, peopleInvited, time, type, description
