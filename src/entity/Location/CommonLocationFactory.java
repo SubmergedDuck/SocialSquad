@@ -1,9 +1,10 @@
 package entity.Location;
 
 
-import java.awt.*;
+import java.util.List;
 
 public class CommonLocationFactory implements LocationFactory {
+    @Override
     public Location create(List coordinates, String address, String country){
         return new CommonLocation(coordinates, address, country);
     }

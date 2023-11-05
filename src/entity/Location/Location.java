@@ -1,7 +1,7 @@
 package entity.Location;
 
 
-import java.awt.*;
+import java.util.List;
 
 public interface Location {
 

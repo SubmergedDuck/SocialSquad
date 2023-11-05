@@ -6,7 +6,9 @@ import entity.Users.Organizer;
 import java.util.ArrayList;
 
 public class CommonEvent implements Event {
-    private final Organizer owner;
+    private final Integer owner;
+    //Changed to owner's userID since it wouldn't be practical to store an owner object in a csv.
+    // We can use the ID to access the object from the DAO.
     private final Integer eventID;
     //TODO: should it be int or Integer?
     private final String eventName;
@@ -19,7 +21,7 @@ public class CommonEvent implements Event {
     private final Boolean privacy;
     private final Integer capacity;
 
-    public CommonEvent(Integer eventID, String eventName, Organizer owner, Location location,
+    public CommonEvent(Integer eventID, String eventName, Integer owner, Location location,
                  ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted, String time,
                  String type, String description, Boolean privacy, Integer capacity) {
         this.eventID = eventID;
@@ -35,11 +37,8 @@ public class CommonEvent implements Event {
         this.capacity = capacity;
     }
 
-
     @Override
-    public Organizer getOwner() {
-        return owner;
-    }
+    public Integer getOwnerID() {return this.owner;}
 
     @Override
     public Integer getEventID() {

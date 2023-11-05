@@ -1,7 +1,6 @@
 package entity.Location;
 
-
-import java.awt.*;
+import java.util.List;
 
 public class CommonLocation implements Location {
 
