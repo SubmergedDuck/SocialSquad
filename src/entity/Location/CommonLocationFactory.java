@@ -1,11 +1,12 @@
 package entity.Location;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommonLocationFactory implements LocationFactory {
     @Override
-    public Location create(List coordinates, String address, String country){
+    public Location create(ArrayList coordinates, String address, String country){
         return new CommonLocation(coordinates, address, country);
     }
 
