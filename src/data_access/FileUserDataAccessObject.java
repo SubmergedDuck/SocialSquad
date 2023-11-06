@@ -93,13 +93,14 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     // Initializing a Location from String read from CSV
                     Location location = locationFactory.makeLocation(locationString); // locaitonString is a list of coordinates
 
-                    //TODO: fix below, right now attributes don't match with parameters
-                    //User user = userFactory.create(username, password, eventsJoined, eventsCreated, age, sex, userID, contact, location);
-                    //usernameToUser.put(username, user);
+                    //TODO: update this create function since userFactory has changed
+                    User user = userFactory.create(username, password, eventsJoined, eventsCreated, age, sex, userID, contact, location);
+                    usernameToUser.put(username, user);
                 }
             }
         }
     }
+
 
     private void save(User user) {
         usernameToUser.put(user.getUsername(), user);
@@ -148,10 +149,5 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     }
 
 
-    @Override
-    public boolean existsByName(String identifier) {
-        //TODO: implement this
-        return false;
-    }
 }
 
