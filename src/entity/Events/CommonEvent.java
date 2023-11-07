@@ -1,8 +1,8 @@
 package entity.Events;
 
 import entity.Location.Location;
-import entity.Users.Organizer;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class CommonEvent implements Event {
@@ -15,14 +15,14 @@ public class CommonEvent implements Event {
     private final Location location;
     private final ArrayList<Integer> peopleJoined;
     private final ArrayList<Integer> peopleWaitlisted;
-    private final String time;
+    private final LocalDateTime time;
     private final String type;
     private final String description;
     private final Boolean privacy;
     private final Integer capacity;
 
     public CommonEvent(Integer eventID, String eventName, Integer owner, Location location,
-                 ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted, String time,
+                 ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted, LocalDateTime time,
                  String type, String description, Boolean privacy, Integer capacity) {
         this.eventID = eventID;
         this.eventName = eventName;
@@ -66,7 +66,7 @@ public class CommonEvent implements Event {
     }
 
     @Override
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 

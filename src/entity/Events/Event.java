@@ -1,8 +1,8 @@
 package entity.Events;
 
 import entity.Location.Location;
-import entity.Users.Organizer;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public interface Event {
@@ -12,7 +12,7 @@ public interface Event {
     Location getLocation();
     ArrayList<Integer> getPeopleJoined();
     ArrayList<Integer> getPeopleWaitlisted();
-    String getTime();
+    LocalDateTime getTime();
     String getType();
     String getDescription();
     Boolean getPrivacy();
