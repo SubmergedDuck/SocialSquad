@@ -12,7 +12,8 @@ public interface User {
     ArrayList<Event> getCreatedEvents();
     int getAge();
     String getSex();
-    int getUserID();
+    String getRealName();
+
     String getContact();
     Location getLocation();
 }

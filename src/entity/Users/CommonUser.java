@@ -8,27 +8,22 @@ import java.util.ArrayList;
 public class CommonUser implements User {
     private final String username;
     private final String password;
-    private final ArrayList<Event> joinedEvents;
-    private final ArrayList<Event> createdEvents;
+    private ArrayList<Event> joinedEvents = new ArrayList<>();
+    private ArrayList<Event> createdEvents = new ArrayList<>();
     private final Integer age;
     private final String sex;
-    private final Integer userID;
+    private final String realName;
     private final String contact;
-    private final Location location;
+    private final Location location = null;
 
 
-    public CommonUser(String username, String password, ArrayList<Event> joinedEvents,
-                      ArrayList<Event> createdEvents, Integer age, String sex, Integer userID, String contact,
-                      Location location) {
+    public CommonUser(String username, String password, Integer age, String sex, String realName, String contact) {
         this.username = username;
         this.password = password;
-        this.joinedEvents = joinedEvents;
-        this.createdEvents = createdEvents;
         this.age = age;
         this.sex = sex;
-        this.userID = userID;
+        this.realName = realName;
         this.contact = contact;
-        this.location = location;
     }
 
     @Override
@@ -62,8 +57,8 @@ public class CommonUser implements User {
     }
 
     @Override
-    public int getUserID() {
-        return userID;
+    public String getRealName() {
+        return realName;
     }
 
     @Override

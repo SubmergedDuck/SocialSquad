@@ -6,7 +6,6 @@ import entity.Location.Location;
 import java.util.ArrayList;
 
 public interface UserFactory {
-    User create(String username, String password, ArrayList<Event> joinedEvents,
-                ArrayList<Event> createdEvents, int age, String sex, int userid, String contact,
-                Location location);
+
+    User create(String username, String password, int age, String sex, String realName, String contact);
 }
