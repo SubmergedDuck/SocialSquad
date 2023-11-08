@@ -10,6 +10,7 @@ import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileEventsDataAccessObject implements GetDirectionDataAccessInterface,
@@ -58,7 +59,7 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
                     String eventName = String.valueOf(col[headers.get("eventName")]);
 
                     //Need to get owner ID and access the user database to get the user.
-                    Integer owner = Integer.valueOf(col[headers.get("owner")]);
+                    String owner = String.valueOf(col[headers.get("owner")]);
 
                     //Location in the csv will be "longitude, latitude, address, country"
                     String[] locationCols = col[headers.get("location")].split(",");
@@ -99,7 +100,7 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
                         peopleWaitlisted.add(Integer.valueOf(id));
                     }
 
-                    String eventTime = String.valueOf(col[headers.get("time")]);
+                    LocalDateTime eventTime = LocalDateTime.parse(String.valueOf(col[headers.get("time")]));
 
                     String eventType = String.valueOf(col[headers.get("type")]);
 
@@ -152,6 +153,11 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
         return givenEvents;
     }
 
+    public Integer generateEventID(){
+        //TO DO:
+        return null;
+    }
+
     private void save(){
         BufferedWriter writer;
         try {
@@ -177,7 +183,7 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
                 //Order: eventID, eventName, owner, location, private, ageRestriction, sexRestriction, capacity, peoplejoined
                 //peopleWaitlisted, peopleInvited, time, type, description
                 String line = String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s",
-                        event.getEventID(), event.getEventName(), event.getOwnerID(), event.getLocation(),
+                        event.getEventID(), event.getEventName(), event.getOwnerUser(), event.getLocation(),
                         event.getPrivacy(), ageRestriction, sexRestriction, capacity, event.getPeopleJoined(), event.getPeopleWaitlisted(),
                         peopleInvited, event.getTime(), event.getType(), event.getDescription());
                 writer.write(line);

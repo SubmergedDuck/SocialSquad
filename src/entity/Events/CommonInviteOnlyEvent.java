@@ -3,15 +3,16 @@ package entity.Events;
 import entity.Location.Location;
 import entity.Users.Organizer;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class CommonInviteOnlyEvent extends CommonEvent implements InviteOnlyEvent {
     private final ArrayList<Integer> peopleInvited;
 
 
-    public CommonInviteOnlyEvent(Integer eventID, String eventName, Integer owner, Location location,
+    public CommonInviteOnlyEvent(Integer eventID, String eventName, String owner, Location location,
                                  ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted,
-                                 String time, String type, String description, Boolean privacy,
+                                 LocalDateTime time, String type, String description, Boolean privacy,
                                  Integer capacity, ArrayList<Integer> peopleInvited) {
         super(eventID, eventName, owner, location, peopleJoined, peopleWaitlisted, time, type, description, privacy, capacity);
 

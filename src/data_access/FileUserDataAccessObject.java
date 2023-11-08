@@ -94,15 +94,16 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     Location location = locationFactory.makeLocation(locationString); // locaitonString is a list of coordinates
 
                     //TODO: update this create function since userFactory has changed
-                    User user = userFactory.create(username, password, eventsJoined, eventsCreated, age, sex, userID, contact, location);
-                    usernameToUser.put(username, user);
+                    //User user = userFactory.create(username, password, eventsJoined, eventsCreated, age, sex, userID, contact, location);
+                    //usernameToUser.put(username, user);
                 }
             }
         }
     }
 
 
-    private void save(User user) {
+    @Override
+    public void save(User user) {
         usernameToUser.put(user.getUsername(), user);
         this.save();
     }
@@ -149,5 +150,22 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     }
 
 
+    @Override
+    public Integer generateEventID() {
+        return null;
+    }
+
+    @Override
+    public void save(Event event) {
+        String ownerUser = event.getOwnerUser();
+        User eventOwner = this.usernameToUser.get(ownerUser);
+        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
+        hostedEvents.add(event);
+    }
+
+    @Override
+    public boolean existsByName(String identifier) {
+        return false;
+    }
 }
 

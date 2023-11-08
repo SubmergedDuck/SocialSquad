@@ -8,9 +8,9 @@ import java.util.ArrayList;
 public class CommonOrganizer extends CommonUser implements Organizer {
     private final Event ofEvent;
     public CommonOrganizer(String username, String password, Event ofEvent, ArrayList<Event> joinedEvents,
-                           ArrayList<Event> createdEvents, int age, String sex, int userid, String contact,
+                           ArrayList<Event> createdEvents, int age, String sex, String realName, String contact,
                            Location location) {
-        super(username, password, joinedEvents, createdEvents, age, sex, userid, contact, location);
+        super(username, password, age, sex, realName, contact);
         this.ofEvent = ofEvent;
     }
 
@@ -53,4 +53,5 @@ public class CommonOrganizer extends CommonUser implements Organizer {
     public void transferOrganizer(Integer userID) {
 
     }
+
 }
