@@ -8,22 +8,22 @@ import java.util.ArrayList;
 public class CommonUser implements User {
     private final String username;
     private final String password;
-    private ArrayList<Event> joinedEvents = new ArrayList<>();
-    private ArrayList<Event> createdEvents = new ArrayList<>();
+    private ArrayList<Event> joinedEvents;
+    private ArrayList<Event> createdEvents;
     private final Integer age;
     private final String sex;
-    private final String realName;
-    private final String contact;
-    private final Location location = null;
+    private String contact;
+    private Location location = null; // TODO: make API to get the user's location when the user logged in
 
 
-    public CommonUser(String username, String password, Integer age, String sex, String realName, String contact) {
+    public CommonUser(String username, String password, Integer age, String sex, String contact) {
         this.username = username;
         this.password = password;
         this.age = age;
         this.sex = sex;
-        this.realName = realName;
         this.contact = contact;
+        this.createdEvents = new ArrayList<>();
+        this.joinedEvents = new ArrayList<>(); //When instantiated, a user hasn't created or joined any events
     }
 
     @Override
@@ -56,10 +56,6 @@ public class CommonUser implements User {
         return sex;
     }
 
-    @Override
-    public String getRealName() {
-        return realName;
-    }
 
     @Override
     public String getContact() {
@@ -69,5 +65,16 @@ public class CommonUser implements User {
     @Override
     public Location getLocation() {
         return location;
+    }
+
+    @Override
+    public void setCreatedEvents(ArrayList<Event> eventsCreated) {
+        this.createdEvents = eventsCreated;
+    }
+
+    @Override
+    public void setJoinedEvents(ArrayList<Event> eventsJoined) {
+        this.joinedEvents = eventsJoined;
+
     }
 }

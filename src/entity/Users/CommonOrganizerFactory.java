@@ -10,7 +10,6 @@ public class CommonOrganizerFactory implements OrganizerFactory {
     public Organizer create(String username, String password, Event eventOf, ArrayList<Event> joinedEvents,
                             ArrayList<Event> createdEvents, int age, String sex, int userid, String contact,
                             Location location) {
-        return new CommonOrganizer(username, password, eventOf, joinedEvents, createdEvents, age, sex, userid, contact,
-                location);
+        return new CommonOrganizer(username, password, eventOf, age, sex, contact);
     }
 }
