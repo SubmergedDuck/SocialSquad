@@ -17,6 +17,7 @@ public class CreateEventInputData {
     private CreateEventInputData(String owner, String eventName, String location, String time, String type, String description,
                                 Boolean privacy, String capacity, Boolean inviteOnly, Integer ageRestriction,
                                  String sexRestriction){
+        //Default constructor for all events.
         this.ownerUsername = owner;
         this.eventName = eventName;
         this.location = location;
@@ -27,9 +28,8 @@ public class CreateEventInputData {
         this.inviteOnly = inviteOnly;
         this.ageRestriction = ageRestriction;
         this.sexRestriction = sexRestriction;
-
-        //Textbox for capacity input only allows numbers to be inputted, so no error will occur here.
         this.capacity = Integer.valueOf(capacity);
+        //NOTE: For the inputs for capacity and age restriction, I was thinking of making it so that the input box would only take in numbers, so parsing wouldn't result in an error.
     }
     public CreateEventInputData(String owner, String eventName, String location, String time, String type, String description,
                                 Boolean privacy, String capacity){

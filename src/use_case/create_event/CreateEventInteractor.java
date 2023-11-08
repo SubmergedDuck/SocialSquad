@@ -58,6 +58,7 @@ public class CreateEventInteractor {
                         new ArrayList<Integer>(), new ArrayList<Integer>(), date, input.getType(),
                         input.getDescription(), input.getPrivacy(), input.getCapacity(), new ArrayList<Integer>());
             } else {
+                //Normal event
                 currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
                         new ArrayList<Integer>(), new ArrayList<Integer>(), date, input.getType(),
                         input.getDescription(), input.getPrivacy(), input.getCapacity());
@@ -69,8 +70,10 @@ public class CreateEventInteractor {
         }
     }
     private boolean errorHelper(CreateEventInputData input){
+        //Helps to detect if there are any invalid inputs
         Boolean emptyInput = (input.getEventName().isEmpty()) || (input.getTime().isEmpty()) ||
                 (input.getType().isEmpty());
+        //Event name, time, and type are the only inputs that cannot be empty. Owner should be automatically filled out when the organizer creates the event.
         Boolean invalidGender = false;
         if (!input.getSexRestriction().isEmpty()){
             invalidGender = !(input.getSexRestriction().equalsIgnoreCase("m") || input.getSexRestriction().equalsIgnoreCase("f"));
@@ -78,6 +81,7 @@ public class CreateEventInteractor {
         return emptyInput || invalidGender;
     }
     private void presentErrorHelper(CreateEventInputData input, Location eventLocation){
+        //Presents error
         ArrayList<String> errors = new ArrayList<>();
         String allErrors = "Errors: ";
         if (input.getEventName().isEmpty()){
