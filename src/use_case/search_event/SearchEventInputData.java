@@ -7,4 +7,8 @@ public class SearchEventInputData {
     public SearchEventInputData(String searchRequest) {
         this.searchRequest = searchRequest;
     }
+
+    public String getSearchRequest(){
+        return searchRequest;
+    }
 }

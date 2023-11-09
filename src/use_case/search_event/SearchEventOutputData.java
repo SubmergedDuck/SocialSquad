@@ -12,4 +12,12 @@ public class SearchEventOutputData {
         this.completeMatch = completeMatch;
         this.partialMatch = partialMatch;
     }
+
+    public ArrayList<Event> getCompleteMatch(){
+        return completeMatch;
+    }
+
+    public ArrayList<Event> getPartialMatch() {
+        return partialMatch;
+    }
 }
