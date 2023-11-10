@@ -89,6 +89,9 @@ public class RemoveParticipantInteractorTest {
         assertEquals(0, testUser.getJoinedEvents().size());
     }
 
+    /*
+    Tests if a user was removed from an event's joinedUsers instance.
+     */
     @Test
     public void removeJoinedUsers(){
         RemoveParticipantInputData input = new RemoveParticipantInputData("Bob", "0");
