@@ -16,16 +16,29 @@ import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface{
     /**
-     * This is an in-memory event DAO to allow testing with the relevant interactors.
-     * @param
-     * @return
+     * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
     private final Map<String, Event> nameToEvents = new HashMap<>();
 
+    public InMemoryEventsDataAccessObject() {
+        // constructor implementation
+        ;
+    }
+
+    /**
+     * A public method that saves an event to the nameToEvent hashmap directory
+     * @param event The event to be saved
+     */
     public void save(Event event){
         nameToEvents.put(event.getEventName(), event);
     }
 
+    /**
+     * A public method that compares search request with nameToEvent directory and returns events that completely match
+     * with the search request
+     * @param inputData The search request
+     * @return An ArrayList of events whose names are completely the same with the search message
+     */
     @Override
     public ArrayList<Event> getFullMatchEvents(SearchEventInputData inputData) {
         ArrayList<Event> returnList = new ArrayList<>();
@@ -39,10 +52,15 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         return returnList;
     }
 
+    /**
+     * A public method that compares search request with nameToEvent directory and returns events that are a partial match
+     * @param inputData The search request
+     * @return An ArrayList of events that partially match with the search request either by name or by type.
+     */
     @Override
     public ArrayList<Event> getPartialMatchEvents(SearchEventInputData inputData) {
         ArrayList<Event> returnList = new ArrayList<>();
-        String[] keywords = inputData.getSearchRequest().split(" ");
+        String[] keywords = inputData.getSearchRequest().split(" "); // Break down the search request into keywords to compare
         ArrayList<String> eventNames = new ArrayList<>(nameToEvents.keySet());
         for (String name: eventNames) {
             Event event = nameToEvents.get(name);

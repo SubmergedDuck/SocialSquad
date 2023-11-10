@@ -13,8 +13,14 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SearchEventInteractorTest {
+public class SearchEventInteractorTest {
+    /**
+     * A test class for the SearchEventInteractor.
+     */
 
+    /**
+     * Test the instructor returns a fully matched event as the result of the search.
+     */
     @Test
     void testHasFullMatch() {
         SearchEventInputData searchRequest = new SearchEventInputData("badminton on campus");
@@ -39,6 +45,9 @@ class SearchEventInteractorTest {
         SearchEventInputBoundary interactor = new SearchEventInteractor(inmemoryEventDAO, fullMatchPresenter);
     }
 
+    /**
+     * Test the instructor returns several partially matched events along with a fully matched event.
+     */
     @Test
     void testHasPartialMatch() {
         SearchEventInputData searchRequest = new SearchEventInputData("badminton on campus");
@@ -67,6 +76,9 @@ class SearchEventInteractorTest {
         SearchEventInputBoundary interactor = new SearchEventInteractor(inmemoryEventDAO, fullMatchPresenter);
     }
 
+    /**
+     * Test the itneractor returns nothing when no events satisfy the search request.
+     */
     @Test
     void testNoMatch(){
         Event event = new CommonEvent(1, "something", 1, new CommonLocation(new ArrayList(), "UofT", "Canada"), new ArrayList<>(), new ArrayList(), "today", "type", "desciption", true, 1);
