@@ -5,6 +5,7 @@ import entity.Location.Location;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,18 +15,19 @@ import java.util.Map;
 public class InMemoryEventsDataAccessObject implements GetDirectionDataAccessInterface,
         CreateEventDataAccessInterface,
         SearchEventDataAccessInterface,
-        JoinEventDataAccessInterface {
+        JoinEventDataAccessInterface, RemoveParticipantDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the relevant interactors.
      * @param
      * @return
      */
-    private final Map<Event, Integer> EventstoID = new HashMap<>();
+    private final Map<Integer, Event> EventstoID = new HashMap<>();
+    //NOTE: Switched the key to being the event ID since that's how we identify events.
 
     @Override
     public Integer generateEventID() {
         Integer currentID = 0;
-        for (Integer eventID : EventstoID.values()){
+        for (Integer eventID : EventstoID.keySet()){
             //The new eventID will be the highest event ID.
             if (currentID < eventID){
                 currentID = eventID + 1;
@@ -34,16 +36,23 @@ public class InMemoryEventsDataAccessObject implements GetDirectionDataAccessInt
         return currentID;
     }
 
-    public Map<Event,Integer> getEventMap(){
+    public Map<Integer,Event> getEventMap(){
         return this.EventstoID;
     }
 
     public void save(Event event){
-        EventstoID.put(event, event.getEventID());
+        EventstoID.put(event.getEventID(), event);
     }
 
     private boolean withinRange(Event event, LocalDateTime start, LocalDateTime end) {
         return start.isAfter(event.getTime()) && end.isBefore(event.getTime());
+    }
+
+    @Override
+    public void removeUser(String username, Integer eventID) {
+        Event event = EventstoID.get(eventID);
+        ArrayList<String> joinedUsernames = event.getPeopleJoined();
+        joinedUsernames.remove(username);
     }
 
     //Code is commented out since I don't have the updated search event code.
