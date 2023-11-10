@@ -91,7 +91,12 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         }
     }
 
-    private void save(User user) {
+    @Override
+    public boolean existsByName(String identifier) {
+        return false;
+    }
+
+    public void save(User user) {
         usernameToUser.put(user.getUsername(), user);
         this.save();
     }

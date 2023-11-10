@@ -8,6 +8,7 @@ import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
+import use_case.search_event.SearchEventInputData;
 
 import java.io.*;
 import java.util.*;
@@ -187,5 +188,15 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
         }  catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public ArrayList<Event> getFullMatchEvents(SearchEventInputData inputData) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Event> getPartialMatchEvents(SearchEventInputData inputData) {
+        return null;
     }
 }

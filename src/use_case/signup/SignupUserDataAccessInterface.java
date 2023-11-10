@@ -1,5 +1,5 @@
 package use_case.signup;
-import entities
+import entity.Users.User;
 
 public interface SignupUserDataAccessInterface {
 

@@ -1,6 +1,6 @@
 package interface_adapter.search_event;
 
-import view.SearchEventView;
+//import view.SearchEventView;
 
 public class SearchEventState {
     private String searchRequest = "";
