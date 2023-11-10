@@ -33,8 +33,12 @@ public class CreateEventInteractor {
         this.restrictedEventFactory = restrictedEventFactory;
     }
 
+    /**
+     * Given the created event's information, this method calls the event DAO and adds the event. Furthermore,
+     * the user DAO is accessed to change the event creator's created events instance to include the created event.
+     * @param input the user inputs for the created event
+     */
     public void execute(CreateEventInputData input){
-
         //Makes the location given the location input
         Location eventLocation = locationFactory.makeLocation(input.getLocation());
         Event currentEvent = null; //temp value, will be reassigned once the event type is figured out
@@ -49,21 +53,20 @@ public class CreateEventInteractor {
             if (!input.getAgeRestriction().equals(0) || !input.getSexRestriction().equals("")) {
                 //Restricted event.
                 currentEvent = (Event) restrictedEventFactory.create(eventID, input.getEventName(), input.getOwner(),
-                        eventLocation, new ArrayList<Integer>(), new ArrayList<Integer>(), date, input.getType(),
+                        eventLocation, new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
                         input.getDescription(), input.getPrivacy(), input.getCapacity(), input.getAgeRestriction(),
                         input.getSexRestriction());
             } else if (input.getInviteStatus()) {
                 //Invite only event
                 currentEvent = (Event) inviteEventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
-                        new ArrayList<Integer>(), new ArrayList<Integer>(), date, input.getType(),
-                        input.getDescription(), input.getPrivacy(), input.getCapacity(), new ArrayList<Integer>());
+                        new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
+                        input.getDescription(), input.getPrivacy(), input.getCapacity(), input.getInvitedPeople());
             } else {
                 //Normal event
                 currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
-                        new ArrayList<Integer>(), new ArrayList<Integer>(), date, input.getType(),
+                        new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
                         input.getDescription(), input.getPrivacy(), input.getCapacity());
             }
-
             eventDataAccessObject.save(currentEvent);
             userDataAccessObject.save(currentEvent);
             createEventPresenter.prepareSuccessView("Event was created");
