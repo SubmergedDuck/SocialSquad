@@ -15,10 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SearchEventInteractorTest {
 
-//    @BeforeEach
-//    void setUp() {
-//    }
-
     @Test
     void testHasFullMatch() {
         SearchEventInputData searchRequest = new SearchEventInputData("badminton on campus");
