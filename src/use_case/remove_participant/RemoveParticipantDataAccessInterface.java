@@ -7,5 +7,5 @@ public interface RemoveParticipantDataAccessInterface {
     /*
     This method will use the user DAO to look up the user and remove the given event in their joined events list.
      */
-    void removeUser(User user, Event event);
+    void removeUser(String username, Integer eventID);
 }
