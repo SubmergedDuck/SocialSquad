@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 public interface InviteOnlyEvent {
 
-ArrayList<Integer> getPeopleInvited();
+ArrayList<String> getPeopleInvited();
 
 }

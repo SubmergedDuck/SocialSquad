@@ -10,7 +10,7 @@ public class CommonInviteOnlyEventFactory implements InviteOnlyEventFactory {
     public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location,
                         ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time,
                         String type, String description, Boolean privacy, Integer capacity,
-                        ArrayList<Integer> peopleInvited){
+                        ArrayList<String> peopleInvited){
         return new CommonInviteOnlyEvent(eventID, eventName, owner, location, peopleJoined,
                 peopleWaitlisted, time, type, description, privacy, capacity, peopleInvited);
 
