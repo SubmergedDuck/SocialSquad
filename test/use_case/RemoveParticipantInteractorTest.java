@@ -11,23 +11,31 @@ import entity.Location.LocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
-import org.junit.Before;
-import org.junit.Test;
-import use_case.create_event.CreateEventDataAccessInterface;
+import interface_adapter.remove_participant.MockRemoveParticipantPresenter;
+
+import use_case.remove_participant.RemoveParticipantDataAccessInterface;
+import use_case.remove_participant.RemoveParticipantInputData;
 import use_case.remove_participant.RemoveParticipantInteractor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import org.junit.Before;
+import org.junit.Test;
 import static org.junit.Assert.*;
 
-class RemoveParticipantInteractorTest {
+public class RemoveParticipantInteractorTest {
 
     private RemoveParticipantInteractor removeEventInteractor;
 
-    private CreateEventDataAccessInterface inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+    private RemoveParticipantDataAccessInterface inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
 
-    private CreateEventDataAccessInterface inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+    private RemoveParticipantDataAccessInterface inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+
+    private User testUser;
+
+    private Event testEvent;
 
     /*
     Initializes the variables above for testing.
@@ -37,8 +45,8 @@ class RemoveParticipantInteractorTest {
         UserFactory userFactory = new CommonUserFactory();
         EventFactory eventFactory = new CommonEventFactory();
         LocationFactory locationFactory = new CommonLocationFactory();
-
-        LocalDateTime eventTime = LocalDateTime.parse("2016-03-04 11:30");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime eventTime = LocalDateTime.parse("2016-03-04 11:30", formatter);
 
         //Creates a test location
         Location location = locationFactory.makeLocation("(0,0)");
@@ -48,15 +56,48 @@ class RemoveParticipantInteractorTest {
         InMemoryUsersDataAccessObject userDAO = (InMemoryUsersDataAccessObject)inMemoryUsersDataAccessObject;
         userDAO.save(user);
 
+
         //Creates and adds an event to the in memory event DAO.
-        ArrayList<Integer> joinedUsers = new ArrayList<>();
-        joinedUsers.add(user.get);
+        ArrayList<String> joinedUsers = new ArrayList<>();
+        joinedUsers.add(user.getUsername());
         Event event  = eventFactory.create(0, "Test Event", "Owner", location, joinedUsers, new ArrayList<>(),
                 eventTime, "Event", "Testing", false, 5);
+        InMemoryEventsDataAccessObject eventDAO = (InMemoryEventsDataAccessObject)inMemoryEventsDataAccessObject;
+        eventDAO.save(event);
+
+        //Will add the created event to the user's joined events.
+        ArrayList<Event> joinedEvents = user.getJoinedEvents();
+        joinedEvents.add(event);
+
+        //Will store the user and event to check if their attributes change in the tests.
+        testUser = user;
+        testEvent = event;
+
+        //Creates the interactor
+        removeEventInteractor = new RemoveParticipantInteractor(inMemoryUsersDataAccessObject,
+                inMemoryEventsDataAccessObject, new MockRemoveParticipantPresenter());
     }
+
     /*
-    Integer eventID, String eventName, String owner, Location location,
-                        ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted, LocalDateTime time,
-                        String type, String description, Boolean privacy, Integer capacity
+    Tests if an event was removed from a user's joinedEvents instance.
      */
+    @Test
+    public void removeJoinedEvents(){
+        RemoveParticipantInputData input = new RemoveParticipantInputData("Bob", "0");
+        assertEquals(1, testUser.getJoinedEvents().size());
+        removeEventInteractor.execute(input);
+        assertEquals(0, testUser.getJoinedEvents().size());
+    }
+
+    @Test
+    public void removeJoinedUsers(){
+        RemoveParticipantInputData input = new RemoveParticipantInputData("Bob", "0");
+        assertEquals(1, testEvent.getPeopleJoined().size());
+        removeEventInteractor.execute(input);
+        assertEquals(0, testEvent.getPeopleJoined().size());
+    }
+
+
+
+
 }
