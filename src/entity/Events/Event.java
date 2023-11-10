@@ -11,8 +11,8 @@ public interface Event {
     Integer getEventID();
     String getEventName();
     Location getLocation();
-    ArrayList<Integer> getPeopleJoined();
-    ArrayList<Integer> getPeopleWaitlisted();
+    ArrayList<String> getPeopleJoined();
+    ArrayList<String> getPeopleWaitlisted();
     LocalDateTime getTime();
     String getType();
     String getDescription();

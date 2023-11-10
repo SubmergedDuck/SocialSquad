@@ -12,7 +12,7 @@ public class CommonRestrictedEvent extends CommonEvent implements RestrictedEven
     private final String sexRestriction;
 
     public CommonRestrictedEvent(Integer eventID, String eventName, String owner, Location location,
-                                 ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted,
+                                 ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted,
                                  LocalDateTime time, String type, String description, Boolean privacy,
                                  Integer capacity, Integer ageRestriction, String sexRestriction) {
         super(eventID, eventName, owner, location, peopleJoined, peopleWaitlisted, time, type,

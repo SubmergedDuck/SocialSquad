@@ -11,8 +11,8 @@ public class CommonEvent implements Event {
     private final Integer eventID;
     private final String eventName;
     private final Location location;
-    private final ArrayList<Integer> peopleJoined;
-    private final ArrayList<Integer> peopleWaitlisted;
+    private final ArrayList<String> peopleJoined;
+    private final ArrayList<String> peopleWaitlisted;
     private final LocalDateTime time;
     private final String type;
     private final String description;
@@ -20,7 +20,7 @@ public class CommonEvent implements Event {
     private final Integer capacity;
 
     public CommonEvent(Integer eventID, String eventName, String owner, Location location,
-                 ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted, LocalDateTime time,
+                 ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time,
                  String type, String description, Boolean privacy, Integer capacity) {
         this.eventID = eventID;
         this.eventName = eventName;
@@ -54,12 +54,12 @@ public class CommonEvent implements Event {
     }
 
     @Override
-    public ArrayList<Integer> getPeopleJoined() {
+    public ArrayList<String> getPeopleJoined() {
         return peopleJoined;
     }
 
     @Override
-    public ArrayList<Integer> getPeopleWaitlisted() {
+    public ArrayList<String> getPeopleWaitlisted() {
         return peopleWaitlisted;
     }
 

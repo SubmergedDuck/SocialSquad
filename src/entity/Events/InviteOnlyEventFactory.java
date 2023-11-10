@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface InviteOnlyEventFactory {
 
     InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location,
-                           ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted, LocalDateTime time,
+                           ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time,
                            String type, String description, Boolean privacy, Integer capacity,
                            ArrayList<Integer> peopleInvited);
 }

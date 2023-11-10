@@ -11,7 +11,7 @@ public class CommonInviteOnlyEvent extends CommonEvent implements InviteOnlyEven
 
 
     public CommonInviteOnlyEvent(Integer eventID, String eventName, String owner, Location location,
-                                 ArrayList<Integer> peopleJoined, ArrayList<Integer> peopleWaitlisted,
+                                 ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted,
                                  LocalDateTime time, String type, String description, Boolean privacy,
                                  Integer capacity, ArrayList<Integer> peopleInvited) {
         super(eventID, eventName, owner, location, peopleJoined, peopleWaitlisted, time, type, description, privacy, capacity);
