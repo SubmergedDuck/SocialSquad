@@ -9,4 +9,6 @@ public class RemoveParticipantOutputData {
     public RemoveParticipantOutputData(String deletedUser){
         this.deletedUser = deletedUser;
     }
+
+    public String getDeletedUser(){return this.deletedUser;}
 }
