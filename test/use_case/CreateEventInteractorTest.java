@@ -1,3 +1,5 @@
+package use_case;
+
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
