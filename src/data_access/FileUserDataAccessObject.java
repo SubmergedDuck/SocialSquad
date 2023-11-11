@@ -1,7 +1,6 @@
 package data_access;
 
 import entity.Users.UserFactory;
-import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -15,16 +14,13 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-                                                 JoinEventDataAccessInterface, CreateEventDataAccessInterface,
+                                                 JoinEventDataAccessInterface,
                                                  GetDirectionDataAccessInterface {
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String,User> usernameToUser = new HashMap<>();
     private final FileEventsDataAccessObject fileEventsDataAccessObject;
     private final LocationFactory locationFactory;
-
-
-
     private UserFactory userFactory;
 
     public FileUserDataAccessObject(String csvPath, FileEventsDataAccessObject fileEventsDataAccessObject, LocationFactory locationFactory, UserFactory userFactory) throws IOException {
@@ -147,20 +143,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    @Override
-    public Integer generateEventID() {
-        return null;
-    }
-
-    @Override
-    public void save(Event event) {
-        String ownerUser = event.getOwnerUser();
-        User eventOwner = this.usernameToUser.get(ownerUser);
-        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
-        hostedEvents.add(event);
     }
 
     @Override

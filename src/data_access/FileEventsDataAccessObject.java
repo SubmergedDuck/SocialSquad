@@ -4,7 +4,6 @@ package data_access;
 import entity.Location.Location;
 import entity.Events.*;
 import entity.Location.LocationFactory;
-import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
@@ -14,18 +13,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileEventsDataAccessObject implements GetDirectionDataAccessInterface,
-                                                   CreateEventDataAccessInterface,
                                                    SearchEventDataAccessInterface,
                                                    JoinEventDataAccessInterface {
     private final File eventDatabase;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<Integer, Event> events = new HashMap<>();
-
     private EventFactory eventFactory;
     private InviteOnlyEventFactory inviteEventFactory;
     private RestrictedEventFactory restrictedEventFactory;
-
     private LocationFactory locationFactory;
 
     public FileEventsDataAccessObject(String csvPath, EventFactory eventFactory, InviteOnlyEventFactory
@@ -64,7 +60,7 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
                     //Location in the csv will be "longitude, latitude, address, country"
                     String[] locationCols = col[headers.get("location")].split(",");
                     //Location factory parameters: List coordinates, String address, String country
-                    List<Integer> coordinates = List.of(new Integer[]{Integer.valueOf(col[0]), Integer.valueOf(col[1])});
+                    String[] coordinates = new String[]{String.valueOf(col[0]), String.valueOf(col[1])};
                     Location eventLocation = this.locationFactory.create(coordinates, col[2], col[3]);
 
                     //In the CSV file, privacy is a string that is true or false
