@@ -11,7 +11,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LookupParticipantInfoInteractorTest {
+    /**
+     * The test class for the LookupParticipantInfo interactor.
+     */
 
+    /**
+     * Test that the interactor returns the correct username, age, sex, and contact of the user looked up.
+     */
     @Test
     void testExecuteCorrectInfoReturn() {
         User participant = new CommonUser("username", "123", 20, "F", "123-456-7890");
