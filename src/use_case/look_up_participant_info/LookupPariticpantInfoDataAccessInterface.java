@@ -4,5 +4,5 @@ import entity.Users.User;
 
 public interface LookupPariticpantInfoDataAccessInterface {
 
-    public User getUser(LookupParticipantInfoInputData participant);
+    public User getParticipant(LookupParticipantInfoInputData participant);
 }
