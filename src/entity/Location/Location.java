@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface Location {
 
-        List getCoordinates();
+        String[] getCoordinates();
         String getAddress();
         String getCountry();
 
