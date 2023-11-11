@@ -2,16 +2,11 @@ package data_access;
 
 import entity.Events.Event;
 import use_case.create_event.CreateEventDataAccessInterface;
-import use_case.get_direction.GetDirectionDataAccessInterface;
-import use_case.join_event.JoinEventDataAccessInterface;
-import use_case.search_event.SearchEventDataAccessInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryEventsDataAccessObject implements GetDirectionDataAccessInterface,
-        CreateEventDataAccessInterface,
-        SearchEventDataAccessInterface,
-        JoinEventDataAccessInterface {
+public class InMemoryEventsDataAccessObject implements
+        CreateEventDataAccessInterface{
     /**
      * This is an in-memory event DAO to allow testing with the relevant interactors.
      * @param
