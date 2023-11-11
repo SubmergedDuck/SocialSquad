@@ -9,7 +9,7 @@ public class CreateEventPresenter implements CreateEventOutputBoundary {
     private final CreateEventViewModel createEventViewModel;
 
     private final SearchEventViewModel searchEventViewModel;
-    private final ViewManagerModel viewManagerModel;
+    private ViewManagerModel viewManagerModel;
     public CreateEventPresenter(CreateEventViewModel createEventViewModel, ViewManagerModel viewManagerModel,
                                 SearchEventViewModel searchEventViewModel){
         this.createEventViewModel = createEventViewModel;
