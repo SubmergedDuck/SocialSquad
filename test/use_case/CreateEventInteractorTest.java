@@ -19,15 +19,19 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+/**
+ * Used for testing the create event interactor.
+ */
 public class CreateEventInteractorTest {
     private CreateEventInteractor createEventInteractor;
-
     private CreateEventDataAccessInterface inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
-
     private CreateEventDataAccessInterface inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
-    
+
+    /**
+     * Initializes instances that will be used for the test.
+     */
     @Before
     public void init() {
         //Creating all the instances for the event interactor
@@ -46,16 +50,26 @@ public class CreateEventInteractorTest {
                 inMemoryUsersDataAccessObject, mockPresenter, eventFactory, inviteOnlyEventFactory, restrictedEventFactory,
                 locationFactory);
     }
+
+    /**
+     * Sets up a print stream before the test (used for checking printed outputs)
+     */
     @Before
     public void setUpStream() {
         System.setOut(new PrintStream(outContent));
     }
 
+    /**
+     * Restores the stream after the test (used for checking printed outputs)
+     */
     @After
     public void restoreStream() {
         System.setOut(originalOut);
     }
 
+    /**
+     * Tests if the presenter correctly indicates if an invalid input was passed into the interactor.
+     */
     @Test
     public void invalidInput(){
         //Detects if an invalid input for create event was done.
@@ -68,11 +82,11 @@ public class CreateEventInteractorTest {
         assertEquals("error\n", printedOutput);
     }
 
+    /**
+     * Tests if the presenter correctly indicates if a valid input was passed into the interactor
+     */
     @Test
     public void validInput(){
-        //Detects if a valid input for create event was done
-
-
         //Creates a restricted event where the age restriction is 5 and there is no sex restriction.
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(38.8951, -77.0364)", "2016-03-04 11:30",
                 "Movie night", "Have fun!", false, "10", "5", "");
@@ -81,6 +95,9 @@ public class CreateEventInteractorTest {
         assertEquals("success\n", printedOutput);
     }
 
+    /**
+     * Tests if an event was added to the event DAO.
+     */
     @Test
     public void addsEvent(){
         //Checks if the event was added to the DAO.
@@ -91,6 +108,9 @@ public class CreateEventInteractorTest {
         assertEquals(1, eventDAO.getEventMap().size());
     }
 
+    /**
+     * Tests if a user's created events was updated after they create the event.
+     */
     @Test
     public void updatesUser(){
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(38.8951, -77.0364)", "2016-03-04 11:30",

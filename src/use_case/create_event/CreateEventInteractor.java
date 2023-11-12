@@ -11,8 +11,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * The use case interactor for the create event use case. It is responsible for accessing the DAOs to create new events
+ * and update the created events of users. Furthermore, the interactor will tell the presenter if an event was successfully
+ * created or not.
+ */
 public class CreateEventInteractor {
-
     final CreateEventDataAccessInterface eventDataAccessObject;
     final CreateEventDataAccessInterface userDataAccessObject;
     final CreateEventOutputBoundary createEventPresenter;
@@ -20,6 +24,17 @@ public class CreateEventInteractor {
     final InviteOnlyEventFactory inviteEventFactory;
     final RestrictedEventFactory restrictedEventFactory;
     final LocationFactory locationFactory;
+
+    /**
+     * Constructor for CreateEventInteractor
+     * @param eventDataAccessObject event DAO
+     * @param userDataAccessObject user DAO
+     * @param createEventPresenter the create event presenter
+     * @param eventFactory an event factory
+     * @param inviteEventFactory an invite event factory
+     * @param restrictedEventFactory a restricted event factory
+     * @param locationFactory a location factory
+     */
     public CreateEventInteractor(CreateEventDataAccessInterface eventDataAccessObject,
                                  CreateEventDataAccessInterface userDataAccessObject,CreateEventOutputBoundary createEventPresenter,
                                  EventFactory eventFactory, InviteOnlyEventFactory inviteEventFactory,
@@ -69,7 +84,9 @@ public class CreateEventInteractor {
             }
             eventDataAccessObject.save(currentEvent);
             userDataAccessObject.save(currentEvent);
-            createEventPresenter.prepareSuccessView("Event was created");
+
+            CreateEventOutputData output = new CreateEventOutputData(currentEvent);
+            createEventPresenter.prepareSuccessView(output);
         }
     }
     private boolean errorHelper(CreateEventInputData input){

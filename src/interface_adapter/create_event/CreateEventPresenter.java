@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.search_event.SearchEventState;
 import interface_adapter.search_event.SearchEventViewModel;
 import use_case.create_event.CreateEventOutputBoundary;
+import use_case.create_event.CreateEventOutputData;
 
 public class CreateEventPresenter implements CreateEventOutputBoundary {
     private final CreateEventViewModel createEventViewModel;
@@ -25,10 +26,9 @@ public class CreateEventPresenter implements CreateEventOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(String message) {
+    public void prepareSuccessView(CreateEventOutputData output) {
         //Goes back to the search event page once event is created.
         SearchEventState searchEventState = searchEventViewModel.getState();
         //Need to wait for searcheventview to be implemented to know how to properly "activate" it.
-
     }
 }

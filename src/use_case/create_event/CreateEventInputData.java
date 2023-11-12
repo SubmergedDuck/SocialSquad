@@ -3,6 +3,9 @@ package use_case.create_event;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The input data for creating event that will be passed into the create event interactor.
+ */
 public class CreateEventInputData {
     private final String ownerUsername;
     private final String eventName;
