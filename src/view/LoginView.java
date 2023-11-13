@@ -26,9 +26,9 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     final JPasswordField passwordInputField = new JPasswordField(15);
     private final JLabel passwordErrorField = new JLabel();
 
-    final JButton createANewAccount;
+
     final JButton logIn;
-    final JButton cancel;
+    final JButton createANewAccount;
     private final LoginController loginController;
 
     public LoginView(LoginViewModel loginViewModel, LoginController controller) {
@@ -37,7 +37,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.loginViewModel = loginViewModel;
         this.loginViewModel.addPropertyChangeListener(this);
 
-        JLabel title = new JLabel("Login Screen");
+        JLabel title = new JLabel("Social Squad");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         LabelTextPanel usernameInfo = new LabelTextPanel(
@@ -50,15 +50,16 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         buttons.add(createANewAccount);
         logIn = new JButton(loginViewModel.LOGIN_BUTTON_LABEL);
         buttons.add(logIn);
-        cancel = new JButton(loginViewModel.CANCEL_BUTTON_LABEL);
-        buttons.add(cancel);
 
         createANewAccount.addActionListener(
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         if(e.getSource().equals(createANewAccount)){
-                           openSignupView();
+                            LoginState currentState = loginViewModel.getState();
+                            LoginView.this.loginController.execute(
+                                    currentState.getUsername(), currentState.getPassword()
+                            );
 
                         }
                     }
@@ -80,7 +81,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
                 }
         );
 
-        cancel.addActionListener(this);
+
 
         usernameInputField.addKeyListener(new KeyListener() {
             @Override
@@ -138,14 +139,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         LoginState state = (LoginState) evt.getNewValue();
         setFields(state);
     }
-    private void openSignupView() {
-        JFrame frame = new JFrame("Signup"); // Create a new JFrame for the SignupView
-        SignupView signupView = new SignupView(); // Instantiate the SignupView
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Adjust this based on your application flow
-        frame.getContentPane().add(signupView);
-        frame.setSize(300, 200); // Adjust the size as needed
-        frame.setVisible(true);
-    }
+
 
     private void setFields(LoginState state) {
         usernameInputField.setText(state.getUsername());
