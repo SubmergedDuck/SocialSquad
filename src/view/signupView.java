@@ -11,7 +11,7 @@ package view;
 public class signupView extends javax.swing.JFrame {
 
     /**
-     * Creates new form loginView
+     * Creates new form signupView
      */
     public signupView() {
         initComponents();
