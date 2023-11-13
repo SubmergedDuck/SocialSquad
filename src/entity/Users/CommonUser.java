@@ -58,8 +58,9 @@ public class CommonUser implements User {
 
     @Override
     public String getRealName() {
-        return realName;
+        return null;
     }
+
 
     @Override
     public String getContact() {

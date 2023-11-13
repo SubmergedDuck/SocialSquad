@@ -23,12 +23,5 @@ public class CommonLocationFactory implements LocationFactory {
      */
     @Override
     public Location makeLocation(String locationString) throws IOException {
-        //locationString is in the format of "(latitude,longitude)"
-        String[] strCoordinates = locationString.substring(1, locationString.length() - 1).split(",");
-        CoordinatesToAddressInterface converter = new CoordinatesToAddress(strCoordinates);
-        String country = converter.getCountry();
-        String address = converter.getAddress();
-        Location location = create(strCoordinates, address, country);
-        return location;
     }
 }
