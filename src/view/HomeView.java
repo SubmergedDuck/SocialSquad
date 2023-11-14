@@ -21,6 +21,8 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
     JLabel username;
 
     final JButton logOut;
+    final JButton SearchEvent;
+    final JButton Myevents;
 
     /**
      * A window with a title and a JButton.
@@ -41,6 +43,12 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
         logOut = new JButton(loggedInViewModel.LOGOUT_BUTTON_LABEL);
         buttons.add(logOut);
 
+        SearchEvent = new JButton(loggedInViewModel.SEARCH_EVENT_BUTTON_LABEL);
+        buttons.add(SearchEvent);
+
+        Myevents = new JButton(loggedInViewModel.MY_EVENT_BUTTON_LABEL);
+        buttons.add(Myevents);
+
         logOut.addActionListener(
                 new ActionListener() {
                     @Override
@@ -60,6 +68,18 @@ public class HomeView extends JPanel implements ActionListener, PropertyChangeLi
                     }
                 }
         );
+        SearchEvent.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(e.getSource().equals(SearchEvent)){
+                            LoggedInState currentState = loggedInViewModel.getState();
+
+                        }
+                    }
+                }
+        );
+
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 

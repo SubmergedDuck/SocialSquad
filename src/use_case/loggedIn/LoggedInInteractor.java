@@ -1,16 +1,18 @@
 package use_case.loggedIn;
 
-public class LoggedInInteractor implements LoggedInInputBoundary {
+public class LoggedInInteractor implements LoggedInInputBoundary{
+    final  LoggedInUserDataAccessInterface userDataAccessInterface;
     final LoggedInOutputBoundary loggedInPresenter;
 
-    public LoggedInInteractor(LoggedInOutputBoundary LoggedInOutputBoundary) {
-        this.loggedInPresenter = LoggedInOutputBoundary;
+    public LoggedInInteractor(LoggedInUserDataAccessInterface userDataAccessInterface, LoggedInOutputBoundary loggedInOutputBoundary){
+        this.userDataAccessInterface = userDataAccessInterface;
+        this.loggedInPresenter = loggedInOutputBoundary;
     }
 
     @Override
-    public void execute(LoggedInInputData LoggedInInputData) {
-        String username = LoggedInInputData.getUsername();
-        LoggedInOutputData loggedInOutputData = new LoggedInOutputData(username, false);
+    public void execute(LoggedInInputData loggedInInputData){
+        String username = loggedInInputData.getUsername();
+        LoggedInOutputData loggedInOutputData = new LoggedInOutputData(username,false);
         loggedInPresenter.prepareSuccessView(loggedInOutputData);
     }
 }
