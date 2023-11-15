@@ -30,4 +30,8 @@ public class CommonLocation implements Location {
     public String getCountry() {
         return country;
     }
+
+    public String toString(){
+        return "Country: " + getCountry() + "Province/City: " + getAddress(); //TODO: let API to return an approximate address instead of a specific detailed one
+    }
 }
