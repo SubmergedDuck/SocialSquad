@@ -145,6 +145,20 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         }
     }
 
+
+    @Override
+    public Integer generateEventID() {
+        return null;
+    }
+
+    @Override
+    public void save(Event event) {
+        String ownerUser = event.getOwnerUser();
+        User eventOwner = this.usernameToUser.get(ownerUser);
+        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
+        hostedEvents.add(event);
+    }
+
     @Override
     public boolean existsByName(String identifier) {
         return false;

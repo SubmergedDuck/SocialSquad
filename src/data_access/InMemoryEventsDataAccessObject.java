@@ -1,7 +1,7 @@
 package data_access;
 
 import entity.Events.Event;
-
+import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface{
+public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface{
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -64,6 +64,18 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         }
 
         return returnList;
+    }
+    
+    /**
+     * Removes a user from an event's arraylist of joined users.
+     * @param username username of the deleted user
+     * @param eventID the id of the event that the user is being removed from
+     */
+    @Override
+    public void removeUser(String username, Integer eventID) {
+        Event event = EventstoID.get(eventID);
+        ArrayList<String> joinedUsernames = event.getPeopleJoined();
+        joinedUsernames.remove(username);
     }
 
     /**

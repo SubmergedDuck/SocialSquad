@@ -22,6 +22,7 @@ public class CommonLocationFactory implements LocationFactory {
      * @throws IOException api error
      */
     @Override
+
     public Location makeLocation(String locationString) throws IOException {
         //locationString is in the format of "(latitude,longitude)"
         String[] strCoordinates = locationString.substring(1, locationString.length() - 1).split(",");

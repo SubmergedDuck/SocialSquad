@@ -90,7 +90,6 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
 
                     //In the CSV, the waitlistedPeople column is a string "1, 5, 8" where the numbers are the waitlisted user IDs.
                     String[] waitlistedIDs = col[headers.get("peopleWaitlisted")].split(",");
-
                     ArrayList<String> peopleWaitlisted = new ArrayList<>(Arrays.asList(waitlistedIDs));
                     LocalDateTime eventTime = LocalDateTime.parse(String.valueOf(col[headers.get("time")]));
 
