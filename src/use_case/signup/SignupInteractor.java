@@ -28,9 +28,10 @@ public class SignupInteractor {
             userPresenter.prepareFailView("Invalid sex");
         } else {
             // All the inputs are good.
-            User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
-                    signupInputData.getSex(), signupInputData.getRealName(), signupInputData.getContact());
-            userDataAccessObject.save(user);
+            // TODO commented out the below codes because userFactory.create() gives compilation errors
+//            User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
+//                    signupInputData.getSex(), signupInputData.getRealName(), signupInputData.getContact());
+//            userDataAccessObject.save(user);
             SignupOutputData signupOutputData = new SignupOutputData(signupInputData.getUsername());
 
             userPresenter.prepareSuccessView(signupOutputData);

@@ -22,9 +22,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     private final Map<String,User> usernameToUser = new HashMap<>();
     private final FileEventsDataAccessObject fileEventsDataAccessObject;
     private final LocationFactory locationFactory;
-
-
-
     private UserFactory userFactory;
 
     public FileUserDataAccessObject(String csvPath, FileEventsDataAccessObject fileEventsDataAccessObject, LocationFactory locationFactory, UserFactory userFactory) throws IOException {
@@ -33,15 +30,14 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         this.userFactory = userFactory;
 
         this.userDatabase = new File(csvPath);
-        headers.put("userID", 0);
-        headers.put("username", 1);
-        headers.put("password", 2);
-        headers.put("age", 3);
-        headers.put("sex", 4);
-        headers.put("contact", 5);
-        headers.put("events_joined", 6);
-        headers.put("events_created", 7);
-        headers.put("last_updated_location", 8);
+        headers.put("username", 0);
+        headers.put("password", 1);
+        headers.put("age", 2);
+        headers.put("sex", 3);
+        headers.put("contact", 4);
+        headers.put("events_joined", 5);
+        headers.put("events_created", 6);
+        headers.put("last_updated_location", 7);
 
         if (userDatabase.length() == 0) {
             save();
@@ -59,13 +55,12 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
                     String username = String.valueOf(col[headers.get("username")]);
                     String password = String.valueOf(col[headers.get("password")]);
-                    String eventsJoinedIDs = String.valueOf(col[headers.get("events_joined")]);
+                    String eventsJoinedIDs = String.valueOf(col[headers.get("events_joined")]); // expected: "1, 2, 3, ..." Event IDs separated by comma
                     String eventsCreatedIDs = String.valueOf(col[headers.get("events_created")]);
                     int age = Integer.parseInt(String.valueOf(col[headers.get("age")]));
                     String sex = String.valueOf(headers.get("sex"));
-                    int userID = Integer.parseInt(String.valueOf((headers.get("userID"))));
                     String contact = String.valueOf(headers.get("contact"));
-                    String locationString = String.valueOf(headers.get("location"));
+                    String locationString = String.valueOf(headers.get("location")); // Location String is expected to be "Lattitude, Longitude" in decimal degrees. E.g. New York: 40.753056, -73.983056
 
 
                     // Initializing an ArrayList<Event> from String read from CSV
@@ -74,33 +69,31 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     for (String id: eventsJoinedIDsInStrings) {
                         eventJoinedIDs.add(Integer.parseInt(id));
                     }
-                    ArrayList<Event> eventsJoined = fileEventsDataAccessObject.makeEvents(eventJoinedIDs);
+                    ArrayList<Event> eventsJoined = fileEventsDataAccessObject.makeEvents(eventJoinedIDs); //EventDAO will instantiate an ArrayList of Event that the user joined
 
                     // Initializing an ArrayList<Event> from String read from CSV
-
-
-
-
-
-
-
-
-
-                    //TODO: do the same thing as for eventsJoined
+                    String[] eventsCreatedIDsInStrings = eventsCreatedIDs.split(",");
                     ArrayList<Integer> eventCreatedIDs = new ArrayList<>();
-                    ArrayList<Event> eventsCreated = fileEventsDataAccessObject.makeEvents(eventJoinedIDs);
+                    for (String id: eventsCreatedIDsInStrings) {
+                        eventCreatedIDs.add(Integer.parseInt(id));
+                    }
+                    ArrayList<Event> eventsCreated = fileEventsDataAccessObject.makeEvents(eventJoinedIDs); //EventDAO will instantiate an ArrayList of Event that the user created
 
                     // Initializing a Location from String read from CSV
-                    Location location = locationFactory.makeLocation(locationString); // locaitonString is a list of coordinates
-
-                    //TODO: update this create function since userFactory has changed
-                    //User user = userFactory.create(username, password, eventsJoined, eventsCreated, age, sex, userID, contact, location);
-                    //usernameToUser.put(username, user);
+                    Location location = locationFactory.makeLocation(locationString); // location String is a list of coordinates
+                    User user = userFactory.create(username, password, age, sex, contact); // user will be instantiated as having an empty ArrayList of joinedEvents and createdEvents
+                    user.setCreatedEvents(eventsCreated);
+                    user.setJoinedEvents(eventsJoined); // manually put in the ArrayList of events
+                    usernameToUser.put(username, user);
                 }
             }
         }
     }
 
+    @Override
+    public boolean existsByName(String identifier) {
+        return false;
+    }
 
     @Override
     public void save(User user) {
@@ -125,19 +118,23 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
                 for (Event event: eventsCreated) {
                     eventsCreatedID += event.getEventID();
-                    eventsCreatedID += ","; // make Event IDs' separated by comma
+                    if (eventsCreated.iterator().hasNext()) {
+                        eventsCreatedID += ","; // if the current event is not the last, place a comma to separate its ID from the next one
+                    }
 
                 }
 
                 for (Event event: eventsJoined) {
                     eventsJoinedID += event.getEventID();
-                    eventsCreatedID += ",";
+                    if (eventsJoined.iterator().hasNext()){
+                        eventsCreatedID += ","; // if the current event is not the last, place a comma to separate its ID from the next one
+                    };
                 }
 
-                String locationString = String.valueOf(location.getCoordinates()); // location is saved by coordinates [lattitude, longtitude]
+                String locationString = String.valueOf(location.getCoordinates()); // location is saved by coordinates: lattitude, longtitude
 
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s",
-                        user.getUsername(), user.getPassword(), user.getAge(), user.getSex(), user.getContact(), eventsCreatedID, eventsJoinedID, locationString);
+                        user.getUsername(), user.getPassword(), user.getAge(), user.getSex(), user.getContact(), eventsJoinedID, eventsCreatedID, locationString);
                 writer.write(line);
                 writer.newLine();
             }

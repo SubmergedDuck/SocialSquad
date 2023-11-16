@@ -41,3 +41,13 @@ When looking for an event to join, users not only can use the Search feature, bu
 View. The Map View (rendered by the API) should show any events happening within the View as pins. When the user move 
 their View, the map pins should also change. Some may disappear as their location is out of the current View, some may 
 appear as their location is now inside the View, some may move within the View.
+
+## Technical updates
+1. DAO
+   a) UserDAO decides to use a csv file as the database.
+   It stores all information to instantiate a user. In particular, joinedEvents and createdEvents will only be stored as a list of numbers separated by commas. 
+   Each number is a unique ID that corresponds to an event.
+
+   b) UserDAO depends on EventDAO. 
+   When getting data out from the database and put entity objects into the system, UserDAO calls EventsDAO to instantiate an Arraylist of Events based on IDs extracted from the CSV.
+   The method makeEvents is implemented in EventDAO.

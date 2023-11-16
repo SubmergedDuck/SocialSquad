@@ -12,8 +12,10 @@ public interface User {
     ArrayList<Event> getCreatedEvents();
     int getAge();
     String getSex();
-    String getRealName();
-
     String getContact();
     Location getLocation();
+
+    void setCreatedEvents(ArrayList<Event> eventsCreated);
+
+    void setJoinedEvents(ArrayList<Event> eventsJoined);
 }
