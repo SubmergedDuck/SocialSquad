@@ -1,6 +1,10 @@
 package data_access;
 
 import entity.Events.Event;
+
+import use_case.get_direction.GetDirectionDataAccessInterface;
+import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.search_event.SearchEventDataAccessInterface;
 import entity.Location.Location;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
@@ -19,6 +23,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
     private final Map<String, Event> nameToEvents = new HashMap<>();
+    private final Map<Integer, Event> EventstoID = new HashMap<>();
 
     public InMemoryEventsDataAccessObject() {
         // constructor implementation
@@ -31,6 +36,15 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      */
     public void save(Event event){
         nameToEvents.put(event.getEventName(), event);
+        EventstoID.put(event.getEventID(), event);
+    }
+    
+    /**
+     * Provides the event id to event map of the DAO.
+     * @return the event id to event map.
+     */
+    public Map<Integer,Event> getEventMap(){
+        return this.EventstoID;
     }
 
     /**

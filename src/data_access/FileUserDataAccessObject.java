@@ -1,7 +1,6 @@
 package data_access;
 
 import entity.Users.UserFactory;
-import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -15,7 +14,7 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-                                                 JoinEventDataAccessInterface, CreateEventDataAccessInterface,
+                                                 JoinEventDataAccessInterface,
                                                  GetDirectionDataAccessInterface {
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
@@ -81,7 +80,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
                     // Initializing a Location from String read from CSV
                     Location location = locationFactory.makeLocation(locationString); // location String is a list of coordinates
-
                     User user = userFactory.create(username, password, age, sex, contact); // user will be instantiated as having an empty ArrayList of joinedEvents and createdEvents
                     user.setCreatedEvents(eventsCreated);
                     user.setJoinedEvents(eventsJoined); // manually put in the ArrayList of events
@@ -96,6 +94,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         return false;
     }
 
+    @Override
     public void save(User user) {
         usernameToUser.put(user.getUsername(), user);
         this.save();
@@ -146,6 +145,9 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         }
     }
 
-
+    @Override
+    public boolean existsByName(String identifier) {
+        return false;
+    }
 }
 

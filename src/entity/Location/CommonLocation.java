@@ -4,12 +4,12 @@ import java.util.List;
 
 public class CommonLocation implements Location {
 
-    private final List coordinates;
+    private final String[] coordinates;
     private final String address;
     private final String country;
 
 
-    public CommonLocation(List coordinates, String address, String country){
+    public CommonLocation(String[] coordinates, String address, String country){
         this.coordinates = coordinates;
         this.address = address;
         this.country = country;
@@ -17,7 +17,7 @@ public class CommonLocation implements Location {
     }
 
     @Override
-    public List getCoordinates() {
+    public String[] getCoordinates() {
         return coordinates;
     }
 
