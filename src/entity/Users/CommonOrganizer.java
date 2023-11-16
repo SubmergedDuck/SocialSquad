@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class CommonOrganizer extends CommonUser implements Organizer {
     private final Event ofEvent;
+  
     public CommonOrganizer(String username, String password, Event ofEvent, int age, String sex, String contact) {
         super(username, password, age, sex, contact);
         this.ofEvent = ofEvent;

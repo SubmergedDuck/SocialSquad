@@ -1,12 +1,13 @@
 package entity.Location;
 
 
+import java.io.IOException;
 import java.util.*;
 
 public interface LocationFactory {
 
-    Location create(List coordinates, String address, String country);
+    Location create(String[] coordinates, String address, String country);
 
-    Location makeLocation(String locationString);
+    Location makeLocation(String locationString) throws IOException;
     // This method returns a location from a list of coordinates
 }

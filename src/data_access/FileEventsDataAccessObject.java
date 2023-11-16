@@ -4,7 +4,6 @@ package data_access;
 import entity.Location.Location;
 import entity.Events.*;
 import entity.Location.LocationFactory;
-import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
@@ -15,18 +14,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileEventsDataAccessObject implements GetDirectionDataAccessInterface,
-                                                   CreateEventDataAccessInterface,
                                                    SearchEventDataAccessInterface,
                                                    JoinEventDataAccessInterface {
     private final File eventDatabase;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<Integer, Event> events = new HashMap<>();
-
     private EventFactory eventFactory;
     private InviteOnlyEventFactory inviteEventFactory;
     private RestrictedEventFactory restrictedEventFactory;
-
     private LocationFactory locationFactory;
 
     public FileEventsDataAccessObject(String csvPath, EventFactory eventFactory, InviteOnlyEventFactory
@@ -65,7 +61,7 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
                     //Location in the csv will be "longitude, latitude, address, country"
                     String[] locationCols = col[headers.get("location")].split(",");
                     //Location factory parameters: List coordinates, String address, String country
-                    List<Integer> coordinates = List.of(new Integer[]{Integer.valueOf(col[0]), Integer.valueOf(col[1])});
+                    String[] coordinates = new String[]{String.valueOf(col[0]), String.valueOf(col[1])};
                     Location eventLocation = this.locationFactory.create(coordinates, col[2], col[3]);
 
                     //In the CSV file, privacy is a string that is true or false
@@ -89,30 +85,21 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
 
                     //In the CSV, the peopleJoined column would look something like "1, 5, 8" where the numbers are the IDs.
                     String[] joinedUserIDs = col[headers.get("peopleJoined")].split(",");
-                    ArrayList<Integer> peopleJoined = new ArrayList<>();
-                    for (String id : joinedUserIDs){
-                        peopleJoined.add(Integer.valueOf(id));
-                    }
+                    ArrayList<String> peopleJoined = new ArrayList<>();
+                    peopleJoined.addAll(Arrays.asList(joinedUserIDs));
 
                     //In the CSV, the waitlistedPeople column is a string "1, 5, 8" where the numbers are the waitlisted user IDs.
                     String[] waitlistedIDs = col[headers.get("peopleWaitlisted")].split(",");
-                    ArrayList<Integer> peopleWaitlisted = new ArrayList<>();
-                    for (String id : waitlistedIDs){
-                        peopleWaitlisted.add(Integer.valueOf(id));
-                    }
-
+                    ArrayList<String> peopleWaitlisted = new ArrayList<>(Arrays.asList(waitlistedIDs));
                     LocalDateTime eventTime = LocalDateTime.parse(String.valueOf(col[headers.get("time")]));
 
                     String eventType = String.valueOf(col[headers.get("type")]);
 
                     String eventDescription = String.valueOf(col[headers.get("description")]);
 
-                    String[] invitedIDs = col[headers.get("peopleInvited")].split(",");
-                    ArrayList<Integer> peopleInvited = new ArrayList<>();
+                    String[] invitedUsers = col[headers.get("peopleInvited")].split(",");
 
-                    for (String id : invitedIDs){
-                        peopleInvited.add(Integer.valueOf(id));
-                    }
+                    ArrayList<String> invitees = new ArrayList<>(Arrays.asList(invitedUsers));
 
                     //Adds events to the hashmap. Each event is identified based on certain parameters that they have.
                     Event currentEvent = null;
@@ -121,12 +108,12 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
                         currentEvent = (Event)this.restrictedEventFactory.create(eventID, eventName, owner, eventLocation,
                                 peopleJoined, peopleWaitlisted, eventTime, eventType, eventDescription, privacy,
                                 capacity, ageRestriction, sexRestriction);
-                    } else if (!peopleInvited.get(0).equals(-1)){
+                    } else if (!invitedUsers[0].equals("-1")){
                         //For non-invite only events, their peopleInvited column is set to -1, which can be seen in save()
                         //This will help to identify invite only events.
                         currentEvent = (Event)this.inviteEventFactory.create(eventID, eventName, owner, eventLocation,
                                 peopleJoined, peopleWaitlisted, eventTime, eventType, eventDescription, privacy, capacity,
-                                peopleInvited);
+                                invitees);
                     } else {
                         currentEvent = this.eventFactory.create(eventID, eventName, owner, eventLocation, peopleJoined,
                                 peopleWaitlisted, eventTime, eventType, eventDescription, privacy, capacity);

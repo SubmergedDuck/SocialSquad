@@ -1,7 +1,6 @@
 package data_access;
 
 import entity.Users.UserFactory;
-import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -15,7 +14,7 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-                                                 JoinEventDataAccessInterface, CreateEventDataAccessInterface,
+                                                 JoinEventDataAccessInterface,
                                                  GetDirectionDataAccessInterface {
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
