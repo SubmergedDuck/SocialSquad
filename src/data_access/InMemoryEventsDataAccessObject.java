@@ -18,16 +18,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface{
+public class InMemoryEventsDataAccessObject implements GetDirectionDataAccessInterface,
+        CreateEventDataAccessInterface,
+        SearchEventDataAccessInterface,
+        JoinEventDataAccessInterface, RemoveParticipantDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
     private final Map<String, Event> nameToEvents = new HashMap<>();
     private final Map<Integer, Event> EventstoID = new HashMap<>();
+    //NOTE: Switched the key to being the event ID since that's how we identify events.
 
-    public InMemoryEventsDataAccessObject() {
-        // constructor implementation
-        ;
+    @Override
+    public Integer generateEventID() {
+        Integer currentID = 0;
+        for (Integer eventID : EventstoID.keySet()){
+            //The new eventID will be the highest event ID.
+            if (currentID < eventID){
+                currentID = eventID + 1;
+            }
+        }
+        return currentID;
+    }
+
+    public Map<Integer,Event> getEventMap(){
+        return this.EventstoID;
     }
 
     /**
@@ -38,7 +53,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         nameToEvents.put(event.getEventName(), event);
         EventstoID.put(event.getEventID(), event);
     }
-    
+
     /**
      * Provides the event id to event map of the DAO.
      * @return the event id to event map.
@@ -65,7 +80,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
 
         return returnList;
     }
-    
+
     /**
      * Removes a user from an event's arraylist of joined users.
      * @param username username of the deleted user
