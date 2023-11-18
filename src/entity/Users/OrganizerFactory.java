@@ -7,6 +7,6 @@ import java.util.ArrayList;
 
 public interface OrganizerFactory {
     Organizer create(String username, String password, Event eventOf, ArrayList<Event> joinedEvents,
-                ArrayList<Event> createdEvents, int age, String sex, int userid, String contact,
+                ArrayList<Event> createdEvents, int age, String sex, String contact,
                 Location location);
 }
