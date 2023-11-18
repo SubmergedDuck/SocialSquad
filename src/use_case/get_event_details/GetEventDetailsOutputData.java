@@ -28,13 +28,33 @@ public class GetEventDetailsOutputData {
         this.description = description;
     }
 
-    String getOwnerUser(){return this.ownerUser;}
+    /**
+     * Gets the username of the owner
+     * @return the event organizer's username
+     */
+    public String getOwnerUser(){return this.ownerUser;}
 
-    String getEventName(){return this.eventName;}
+    /**
+     * Gets the event name
+     * @return the event name
+     */
+    public String getEventName(){return this.eventName;}
 
-    String getEventAddress(){return this.eventAddress;}
+    /**
+     * Gets the address of the location where the event is located
+     * @return the event location
+     */
+    public String getEventAddress(){return this.eventAddress;}
 
-    String getDate(){return this.date;}
+    /**
+     * Gets the date of the event
+     * @return the event date
+     */
+    public String getDate(){return this.date;}
 
-    String getDescription(){return this.description;}
+    /**
+     * The description of the event
+     * @return event description
+     */
+    public String getDescription(){return this.description;}
 }

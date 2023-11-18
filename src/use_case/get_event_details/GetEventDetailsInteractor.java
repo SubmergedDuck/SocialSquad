@@ -3,9 +3,6 @@ package use_case.get_event_details;
 import entity.Events.Event;
 import entity.Users.User;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GetEventDetailsInteractor implements GetEventDetailsInputBoundary{
     private final GetEventDetailsOutputBoundary getEventDetailsPresenter;
     private final GetEventDetailsDataAccessInterface eventsDataAccessObject;
