@@ -11,7 +11,7 @@ public class CommonEvent implements Event {
     private final Integer eventID;
     private final String eventName;
     private final Location location;
-    private final ArrayList<String> peopleJoined;
+    private ArrayList<String> peopleJoined;
     private final ArrayList<String> peopleWaitlisted;
     private final LocalDateTime time;
     private final String type;
