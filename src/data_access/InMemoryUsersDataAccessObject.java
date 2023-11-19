@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
-        SearchEventDataAccessInterface,
-        JoinEventDataAccessInterface, RemoveParticipantDataAccessInterface {
+        SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
