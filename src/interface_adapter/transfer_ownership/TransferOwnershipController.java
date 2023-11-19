@@ -7,5 +7,6 @@ public class TransferOwnershipController implements TransferOwnershipInputBounda
     @Override
     public void execute(TransferOwnershipInputData inputData) {
 
+
     }
 }

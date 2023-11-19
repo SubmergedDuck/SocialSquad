@@ -39,8 +39,8 @@ class TransferOwnershipInteractorTest {
             }
         };
         TransferOwnershipInputData inputData = new TransferOwnershipInputData(event, "newOwner");
-        TransferOwnershipController controller = new TransferOwnershipController();
-        controller.execute(inputData);
+        TransferOwnershipInteractor interactor = new TransferOwnershipInteractor(inMemoryDAO, presenter);
+        interactor.execute(inputData);
 
         assert event.getOwnerUser().equals("newOwner");
     }
@@ -65,11 +65,11 @@ class TransferOwnershipInteractorTest {
             }
         };
         TransferOwnershipInputData inputData = new TransferOwnershipInputData(event, "newOwner");
-        TransferOwnershipController controller = new TransferOwnershipController();
-        controller.execute(inputData);
+        TransferOwnershipInteractor interactor = new TransferOwnershipInteractor(inMemoryDAO, presenter);
+        interactor.execute(inputData);
     }
     @Test
-    void notPariticpantFail() {
+    void notParticipantFail() {
         Event event = new CommonEvent(1, "Badminton on campus", "kat", new CommonLocation(new String[3], "UofT", "Canada"), new ArrayList<>(), new ArrayList(), LocalDateTime.now().plusHours(25), "type", "desciption", true, 1);
         User owner = new CommonUser("kat", "password", 1, "F", "email");
         event.getPeopleJoined().add(owner.getUsername());
@@ -90,7 +90,7 @@ class TransferOwnershipInteractorTest {
             }
         };
         TransferOwnershipInputData inputData = new TransferOwnershipInputData(event, "newOwner");
-        TransferOwnershipController controller = new TransferOwnershipController();
-        controller.execute(inputData);
+        TransferOwnershipInteractor interactor = new TransferOwnershipInteractor(inMemoryDAO, presenter);
+        interactor.execute(inputData);
     }
 }
