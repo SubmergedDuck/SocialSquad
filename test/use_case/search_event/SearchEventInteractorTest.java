@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ public class SearchEventInteractorTest {
     void testHasFullMatch() {
         SearchEventInputData searchRequest = new SearchEventInputData("badminton on campus");
         SearchEventDataAccessInterface inmemoryEventDAO = new InMemoryEventsDataAccessObject();
-        Event event = new CommonEvent(1, "Badminton on campus", 1, new CommonLocation(new ArrayList(), "UofT", "Canada"), new ArrayList<>(), new ArrayList(), "today", "type", "desciption", true, 1);
+        Event event = new CommonEvent(1, "Badminton on campus", "owner", new CommonLocation(new String[3], "UofT", "Canada"), new ArrayList<>(), new ArrayList(), LocalDateTime.now().plusHours(25), "type", "desciption", true, 1);
         ((InMemoryEventsDataAccessObject) inmemoryEventDAO).save(event);
 
         SearchEventOutputBoundary fullMatchPresenter = new SearchEventOutputBoundary() {
@@ -52,9 +53,9 @@ public class SearchEventInteractorTest {
     void testHasPartialMatch() {
         SearchEventInputData searchRequest = new SearchEventInputData("badminton on campus");
         SearchEventDataAccessInterface inmemoryEventDAO = new InMemoryEventsDataAccessObject();
-        Event event = new CommonEvent(1, "badminton", 1, new CommonLocation(new ArrayList(), "UofT", "Canada"), new ArrayList<>(), new ArrayList(), "today", "type", "desciption", true, 1);
-        Event event2 = new CommonEvent(1, "something", 1, new CommonLocation(new ArrayList(), "UofT", "Canada"), new ArrayList<>(), new ArrayList(), "today", "badminton", "desciption", true, 1);
-        Event event3 = new CommonEvent(1, "badminton on campus", 1, new CommonLocation(new ArrayList(), "UofT", "Canada"), new ArrayList<>(), new ArrayList(), "today", "type", "desciption", true, 1);
+        Event event = new CommonEvent(1, "badminton", "", new CommonLocation(new String[3], "UofT", "Canada"), new ArrayList<>(), new ArrayList(), LocalDateTime.now(), "type", "desciption", true, 1);
+        Event event2 = new CommonEvent(1, "something", "", new CommonLocation(new String[3], "UofT", "Canada"), new ArrayList<>(), new ArrayList(), LocalDateTime.now(), "badminton", "desciption", true, 1);
+        Event event3 = new CommonEvent(1, "badminton on campus", "", new CommonLocation(new String[3], "UofT", "Canada"), new ArrayList<>(), new ArrayList(), LocalDateTime.now(), "type", "desciption", true, 1);
         ((InMemoryEventsDataAccessObject) inmemoryEventDAO).save(event);
         ((InMemoryEventsDataAccessObject) inmemoryEventDAO).save(event2);
 
@@ -81,7 +82,7 @@ public class SearchEventInteractorTest {
      */
     @Test
     void testNoMatch(){
-        Event event = new CommonEvent(1, "something", 1, new CommonLocation(new ArrayList(), "UofT", "Canada"), new ArrayList<>(), new ArrayList(), "today", "type", "desciption", true, 1);
+        Event event = new CommonEvent(1, "something", "owner", new CommonLocation(new String [3], "UofT", "Canada"), new ArrayList<>(), new ArrayList(), LocalDateTime.now(), "type", "desciption", true, 1);
         SearchEventInputData searchRequest = new SearchEventInputData("badminton on campus");
         SearchEventDataAccessInterface inmemoryEventDAO = new InMemoryEventsDataAccessObject();
         ((InMemoryEventsDataAccessObject) inmemoryEventDAO).save(event);
