@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class CommonEvent implements Event {
-    private final String owner;
+    private String owner; // Not final because ownership can be transferred
     private final Integer eventID;
     private final String eventName;
     private final Location location;
@@ -86,5 +86,10 @@ public class CommonEvent implements Event {
     @Override
     public Integer getCapacity() {
         return capacity;
+    }
+
+    @Override
+    public void setOwnerUser(String newUsername) {
+        owner = newUsername;
     }
 }

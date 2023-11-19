@@ -18,5 +18,6 @@ public interface Event {
     String getDescription();
     Boolean getPrivacy();
     Integer getCapacity();
+    void setOwnerUser(String newUsername);
 
 }
