@@ -24,5 +24,5 @@ public class ViewParticipantsOutputData {
         joinedParticipants = participantsSoFar;
     }
 
-    String getJoinedParticipants(){return this.getJoinedParticipants();}
+    String getJoinedParticipants(){return this.joinedParticipants;}
 }
