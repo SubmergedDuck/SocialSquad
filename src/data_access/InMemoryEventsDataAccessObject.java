@@ -2,18 +2,9 @@ package data_access;
 
 import entity.Events.Event;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
-import use_case.get_direction.GetDirectionDataAccessInterface;
-import use_case.join_event.JoinEventDataAccessInterface;
-import use_case.search_event.SearchEventDataAccessInterface;
-import entity.Location.Location;
-import use_case.create_event.CreateEventDataAccessInterface;
-import use_case.get_direction.GetDirectionDataAccessInterface;
-import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
 
-import java.lang.reflect.Array;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
