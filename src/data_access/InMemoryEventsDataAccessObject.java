@@ -1,29 +1,35 @@
 package data_access;
 
 import entity.Events.Event;
+import entity.Users.User;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import entity.Location.Location;
-import use_case.create_event.CreateEventDataAccessInterface;
+//import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
+import use_case.transfer_ownership_use_case.TransferOwnershipDataAccessInterface;
+import use_case.transfer_ownership_use_case.TransferOwnershipInputData;
 
 import java.lang.reflect.Array;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface{
+public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
+        RemoveParticipantDataAccessInterface, TransferOwnershipDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
     private final Map<String, Event> nameToEvents = new HashMap<>();
     private final Map<Integer, Event> EventstoID = new HashMap<>();
+    private final Map<Event, ArrayList<String>> EventstoParticipant = new HashMap<>();
 
     public InMemoryEventsDataAccessObject() {
         // constructor implementation
@@ -37,6 +43,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public void save(Event event){
         nameToEvents.put(event.getEventName(), event);
         EventstoID.put(event.getEventID(), event);
+        EventstoParticipant.put(event, event.getPeopleJoined());
     }
     
     /**
@@ -109,5 +116,31 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
 
 
         return returnList;
+    }
+
+    @Override
+    public boolean isParticipant(TransferOwnershipInputData inputData) {
+        Event event = inputData.getEvent();
+        String transferTo = inputData.getUsername();
+        return EventstoParticipant.get(event).contains(transferTo);
+    }
+
+    @Override
+    public boolean outside24Hours(TransferOwnershipInputData inputData) {
+        LocalDateTime now = LocalDateTime.now();
+        Event event = inputData.getEvent();
+        return now.plusHours(24).isBefore(event.getTime()); // Time requested for transfer ownership is before 24 hours of the event's start time
+    }
+
+    @Override
+    public void transferOwnership(TransferOwnershipInputData inputData) {
+        String newOwner = inputData.getUsername();
+        Event event = inputData.getEvent();
+        event.setOwnerUser(newOwner);
+        EventstoParticipant.remove(event);
+        nameToEvents.remove(event.getEventName());
+        EventstoID.remove(event.getEventID());
+        save(event);
+
     }
 }
