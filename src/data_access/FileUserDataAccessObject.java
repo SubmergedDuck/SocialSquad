@@ -18,7 +18,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                                                  GetDirectionDataAccessInterface {
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
-    private final Map<String,User> usernameToUser = new HashMap<>();
+    private final Map<String, User> usernameToUser = new HashMap<>();
     private final FileEventsDataAccessObject fileEventsDataAccessObject;
     private final LocationFactory locationFactory;
     private UserFactory userFactory;
@@ -65,7 +65,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     // Initializing an ArrayList<Event> from String read from CSV
                     String[] eventsJoinedIDsInStrings = eventsJoinedIDs.split(","); //Expect "1, 2, 3" --> "1", "2", "3"
                     ArrayList<Integer> eventJoinedIDs = new ArrayList<>();
-                    for (String id: eventsJoinedIDsInStrings) {
+                    for (String id : eventsJoinedIDsInStrings) {
                         eventJoinedIDs.add(Integer.parseInt(id));
                     }
                     ArrayList<Event> eventsJoined = fileEventsDataAccessObject.makeEvents(eventJoinedIDs); //EventDAO will instantiate an ArrayList of Event that the user joined
@@ -73,7 +73,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                     // Initializing an ArrayList<Event> from String read from CSV
                     String[] eventsCreatedIDsInStrings = eventsCreatedIDs.split(",");
                     ArrayList<Integer> eventCreatedIDs = new ArrayList<>();
-                    for (String id: eventsCreatedIDsInStrings) {
+                    for (String id : eventsCreatedIDsInStrings) {
                         eventCreatedIDs.add(Integer.parseInt(id));
                     }
                     ArrayList<Event> eventsCreated = fileEventsDataAccessObject.makeEvents(eventJoinedIDs); //EventDAO will instantiate an ArrayList of Event that the user created
@@ -107,7 +107,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             writer.write(String.join(",", headers.keySet()));
             writer.newLine();
 
-            for (User user: usernameToUser.values()) {
+            for (User user : usernameToUser.values()) {
                 ArrayList<Event> eventsCreated = user.getCreatedEvents();
                 ArrayList<Event> eventsJoined = user.getJoinedEvents();
                 Location location = user.getLocation();
@@ -115,7 +115,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
                 String eventsCreatedID = null;
                 String eventsJoinedID = null;
 
-                for (Event event: eventsCreated) {
+                for (Event event : eventsCreated) {
                     eventsCreatedID += event.getEventID();
                     if (eventsCreated.iterator().hasNext()) {
                         eventsCreatedID += ","; // if the current event is not the last, place a comma to separate its ID from the next one
@@ -123,11 +123,12 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
                 }
 
-                for (Event event: eventsJoined) {
+                for (Event event : eventsJoined) {
                     eventsJoinedID += event.getEventID();
-                    if (eventsJoined.iterator().hasNext()){
+                    if (eventsJoined.iterator().hasNext()) {
                         eventsCreatedID += ","; // if the current event is not the last, place a comma to separate its ID from the next one
-                    };
+                    }
+                    ;
                 }
 
                 String locationString = String.valueOf(location.getCoordinates()); // location is saved by coordinates: lattitude, longtitude
@@ -144,24 +145,20 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             throw new RuntimeException(e);
         }
     }
-
-
-    @Override
-    public Integer generateEventID() {
-        return null;
-    }
-
-    @Override
-    public void save(Event event) {
-        String ownerUser = event.getOwnerUser();
-        User eventOwner = this.usernameToUser.get(ownerUser);
-        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
-        hostedEvents.add(event);
-    }
-
-    @Override
-    public boolean existsByName(String identifier) {
-        return false;
-    }
 }
+
+// Commented out code with compiler errors:
+
+//    @Override
+//    public Integer generateEventID() {
+//        return null;
+//    }
+//
+//    @Override
+//    public void save(Event event) {
+//        String ownerUser = event.getOwnerUser();
+//        User eventOwner = this.usernameToUser.get(ownerUser);
+//        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
+//        hostedEvents.add(event);
+//    }
 
