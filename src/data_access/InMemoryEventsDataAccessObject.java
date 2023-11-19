@@ -2,33 +2,22 @@ package data_access;
 
 import entity.Events.Event;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
-import use_case.get_direction.GetDirectionDataAccessInterface;
-import use_case.join_event.JoinEventDataAccessInterface;
-import use_case.search_event.SearchEventDataAccessInterface;
-import entity.Location.Location;
-import use_case.create_event.CreateEventDataAccessInterface;
-import use_case.get_direction.GetDirectionDataAccessInterface;
-import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
+import use_case.view_participants.ViewParticipantsDataAccessInterface;
 
-import java.lang.reflect.Array;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface{
+public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
+        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
     private final Map<String, Event> nameToEvents = new HashMap<>();
-    private final Map<Integer, Event> EventstoID = new HashMap<>();
-
-    public InMemoryEventsDataAccessObject() {
-        // constructor implementation
-        ;
-    }
+    private final Map<Integer, Event> eventsToID = new HashMap<>();
 
     /**
      * A public method that saves an event to the nameToEvent hashmap directory
@@ -36,7 +25,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      */
     public void save(Event event){
         nameToEvents.put(event.getEventName(), event);
-        EventstoID.put(event.getEventID(), event);
+        eventsToID.put(event.getEventID(), event);
     }
     
     /**
@@ -44,7 +33,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      * @return the event id to event map.
      */
     public Map<Integer,Event> getEventMap(){
-        return this.EventstoID;
+        return this.eventsToID;
     }
 
     /**
@@ -73,7 +62,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      */
     @Override
     public void removeUser(String username, Integer eventID) {
-        Event event = EventstoID.get(eventID);
+        Event event = eventsToID.get(eventID);
         ArrayList<String> joinedUsernames = event.getPeopleJoined();
         joinedUsernames.remove(username);
     }
@@ -109,5 +98,11 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
 
 
         return returnList;
+    }
+
+    @Override
+    public List<String> getParticipants(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return event.getPeopleJoined();
     }
 }

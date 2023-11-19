@@ -17,6 +17,7 @@ import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantInputData;
 import use_case.remove_participant.RemoveParticipantInteractor;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class RemoveParticipantInteractorTest {
     Initializes the variables above for testing.
      */
     @Before
-    public void init(){
+    public void init() throws IOException {
         UserFactory userFactory = new CommonUserFactory();
         EventFactory eventFactory = new CommonEventFactory();
         LocationFactory locationFactory = new CommonLocationFactory();
@@ -49,10 +50,10 @@ public class RemoveParticipantInteractorTest {
         LocalDateTime eventTime = LocalDateTime.parse("2016-03-04 11:30", formatter);
 
         //Creates a test location
-        Location location = locationFactory.makeLocation("(0,0)");
+        Location location = locationFactory.makeLocation("(47.64054,-122.12934)");
 
         //Creates and adds a user to the in memory user DAO.
-        User user = userFactory.create("Bob", "123", 20, "m", "Bob", "bob@gmail.com");
+        User user = userFactory.create("Bob", "123", 20, "m", "bob@gmail.com");
         InMemoryUsersDataAccessObject userDAO = (InMemoryUsersDataAccessObject)inMemoryUsersDataAccessObject;
         userDAO.save(user);
 
