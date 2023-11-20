@@ -5,20 +5,17 @@
 package view;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
 
 /**
  *
  * @author submergedduck
  */
-public class loginView extends JFrame {
+public class LoginView extends JFrame {
 
     /**
      * Creates new form loginView
      */
-    public loginView() {
+    public LoginView() {
         initComponents();
     }
 
@@ -318,14 +315,14 @@ public class loginView extends JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Create and display the form (for seeing how view looks purposes)*/
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new loginView().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Create and display the form (for seeing how view looks purposes)*/
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new loginView().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel BottomSeperator_PANEL;
