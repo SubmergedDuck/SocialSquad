@@ -1,7 +1,5 @@
 package interface_adapter.Back_Out;
 
-import use_case.Back_Out.BackOutInputBoundary;
-import use_case.Back_Out.BackOutInputData;
 import view.ViewManager;
 
 public class BackOutController {
