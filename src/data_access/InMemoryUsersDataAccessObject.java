@@ -6,12 +6,13 @@ import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
-        SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface {
+        SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
@@ -28,6 +29,12 @@ public class InMemoryUsersDataAccessObject implements
         }
         joinedEvents.remove(eventRemove);
     }
+
+    @Override
+    public boolean existsByName(String identifier) {
+        return false;
+    }
+
     public void save(User user){
         usernameToUser.put(user.getUsername(), user);
     }
