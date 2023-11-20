@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.Events.Event;
+import use_case.get_event_details.GetEventDetailsDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
-        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface {
+        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetEventDetailsDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -104,5 +105,10 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public List<String> getParticipants(Integer eventID) {
         Event event = eventsToID.get(eventID);
         return event.getPeopleJoined();
+    }
+
+    @Override
+    public Event getEvent(int eventID) {
+        return eventsToID.get(eventID);
     }
 }
