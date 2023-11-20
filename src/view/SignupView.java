@@ -5,6 +5,7 @@
 package view;
 
 import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
 
 /**
@@ -233,7 +234,14 @@ public class SignupView extends javax.swing.JFrame {
     }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
-        // TODO add your handling code here:
+        if (evt.getSource().equals(SignUp_BUTTON)) {
+            SignupState currentState = signupViewModel.getState();
+        // TODO: implement this
+//            signupController.execute(
+//                    currentState.getUsername(),
+//                    currentState.getPassword(),
+//                    currentState.getRepeatPassword())
+        }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back_BUTTONActionPerformed
