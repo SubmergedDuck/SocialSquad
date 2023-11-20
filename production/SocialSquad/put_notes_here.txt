@@ -1,0 +1,4 @@
+eventsSettings:
+0: Event
+1: RestrictedEvent
+2: InviteOnlyEvent
