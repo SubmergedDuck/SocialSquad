@@ -8,12 +8,12 @@ package view;
  *
  * @author submergedduck
  */
-public class signupView extends javax.swing.JFrame {
+public class SignupView extends javax.swing.JFrame {
 
     /**
      * Creates new form signupView
      */
-    public signupView() {
+    public SignupView() {
         initComponents();
     }
 
@@ -238,7 +238,7 @@ public class signupView extends javax.swing.JFrame {
         /* Create and display the form (for seeing how view looks purposes)*/
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new signupView().setVisible(true);
+                new SignupView().setVisible(true);
             }
         });
     }
