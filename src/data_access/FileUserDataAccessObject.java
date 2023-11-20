@@ -89,10 +89,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         }
     }
 
-    @Override
-    public boolean existsByName(String identifier) {
-        return false;
-    }
 
     @Override
     public void save(User user) {
@@ -146,12 +142,11 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     }
 
 
-    @Override
+
     public Integer generateEventID() {
         return null;
     }
 
-    @Override
     public void save(Event event) {
         String ownerUser = event.getOwnerUser();
         User eventOwner = this.usernameToUser.get(ownerUser);
