@@ -243,14 +243,15 @@ public class SignupView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Create and display the form (for seeing how view looks purposes)*/
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SignupView().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Create and display the form (for seeing how view looks purposes)*/
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                SignupView signupView = new SignupView();
+//                signupView.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private ButtonGradient Back_BUTTON;
