@@ -4,17 +4,27 @@
  */
 package view;
 
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupState;
+import interface_adapter.signup.SignupViewModel;
+
 /**
  *
  * @author submergedduck
  */
-public class signupView extends javax.swing.JFrame {
+public class SignupView extends javax.swing.JFrame {
+    public final String viewName = "sign up";
+
+    private final SignupViewModel signupViewModel;
+    private final SignupController signupController;
 
     /**
      * Creates new form signupView
      */
-    public signupView() {
+    public SignupView(SignupController controller, SignupViewModel signupViewModel) {
         initComponents();
+        this.signupController = controller;
+        this.signupViewModel = signupViewModel;
     }
 
     /**
@@ -224,7 +234,14 @@ public class signupView extends javax.swing.JFrame {
     }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
-        // TODO add your handling code here:
+        if (evt.getSource().equals(SignUp_BUTTON)) {
+            SignupState currentState = signupViewModel.getState();
+        // TODO: implement this
+//            signupController.execute(
+//                    currentState.getUsername(),
+//                    currentState.getPassword(),
+//                    currentState.getRepeatPassword())
+        }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back_BUTTONActionPerformed
@@ -234,14 +251,15 @@ public class signupView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Create and display the form (for seeing how view looks purposes)*/
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new signupView().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Create and display the form (for seeing how view looks purposes)*/
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                SignupView signupView = new SignupView();
+//                signupView.setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private ButtonGradient Back_BUTTON;
