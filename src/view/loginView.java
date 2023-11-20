@@ -5,6 +5,9 @@
 package view;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
 
 /**
  *
@@ -235,6 +238,70 @@ public class loginView extends JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+
+    /** work from old loginView
+        try {
+            Scanner in = new Scanner(new File("USERDATA.txt"));
+            while (in.hasNextLine())
+            {
+                String S=in.nextLine();
+                String[] Sa= S.split(",");
+
+                boolean hasUppercase = !txtPass.equals(txtPass.getText().toLowerCase()); //
+                boolean hasSpecial   = !Sa[1].matches("[A-Za-z0-9 ]*");
+                boolean hasSpace = Sa[1].matches(" ");
+
+                if ((Sa[1].length() < 10))
+                {
+                    JOptionPane.showMessageDialog(null,
+                            "Password must have a minimum of 10 characters", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+
+
+                }
+
+                else if (hasSpace)
+                {
+                    JOptionPane.showMessageDialog(null,
+                            "Password must not have a space", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+
+
+                else if (!hasUppercase)
+                {
+                    JOptionPane.showMessageDialog(null,
+                            "Password must have at least 1 uppercase letter", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+
+                else if (!hasSpecial)
+                {
+                    JOptionPane.showMessageDialog(null,
+                            "Password must have at least 1 number", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+                else
+                {
+                    JOptionPane.showMessageDialog(null,
+                            "Invalid Username / Password Combo", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+                in.close();
+
+            }
+            in.close();
+        }
+        catch(IOException e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    */
+
 
     private void SignIn_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignIn_BUTTONActionPerformed
         // TODO add your handling code here:
