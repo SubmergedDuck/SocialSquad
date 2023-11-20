@@ -4,17 +4,26 @@
  */
 package view;
 
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupViewModel;
+
 /**
  *
  * @author submergedduck
  */
 public class SignupView extends javax.swing.JFrame {
+    public final String viewName = "sign up";
+
+    private final SignupViewModel signupViewModel;
+    private final SignupController signupController;
 
     /**
      * Creates new form signupView
      */
-    public SignupView() {
+    public SignupView(SignupController controller, SignupViewModel signupViewModel) {
         initComponents();
+        this.signupController = controller;
+        this.signupViewModel = signupViewModel;
     }
 
     /**
