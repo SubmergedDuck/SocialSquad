@@ -4,15 +4,12 @@ import data_access.GenerateRoute;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEvent;
-import entity.Events.CommonEventFactory;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 import entity.Users.CommonUser;
 import entity.Users.User;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
