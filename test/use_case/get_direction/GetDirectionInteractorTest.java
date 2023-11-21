@@ -21,6 +21,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * Test used to check if a route image is displayed
+ */
 public class GetDirectionInteractorTest {
     public static GetDirectionInteractor getDirectionInteractor;
     public static String username;
