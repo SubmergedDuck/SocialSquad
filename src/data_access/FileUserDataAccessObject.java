@@ -95,6 +95,11 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         this.save();
     }
 
+    @Override
+    public User get(String username) {
+        return usernameToUser.get(username);
+    }
+
     private void save() {
         BufferedWriter writer;
         try {

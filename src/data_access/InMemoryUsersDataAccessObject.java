@@ -36,6 +36,7 @@ public class InMemoryUsersDataAccessObject implements
     public boolean existsByName(String identifier) {
         return false;
     }
+    //TODO: should this be return usernameToUser.containsKey(identifier);
 
     public void save(User user){
         usernameToUser.put(user.getUsername(), user);
