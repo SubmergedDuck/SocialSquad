@@ -1,5 +1,6 @@
 package data_access;
 
+import entity.Users.CommonUser;
 import entity.Users.UserFactory;
 import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
@@ -157,6 +158,16 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     @Override
     public boolean existsByName(String identifier) {
         return false;
+    }
+
+    @Override
+    public void save(CommonUser commonUser) {
+
+    }
+
+    @Override
+    public CommonUser get(String username) {
+        return null;
     }
 }
 
