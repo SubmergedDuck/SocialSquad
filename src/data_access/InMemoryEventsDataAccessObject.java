@@ -1,9 +1,13 @@
 package data_access;
 
 import entity.Events.Event;
+import entity.Location.DistanceCalculator;
+import entity.Location.DistanceCalculatorInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
+import use_case.search_nearby.SearchNearbyDataAccessInterface;
+import use_case.search_nearby.SearchNearbyInputData;
 import use_case.view_participants.ViewParticipantsDataAccessInterface;
 
 import java.util.ArrayList;
@@ -12,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
-        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface {
+        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, SearchNearbyDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -104,5 +108,19 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public List<String> getParticipants(Integer eventID) {
         Event event = eventsToID.get(eventID);
         return event.getPeopleJoined();
+    }
+
+    @Override
+    public ArrayList<Event> getNearbyEvent(SearchNearbyInputData inputData) {
+        ArrayList<Event> returnEvents = new ArrayList<>();
+        ArrayList<Event> events = new ArrayList(eventsToID.values());
+
+        DistanceCalculatorInterface distanceCalculator = new DistanceCalculator();
+        for (Event event: events) {
+            if (distanceCalculator.within2KM(event)) {
+                returnEvents.add(event);
+            }
+        }
+        return returnEvents;
     }
 }
