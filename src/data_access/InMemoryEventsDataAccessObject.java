@@ -114,10 +114,11 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public ArrayList<Event> getNearbyEvent(SearchNearbyInputData inputData) {
         ArrayList<Event> returnEvents = new ArrayList<>();
         ArrayList<Event> events = new ArrayList(eventsToID.values());
+        String[] strCoord = inputData.getCoordinates();
 
         DistanceCalculatorInterface distanceCalculator = new DistanceCalculator();
         for (Event event: events) {
-            if (distanceCalculator.within2KM(event)) {
+            if (distanceCalculator.within2KM(strCoord, event)) {
                 returnEvents.add(event);
             }
         }
