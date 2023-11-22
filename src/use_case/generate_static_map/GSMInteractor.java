@@ -1,11 +1,9 @@
 package use_case.generate_static_map;
 
 import entity.Events.Event;
-import entity.Location.Location;
-
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class GSMInteractor implements GSMInputBoundary{
     private final GSMApiDataAccessInterface APIDataAccessObject;
@@ -23,7 +21,7 @@ public class GSMInteractor implements GSMInputBoundary{
     }
 
     @Override
-    public void execute(GSMInputData inputData) {
+    public void execute(GSMInputData inputData) throws IOException {
         String[] userCoordinates = userDataAccessObject.getUserCoordinates(inputData.getUsername());
         String formattedCoordinates = userCoordinates[0] + "," + userCoordinates[1];
         HashMap<Integer, Event> numToEvent = eventDataAccessInterface.getEvents(inputData.getTotalPins());
