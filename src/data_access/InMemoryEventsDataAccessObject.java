@@ -111,7 +111,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     }
 
     @Override
-    public ArrayList<Event> getNearbyEvent(SearchNearbyInputData inputData) {
+    public ArrayList<Event> getNearbyEvent(SearchNearbyInputData inputData) throws Exception {
         ArrayList<Event> returnEvents = new ArrayList<>();
         ArrayList<Event> events = new ArrayList(eventsToID.values());
         String[] strCoord = inputData.getCoordinates();

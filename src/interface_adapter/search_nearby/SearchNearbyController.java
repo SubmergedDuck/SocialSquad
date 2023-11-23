@@ -15,7 +15,7 @@ public class SearchNearbyController {
      *
      * @param location The location of the user.
      */
-    public void execute(Location location) {
+    public void execute(Location location) throws Exception {
         String[] strCoord = location.getCoordinates();
         SearchNearbyInputData inputData = new SearchNearbyInputData(strCoord);
         interactor.execute(inputData);

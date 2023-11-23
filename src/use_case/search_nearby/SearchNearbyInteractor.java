@@ -14,7 +14,7 @@ public class SearchNearbyInteractor implements SearchNearbyInputBoundary{
         this.presenter = presenter;
     }
     @Override
-    public void execute(SearchNearbyInputData inputData) {
+    public void execute(SearchNearbyInputData inputData) throws Exception {
         ArrayList<Event> result = dataAccessObject.getNearbyEvent(inputData);
         if (result.isEmpty()) {
             presenter.prepareFailView();
