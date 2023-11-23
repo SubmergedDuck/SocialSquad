@@ -37,7 +37,7 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
     private EventLoader eventLoader = new EventLoader(this); // This JPane will give the View event details and a list of events searched
 
     final JButton back; // This button will
-    final JButton joinEvent; // This button will allow the selected event to show its details
+
     final JButton search; // This button will trigger the program to search again.
     public SearchNearbyBasicView(SearchNearbyViewModel searchNearbyViewModel, SearchNearbyController searchNearbyController,
                             JoinEventController joinEventController) {
@@ -56,11 +56,9 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
 
         JPanel buttons = new JPanel();
         back = new JButton("Back");
-        joinEvent = new JButton("Join event");
         search = new JButton("Search");
 
         buttons.add(back);
-        buttons.add(joinEvent);
         buttons.add(search);
 
         back.addActionListener(
@@ -73,16 +71,7 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
                     }
                 }
         );
-        joinEvent.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (e.getSource().equals(joinEvent)) {
-                            // TODO: Know which event the use clicked, and execute the controller with it.
-                        }
-                    }
-                }
-        );
+
         search.addActionListener(
                 new ActionListener() {
                     @Override
@@ -120,7 +109,6 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
 
             } else {
                 ArrayList<Event> eventsFound = state.getEventsSearched();
-                // TODO: how to put events up onto the dialogue box, each with an ActionListener.
                 /**
                  * Swing tutorial on Oracle
                  * JList: Writing a Custom Cell Renderer
