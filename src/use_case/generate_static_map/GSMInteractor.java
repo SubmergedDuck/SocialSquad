@@ -8,25 +8,38 @@ import java.util.HashMap;
 public class GSMInteractor implements GSMInputBoundary{
     private final GSMApiDataAccessInterface APIDataAccessObject;
     private final GSMUserDataAccessInterface userDataAccessObject;
-    private final GSMEventDataAccessInterface eventDataAccessInterface;
+    private final GSMEventDataAccessInterface eventDataAccessObject;
     private final GSMOutputBoundary presenter;
 
+    /**
+     * Constructor for GSMInteractor
+     * @param APIDataAccessObject data access object for the API call
+     * @param userDataAccessObject user data access object
+     * @param eventDataAccessObject event data access object
+     * @param presenter presenter for the GSM use case.
+     */
     public GSMInteractor(GSMApiDataAccessInterface APIDataAccessObject,
-                         GSMUserDataAccessInterface userDataAccessInterface, GSMEventDataAccessInterface eventDataAccessInterface,
+                         GSMUserDataAccessInterface userDataAccessObject, GSMEventDataAccessInterface eventDataAccessObject,
                          GSMOutputBoundary presenter){
         this.APIDataAccessObject = APIDataAccessObject;
-        this.userDataAccessObject = userDataAccessInterface;
-        this.eventDataAccessInterface = eventDataAccessInterface;
+        this.userDataAccessObject = userDataAccessObject;
+        this.eventDataAccessObject = eventDataAccessObject;
         this.presenter = presenter;
     }
 
+    /**
+     * Gathers the coordinate information from the event and user DAOs and makes an API call to generate a map image and send it to the presenter.
+     * @param inputData data used when generating the image
+     * @throws IOException if an error occurs with the API call
+     */
     @Override
     public void execute(GSMInputData inputData) throws IOException {
         String[] userCoordinates = userDataAccessObject.getUserCoordinates(inputData.getUsername());
         String formattedCoordinates = userCoordinates[0] + "," + userCoordinates[1];
-        HashMap<Integer, Event> numToEvent = eventDataAccessInterface.getEvents(inputData.getTotalPins());
+        HashMap<Integer, Event> numToEvent = eventDataAccessObject.getEvents(inputData.getTotalPins());
         HashMap<Integer, String> numToCoordinates = numToCoordinates(numToEvent);
-        BufferedImage generatedImage = APIDataAccessObject.generateMap(formattedCoordinates, numToCoordinates);
+        String imageSize = inputData.getWidth() + "," + inputData.getHeight();
+        BufferedImage generatedImage = APIDataAccessObject.generateMap(formattedCoordinates, numToCoordinates, imageSize);
         GSMOutputData outputData = new GSMOutputData(generatedImage, numToEvent);
         presenter.prepareView(outputData);
     }
