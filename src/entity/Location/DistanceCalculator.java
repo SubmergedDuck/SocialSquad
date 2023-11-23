@@ -7,11 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,13 +74,6 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
 
     private double extractDistance(String allApiValues) {
         JSONObject jsonResponse = new JSONObject(allApiValues);
-        /**
-         *         JSONArray resourceSets = (JSONArray) output.get("resourceSets");
-         *         JSONObject resources = (JSONObject) resourceSets.get(0);
-         *         JSONArray resourceValues = (JSONArray) resources.get("resources");
-         *         JSONObject resourceValuesJSON = (JSONObject) resourceValues.get(0);
-         *         JSONObject addressInfo = (JSONObject) resourceValuesJSON.get("address");
-         */
         JSONArray resourceSets = jsonResponse.getJSONArray("resourceSets");
         JSONObject resourceSet = resourceSets.getJSONObject(0);
         JSONArray resources = resourceSet.getJSONArray("resources");
