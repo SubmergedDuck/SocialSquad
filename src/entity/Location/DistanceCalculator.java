@@ -36,13 +36,13 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
         double endLat = Double.valueOf(Arrays.stream(endCoord).toList().get(0));
         double endLon = Double.valueOf(Arrays.stream(endCoord).toList().get(1));
 
-        HashMap<String, Object> allApiValues = apiCaller(startLat, startLon, endLat, endLon);
+        String allApiValues = apiCaller(startLat, startLon, endLat, endLon);
         double distance = extractDistance(allApiValues);
         return distance;
     }
 
 
-    private HashMap<String, Object> apiCaller(double startLat, double startLon, double endLat, double endLon) throws Exception{
+    private String apiCaller(double startLat, double startLon, double endLat, double endLon) throws Exception{
         HashMap<String, Object> result = new HashMap<>();
         try {
                 String apiKey = "An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
@@ -59,31 +59,23 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
                 if (responseCode == 200) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     String inputLine;
-//                StringBuffer response = new StringBuffer();
-//                while ((inputLine = in.readLine()) != null) {
-//                    //Example Response "success,Canada,CA,ON,Ontario,Toronto,M5S,43.6638,-79.3999,America/Toronto,University of Toronto,University of Toronto,AS239 University of Toronto,138.51.77.88"
-//                    response.append(inputLine);
-//                }
-//                in.close();
-//                String[] locationInfo = response.toString().split(",");
-//                String latitude = locationInfo[7];
-//                String longitude = locationInfo[8];
-//                result = new String[]{latitude, longitude};
-//            }
+                    StringBuilder response = new StringBuilder();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    return response.toString();
                 }
-//    }
-                return result;
-            } catch (ProtocolException e) {
-                throw new RuntimeException(e);
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("API call failed");
             }
-        }
+        return null;
+    }
 
 
-    private double extractDistance(HashMap<String, Object> allApiValues) {
+    private double extractDistance(String allApiValues) {
 //        JSONArray resourceSets = (JSONArray) output.get("resourceSets");
 //        JSONObject resources = (JSONObject) resourceSets.get(0);
 //        JSONArray resourceValues = (JSONArray) resources.get("resources");
@@ -94,6 +86,10 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
 //            addressDetails.put(key, addressInfo.get(key).toString());
 //        }
 //        return addressDetails;
-        return 0.0;
+        JSONObject jsonResponse = new JSONObject(allApiValues);
+        JSONArray resultSet = (JSONArray) jsonResponse.get("results");
+        JSONObject resultDest1 = (JSONObject) resultSet.get(0);
+        JSONObject distance = (JSONObject) resultDest1.get("travelDistance");
+        return Double.valueOf(distance.toString());
     }
 }
