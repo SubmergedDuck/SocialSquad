@@ -15,7 +15,7 @@ public class GenerateStaticMapURL implements GSMApiDataAccessInterface {
     private final String api_key = "An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
 
     @Override
-    public BufferedImage generateMap(String userCoordinate, Map<Integer, String> eventCoordinates) throws IOException {
+    public BufferedImage generateMap(String userCoordinate, Map<Integer, String> eventCoordinates, String size) throws IOException {
         try {
             String currentLink = "https://dev.virtualearth.net/REST/v1/Imagery/Map/AerialWithLabels?";
             String userParameter = String.format("pp=%s&", userCoordinate);
@@ -27,7 +27,7 @@ public class GenerateStaticMapURL implements GSMApiDataAccessInterface {
                     currentLink = currentLink + addedParameter;
                 }
             }
-            String finalPart = String.format("dcl=1&key=%s", api_key);
+            String finalPart = String.format("mapSize=%s&dcl=1&key=%s", size, api_key);
             currentLink = currentLink + finalPart;
             URL url = new URL(currentLink);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
