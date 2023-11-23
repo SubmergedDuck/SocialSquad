@@ -5,6 +5,7 @@ import entity.Events.Event;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -43,7 +44,6 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
 
 
     private String apiCaller(double startLat, double startLon, double endLat, double endLon) throws Exception{
-        HashMap<String, Object> result = new HashMap<>();
         try {
                 String apiKey = "An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
                 String bingMapsApiUrl = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix" +
@@ -76,20 +76,29 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
 
 
     private double extractDistance(String allApiValues) {
-//        JSONArray resourceSets = (JSONArray) output.get("resourceSets");
-//        JSONObject resources = (JSONObject) resourceSets.get(0);
-//        JSONArray resourceValues = (JSONArray) resources.get("resources");
-//        JSONObject resourceValuesJSON = (JSONObject) resourceValues.get(0);
-//        JSONObject addressInfo = (JSONObject) resourceValuesJSON.get("address");
-//        HashMap<String, String> addressDetails = new HashMap<>();
-//        for (String key : addressInfo.keySet()){
-//            addressDetails.put(key, addressInfo.get(key).toString());
-//        }
-//        return addressDetails;
         JSONObject jsonResponse = new JSONObject(allApiValues);
-        JSONArray resultSet = (JSONArray) jsonResponse.get("results");
-        JSONObject resultDest1 = (JSONObject) resultSet.get(0);
-        JSONObject distance = (JSONObject) resultDest1.get("travelDistance");
-        return Double.valueOf(distance.toString());
+        /**
+         *         JSONArray resourceSets = (JSONArray) output.get("resourceSets");
+         *         JSONObject resources = (JSONObject) resourceSets.get(0);
+         *         JSONArray resourceValues = (JSONArray) resources.get("resources");
+         *         JSONObject resourceValuesJSON = (JSONObject) resourceValues.get(0);
+         *         JSONObject addressInfo = (JSONObject) resourceValuesJSON.get("address");
+         */
+        JSONArray resourceSets = jsonResponse.getJSONArray("resourceSets");
+        JSONObject resourceSet = resourceSets.getJSONObject(0);
+        JSONArray resources = resourceSet.getJSONArray("resources");
+        JSONObject results = resources.getJSONObject(0);
+        JSONArray result = results.getJSONArray("results");
+        JSONObject details = result.getJSONObject(0);
+        BigDecimal distance = (BigDecimal) details.get("travelDistance");
+
+        return distance.doubleValue();
+    }
+
+    public static void main(String[] args) throws Exception {
+        DistanceCalculator distanceCalculator = new DistanceCalculator();
+        String jsonResponse = distanceCalculator.apiCaller(43.665510,-79.387280,43.645531,-79.380348);
+        double distance = distanceCalculator.extractDistance(jsonResponse);
+        System.out.println(distance);
     }
 }
