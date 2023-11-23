@@ -24,13 +24,15 @@ public class GenerateStaticMapBody implements GSMApiDataAccessInterface{
             int totalEventPins = Math.min(maxPins - 1, eventCoordinates.size());
             String currentBody = String.format("pp=%s;45;you\n", userCoordinate);
             for (Integer key : eventCoordinates.keySet()) { //Creating each line for the POST body request
-                String addedParameter = "";
-                if (key == totalEventPins) {
-                    addedParameter = String.format("pp=%s;;%d", eventCoordinates.get(key), key);
-                } else {
-                    addedParameter = String.format("pp=%s;;%d\n", eventCoordinates.get(key), key);
+                if (key <= totalEventPins) {
+                    String addedParameter = "";
+                    if (key == totalEventPins) {
+                        addedParameter = String.format("pp=%s;;%d", eventCoordinates.get(key), key);
+                    } else {
+                        addedParameter = String.format("pp=%s;;%d\n", eventCoordinates.get(key), key);
+                    }
+                    currentBody = currentBody + addedParameter;
                 }
-                currentBody = currentBody + addedParameter;
             }
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
