@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SearchNearbyView extends JPanel implements ActionListener, PropertyChangeListener {
+public class SearchNearbyBasicView extends JPanel implements ActionListener, PropertyChangeListener {
 
     public final String viewName = "search nearby";
     private final SearchNearbyViewModel searchNearbyViewModel;
@@ -37,7 +37,7 @@ public class SearchNearbyView extends JPanel implements ActionListener, Property
     final JButton back; // This button will
     final JButton joinEvent; // This button will allow the selected event to show its details
     final JButton search; // This button will trigger the program to search again.
-    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel, SearchNearbyController searchNearbyController,
+    public SearchNearbyBasicView(SearchNearbyViewModel searchNearbyViewModel, SearchNearbyController searchNearbyController,
                             JoinEventController joinEventController) {
         this.searchNearbyViewModel = searchNearbyViewModel;
         this.searchNearbyController = searchNearbyController;
