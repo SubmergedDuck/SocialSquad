@@ -1,13 +1,20 @@
 package view;
 
+import data_access.InMemoryEventsDataAccessObject;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
 import entity.Location.CoordinatesFromIP;
 import entity.Location.Location;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventPresenter;
 import interface_adapter.search_nearby.SearchNearbyController;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.join_event.JoinEventOutputBoundary;
+import use_case.search_nearby.SearchNearbyInteractor;
+import use_case.search_nearby.SearchNearbyOutputBoundary;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,7 +104,7 @@ public class SearchNearbyView extends JPanel implements ActionListener, Property
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        // TODO: what to do here?
     }
 
     @Override
@@ -114,5 +121,18 @@ public class SearchNearbyView extends JPanel implements ActionListener, Property
 
         }
 
+    }
+
+    public static void main(String[] args) {
+        SearchNearbyViewModel viewModel = new SearchNearbyViewModel();
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+        SearchNearbyOutputBoundary presenter = new SearchNearbyPresenter(viewModel, viewManagerModel);
+        SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, presenter);
+        SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
+
+        // JoinEventOutputBoundary presenter2 = new JoinEventPresenter();
+
+        // SearchNearbyView view = new SearchNearbyView(viewModel, searchNearbyController, joinEventController);
     }
 }
