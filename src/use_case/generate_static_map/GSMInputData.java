@@ -3,10 +3,10 @@ package use_case.generate_static_map;
 public class GSMInputData {
     private final String username;
     private final int totalPins;
-    private final float width;
-    private final float height;
+    private final int width;
+    private final int height;
 
-    public GSMInputData(String username, int totalPins, float width, float height){
+    public GSMInputData(String username, int totalPins, int width, int height){
         this.username = username;
         this.totalPins = totalPins;
         this.width = width;
@@ -14,6 +14,6 @@ public class GSMInputData {
     }
     String getUsername(){return this.username;}
     int getTotalPins(){return this.totalPins;}
-    float getWidth(){return this.width;}
-    float getHeight(){return this.height;}
+    int getWidth(){return this.width;}
+    int getHeight(){return this.height;}
 }
