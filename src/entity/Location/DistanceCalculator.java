@@ -20,11 +20,7 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
 
     @Override
     public boolean within2KM(String[] strCoord, Event event) throws Exception {
-        if (calculateDistance(strCoord, event) <= 2) {
-            return true;
-        } else {
-            return false;
-        }
+        return calculateDistance(strCoord, event) <= 2;
     }
 
     public double calculateDistance(String[] startCoord, Event event) throws Exception {
@@ -35,8 +31,7 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
         double endLon = Double.valueOf(Arrays.stream(endCoord).toList().get(1));
 
         String allApiValues = apiCaller(startLat, startLon, endLat, endLon);
-        double distance = extractDistance(allApiValues);
-        return distance;
+        return extractDistance(allApiValues);
     }
 
 
@@ -47,7 +42,7 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
                         "?origins=" + startLat + "," + startLon +
                         "&destinations=" + endLat + "," + endLon +
                         "&travelMode=driving&startTime=2023-10-30T08:00:00&timeUnit=minute&key=" + apiKey;
-                //Example URL: dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=37.7749,-122.4194;34.0522,-118.2437;40.7128,-74.0060&destinations=40.7128,-74.0060;41.8781,-87.6298;34.0522,-118.2437&travelMode=driving&startTime=2023-10-30T08:00:00&timeUnit=minute&key=YourBingMapsKey
+                // Example URL: dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=37.7749,-122.4194;34.0522,-118.2437;40.7128,-74.0060&destinations=40.7128,-74.0060;41.8781,-87.6298;34.0522,-118.2437&travelMode=driving&startTime=2023-10-30T08:00:00&timeUnit=minute&key=YourBingMapsKey
 
                 URL url = new URL(bingMapsApiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
