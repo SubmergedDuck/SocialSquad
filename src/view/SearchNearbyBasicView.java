@@ -34,7 +34,7 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
 
     // private final GoBackController TODO: GoBack should be implemented as a use case
     private final JoinEventController joinEventController;
-    private EventLoader eventLoader = new EventLoader(); // This JPane will give the View event details and a list of events searched
+    private EventLoader eventLoader = new EventLoader(this); // This JPane will give the View event details and a list of events searched
 
     final JButton back; // This button will
     final JButton joinEvent; // This button will allow the selected event to show its details
@@ -108,32 +108,35 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: what to do here?
+        ; // NO need to do anything since we have specific ActionListeners for each button.
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        SearchNearbyState state = (SearchNearbyState) evt.getNewValue();
-        if (state.getNoEventsFound()) {
-            JOptionPane.showMessageDialog(this, "No events are found within 2KM from you.");
+        if (evt.getPropertyName().equals("state")) {
+            SearchNearbyState state = (SearchNearbyState) evt.getNewValue();
+            if (state.getNoEventsFound()) {
+                JOptionPane.showMessageDialog(this, "No events are found within 2KM from you.");
 
-        } else {
-            ArrayList<Event> eventsFound = state.getEventsSearched();
-            // TODO: how to put events up onto the dialogue box, each with an ActionListener.
-            /**
-             * Swing tutorial on Oracle
-             * JList: Writing a Custom Cell Renderer
-             * Display as a single string first
-             * Make View has EventSearched JPanel that displays JList of events, and JButton ViewDetails, set invisible
-             * populateJlist(Arraylist of Event)
-             * have a class A that extends JPanel that has .populateJlist()
-             * have an instance of A (itself a JPanel), when it's called to popualteJlist, it becomes a JList
-             * with ViewDetails button and Jlist loaded with events. Set it visible.
-             */
-            eventLoader.load(eventsFound);
-            eventLoader.setVisible(true);
-
-
+            } else {
+                ArrayList<Event> eventsFound = state.getEventsSearched();
+                // TODO: how to put events up onto the dialogue box, each with an ActionListener.
+                /**
+                 * Swing tutorial on Oracle
+                 * JList: Writing a Custom Cell Renderer
+                 * Display as a single string first
+                 * Make View has EventSearched JPanel that displays JList of events, and JButton ViewDetails, set invisible
+                 * populateJlist(Arraylist of Event)
+                 * have a class A that extends JPanel that has .populateJlist()
+                 * have an instance of A (itself a JPanel), when it's called to popualteJlist, it becomes a JList
+                 * with ViewDetails button and Jlist loaded with events. Set it visible.
+                 */
+                eventLoader.load(eventsFound);
+                eventLoader.setVisible(true);
+            }
+        } else if (evt.getPropertyName().equals("View event details")) { //When an event is selected to view the details
+            // TODO: add event detail controller
+            // eventDetailController.execute(evt.getNewValue()); // Execute EventDetails use case
 
         }
 
