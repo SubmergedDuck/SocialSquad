@@ -77,4 +77,9 @@ public class CommonUser implements User {
         this.joinedEvents = eventsJoined;
 
     }
+
+    @Override
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
