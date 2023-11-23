@@ -31,8 +31,10 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
     private final SearchNearbyViewModel searchNearbyViewModel;
 
     private final SearchNearbyController searchNearbyController;
+
     // private final GoBackController TODO: GoBack should be implemented as a use case
     private final JoinEventController joinEventController;
+    private EventLoader eventLoader = new EventLoader(); // This JPane will give the View event details and a list of events searched
 
     final JButton back; // This button will
     final JButton joinEvent; // This button will allow the selected event to show its details
@@ -44,6 +46,8 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
         //TODO BackButtonController should be added to here
 
         this.joinEventController = joinEventController;
+
+        eventLoader.setVisible(false);
 
         this.searchNearbyViewModel.addPropertyChangeListener(this);
 
@@ -116,6 +120,18 @@ public class SearchNearbyBasicView extends JPanel implements ActionListener, Pro
         } else {
             ArrayList<Event> eventsFound = state.getEventsSearched();
             // TODO: how to put events up onto the dialogue box, each with an ActionListener.
+            /**
+             * Swing tutorial on Oracle
+             * JList: Writing a Custom Cell Renderer
+             * Display as a single string first
+             * Make View has EventSearched JPanel that displays JList of events, and JButton ViewDetails, set invisible
+             * populateJlist(Arraylist of Event)
+             * have a class A that extends JPanel that has .populateJlist()
+             * have an instance of A (itself a JPanel), when it's called to popualteJlist, it becomes a JList
+             * with ViewDetails button and Jlist loaded with events. Set it visible.
+             */
+            eventLoader.load(eventsFound);
+            eventLoader.setVisible(true);
 
 
 
