@@ -25,6 +25,8 @@ public class SearchNearbyPresenter implements SearchNearbyOutputBoundary {
         searchNearbyState.setEventsSearched(eventSearched);
         this.searchNearbyViewModel.setState(searchNearbyState);
         searchNearbyViewModel.firePropertyChanged();
+        viewManagerModel.setActiveView(searchNearbyViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
     }
 
     @Override
