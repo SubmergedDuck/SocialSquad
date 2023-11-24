@@ -4,7 +4,6 @@ package data_access;
 import entity.Location.Location;
 import entity.Events.*;
 import entity.Location.LocationFactory;
-import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -13,7 +12,7 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class FileEventsDataAccessObject implements GetDirectionDataAccessInterface,
+public class FileEventsDataAccessObject implements
                                                    SearchEventDataAccessInterface,
                                                    JoinEventDataAccessInterface {
     private final File eventDatabase;
@@ -192,4 +191,5 @@ public class FileEventsDataAccessObject implements GetDirectionDataAccessInterfa
     public ArrayList<Event> getPartialMatchEvents(SearchEventInputData inputData) {
         return null;
     }
+
 }

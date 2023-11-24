@@ -3,6 +3,7 @@ package data_access;
 import entity.Events.Event;
 import entity.Users.User;
 import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.get_direction.GetDirectionUserDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 public class InMemoryUsersDataAccessObject implements
         SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
         CreateEventDataAccessInterface {
+
+        GetDirectionUserDataAccessInterface,CreateEventDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
@@ -36,6 +39,7 @@ public class InMemoryUsersDataAccessObject implements
     public boolean existsByName(String identifier) {
         return false;
     }
+    //TODO: should this be return usernameToUser.containsKey(identifier);
 
     public void save(User user){
         usernameToUser.put(user.getUsername(), user);
@@ -64,6 +68,12 @@ public class InMemoryUsersDataAccessObject implements
         User eventOwner = this.usernameToUser.get(ownerUser);
         ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
         hostedEvents.add(event);
+    }
+    
+    @Override
+    public String[] getCoordinates(String user) {
+        User selectedUser = usernameToUser.get(user);
+        return selectedUser.getLocation().getCoordinates();
     }
 }
 
