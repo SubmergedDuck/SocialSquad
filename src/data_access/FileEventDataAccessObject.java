@@ -32,6 +32,14 @@ public class FileEventDataAccessObject {
             headers.put(labels[i], i);
         }
     }
+
+    public void save(Event event){
+        eventsToID.put(event.getEventID(), event);
+        save();
+    }
+    public Event getEvent(int id){
+        return eventsToID.get(id);
+    }
     private void save(){
         BufferedWriter writer;
         try {
@@ -43,8 +51,8 @@ public class FileEventDataAccessObject {
                 String peopleJoined = formatStringList(event.getPeopleJoined());
                 String peopleWaitlisted = formatStringList(event.getPeopleWaitlisted());
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", event.getOwnerUser(), event.getEventID(),
-                        event.getEventName(), peopleJoined, peopleWaitlisted, event.getTime().toString(), event.getDescription(),
-                        event.getPrivacy().toString(),event.getCapacity().toString());
+                        event.getEventName(), formattedCoordinates, peopleJoined, peopleWaitlisted, event.getTime().toString(),
+                        event.getType(), event.getDescription(), event.getPrivacy().toString(),event.getCapacity().toString());
                 writer.write(line);
                 writer.newLine();
             }
