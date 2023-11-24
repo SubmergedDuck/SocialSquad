@@ -23,7 +23,7 @@ public class JoinEventViewModel extends ViewModel {
 
     @Override
     public void firePropertyChanged() {
-        observable.firePropertyChange("state", null, this.state);
+        observable.firePropertyChange("join event", null, this.state);
 
     }
 

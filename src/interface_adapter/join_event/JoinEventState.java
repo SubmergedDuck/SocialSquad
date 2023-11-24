@@ -13,8 +13,16 @@ public class JoinEventState {
 
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getError() {
+        return error;
     }
 
     public void setError(String failureReason) {
