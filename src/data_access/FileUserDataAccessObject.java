@@ -144,9 +144,6 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             throw new RuntimeException(e);
         }
     }
-
-
-
     public Integer generateEventID() {
         return null;
     }
