@@ -14,6 +14,7 @@ public class ViewManagerModel {
     }
 
     public void setActiveView(String activeView) {
+        support.firePropertyChange("store last view name", null, this.activeViewName); // Calls the Adapter to store the current activeViewName as lastViewName.
         this.activeViewName = activeView;
     }
 
