@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.Events.Event;
+import use_case.generate_static_map.GSMEventDataAccessInterface;
 import entity.Location.DistanceCalculator;
 import entity.Location.DistanceCalculatorInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
-        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface {
+        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -124,6 +125,17 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public List<String> getParticipants(Integer eventID) {
         Event event = eventsToID.get(eventID);
         return event.getPeopleJoined();
+    }
+
+    @Override
+    public HashMap<Integer, Event> getEvents(int amount) {
+        HashMap<Integer, Event> outputMap = new HashMap<>();
+        for (Integer key : eventsToID.keySet()){
+            if (outputMap.size() < amount){
+                outputMap.put(key, eventsToID.get(key));
+            }
+        }
+        return outputMap;
     }
 
     @Override
