@@ -1,14 +1,6 @@
 package view;
 import interface_adapter.logged_in.LoggedInController;
-import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -20,6 +12,8 @@ public class HomeView extends javax.swing.JFrame {
     /**
      * Creates new form HomeView
      */
+    private final LoggedInViewModel loggedInViewModel;
+    private final LoggedInController loggedInController;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
     private javax.swing.JLabel LogoutIcon_LABEL;
@@ -31,7 +25,9 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-    public HomeView() {
+    public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController) {
+        this.loggedInViewModel = loggedInViewModel;
+        this.loggedInController = loggedInController;
         initComponents();
     }
 

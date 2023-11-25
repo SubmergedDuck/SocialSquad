@@ -233,13 +233,13 @@ public class SignupView extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
+    private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
 
-    private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
+    private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
         if (evt.getSource().equals(SignUp_BUTTON)) {
             SignupState currentState = signupViewModel.getState();
             // TODO: implement this
