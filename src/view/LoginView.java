@@ -4,153 +4,15 @@
  */
 package view;
 
+
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
-
-    public final String viewName = "log in";
-    private final LoginViewModel loginViewModel;
-
-    final JTextField usernameInputField = new JTextField(15);
-    private final JLabel usernameErrorField = new JLabel();
-
-    final JPasswordField passwordInputField = new JPasswordField(15);
-    private final JLabel passwordErrorField = new JLabel();
-
-
-    final JButton logIn;
-    final JButton createANewAccount;
-    private final LoginController loginController;
-
-    public LoginView(LoginViewModel loginViewModel, LoginController controller) {
-
-        this.loginController = controller;
-        this.loginViewModel = loginViewModel;
-        this.loginViewModel.addPropertyChangeListener(this);
-
-        JLabel title = new JLabel("Social Squad");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        LabelTextPanel usernameInfo = new LabelTextPanel(
-                new JLabel("Username"), usernameInputField);
-        LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel("Password"), passwordInputField);
-
-        JPanel buttons = new JPanel();
-        createANewAccount = new JButton(loginViewModel.CREATE_ACCOUNT_BUTTON_LABEL);
-        buttons.add(createANewAccount);
-        logIn = new JButton(loginViewModel.LOGIN_BUTTON_LABEL);
-        buttons.add(logIn);
-
-        createANewAccount.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if(e.getSource().equals(createANewAccount)){
-                            LoginState currentState = loginViewModel.getState();
-                            LoginView.this.loginController.execute(
-                                    currentState.getUsername(), currentState.getPassword()
-                            );
-
-                        }
-                    }
-                }
-        );
-
-        logIn.addActionListener(                // This creates an anonymous subclass of ActionListener and instantiates it.
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(logIn)) {
-                            LoginState currentState = loginViewModel.getState();
-
-                            loginController.execute(
-                                    currentState.getUsername(),
-                                    currentState.getPassword()
-                            );
-                        }
-                    }
-                }
-        );
-
-
-
-        usernameInputField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                LoginState currentState = loginViewModel.getState();
-                currentState.setUsername(usernameInputField.getText() + e.getKeyChar());
-                loginViewModel.setState(currentState);
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        });
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        passwordInputField.addKeyListener(
-                new KeyListener() {
-                    @Override
-                    public void keyTyped(KeyEvent e) {
-                        LoginState currentState = loginViewModel.getState();
-                        currentState.setPassword(passwordInputField.getText() + e.getKeyChar());
-                        loginViewModel.setState(currentState);
-                    }
-
-                    @Override
-                    public void keyPressed(KeyEvent e) {
-                    }
-
-                    @Override
-                    public void keyReleased(KeyEvent e) {
-                    }
-                });
-
-        this.add(title);
-        this.add(usernameInfo);
-        this.add(usernameErrorField);
-        this.add(passwordInfo);
-        this.add(passwordErrorField);
-        this.add(buttons);
-    }
-
-    /**
-     * React to a button click that results in evt.
-     */
-    public void actionPerformed(ActionEvent evt) {
-        System.out.println("Click " + evt.getActionCommand());
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        LoginState state = (LoginState) evt.getNewValue();
-        setFields(state);
-    }
-
-
-    private void setFields(LoginState state) {
-        usernameInputField.setText(state.getUsername());
-    }
-
-}
-import javax.swing.*;
 
 /**
  *
@@ -158,18 +20,39 @@ import javax.swing.*;
  */
 public class LoginView extends JFrame {
 
+
     /**
      * Creates new form loginView
      */
-    public LoginView() {
-        initComponents();
-    }
+    public final String viewName = "log in";
+    private final LoginViewModel loginViewModel;
+
+    private final LoginController loginController;
+    public LoginView(LoginViewModel loginViewModel, LoginController controller) {
+
+        this.loginController = controller;
+        this.loginViewModel = loginViewModel;
+        }
 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
+    private JPanel BottomSeperator_PANEL;
+    private JPanel Main_PANEL;
+    private JLabel PasswordLoginFailed_LABEL;
+    private JLabel Password_LABEL;
+    private JPasswordField Password_PASSWORDFIELD;
+    private ButtonGradient SignIn_BUTTON;
+    private ButtonGradient SignUp_BUTTON;
+    private JLabel SocialSquadTitle_LABEL;
+    private JLabel SocialSquadTitle_LABEL2;
+    private JPanel TopSeperator_PANEL;
+    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private JLabel UsernameLoginFailed_LABEL;
+    private JLabel Username_LABEL;
+    private JTextField Username_TEXTFIELD;
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -383,6 +266,8 @@ public class LoginView extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 
+
+
     /** work from old loginView
         try {
             Scanner in = new Scanner(new File("USERDATA.txt"));
@@ -444,19 +329,55 @@ public class LoginView extends JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     */
+    private void Username_TEXTFIELDActionPerformed(ActionEvent evt) {
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                LoginState currentState = loginViewModel.getState();
+                currentState.setUsername(Username_TEXTFIELD.getText() + e.getKeyChar());
+                loginViewModel.setState(currentState);
+
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+    private void SignUp_BUTTONActionPerformed(ActionEvent evt) {
+        if(evt.getSource().equals(SignUp_BUTTON)){
+            LoginState currentState = loginViewModel.getState();
+
+            LoginView.this.loginController.execute(currentState.getUsername(),
+                    currentState.getPassword());
+    }}
+
 
 
     private void SignIn_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignIn_BUTTONActionPerformed
+        if (evt.getSource().equals(SignIn_BUTTON)) {
+            LoginState currentState = loginViewModel.getState();
+
+            loginController.execute(
+                    currentState.getUsername(),
+                    currentState.getPassword()
+            );
         // TODO add your handling code here:
     }//GEN-LAST:event_SignIn_BUTTONActionPerformed
 
-    private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
+   //GEN-FIRST:event_SignUp_BUTTONActionPerformed
+
         // TODO add your handling code here:
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
-    private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -471,19 +392,6 @@ public class LoginView extends JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JPanel BottomSeperator_PANEL;
-    private JPanel Main_PANEL;
-    private JLabel PasswordLoginFailed_LABEL;
-    private JLabel Password_LABEL;
-    private JPasswordField Password_PASSWORDFIELD;
-    private ButtonGradient SignIn_BUTTON;
-    private ButtonGradient SignUp_BUTTON;
-    private JLabel SocialSquadTitle_LABEL;
-    private JLabel SocialSquadTitle_LABEL2;
-    private JPanel TopSeperator_PANEL;
-    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    private JLabel UsernameLoginFailed_LABEL;
-    private JLabel Username_LABEL;
-    private JTextField Username_TEXTFIELD;
+
     // End of variables declaration//GEN-END:variables
 }

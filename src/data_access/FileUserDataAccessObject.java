@@ -2,8 +2,8 @@ package data_access;
 
 import entity.Users.CommonUser;
 import entity.Users.UserFactory;
-import use_case.get_direction.GetDirectionDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 import java.io.*;
@@ -15,8 +15,7 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-                                                 JoinEventDataAccessInterface,
-                                                 GetDirectionDataAccessInterface {
+        JoinEventDataAccessInterface{
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String,User> usernameToUser = new HashMap<>();
@@ -97,6 +96,11 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         this.save();
     }
 
+    @Override
+    public User get(String username) {
+        return usernameToUser.get(username);
+    }
+
     private void save() {
         BufferedWriter writer;
         try {
@@ -157,9 +161,8 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
     @Override
     public boolean existsByName(String identifier) {
-        return false;
+        return usernameToUser.containsKey(identifier);
     }
-
     @Override
     public void save(CommonUser commonUser) {
 
@@ -170,4 +173,3 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         return null;
     }
 }
-
