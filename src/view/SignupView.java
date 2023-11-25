@@ -8,6 +8,11 @@ import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
 
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.security.Key;
+
 /**
  *
  * @author submergedduck
@@ -128,7 +133,7 @@ public class SignupView extends javax.swing.JFrame {
         UsernameSignupFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         UsernameSignupFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         UsernameSignupFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        UsernameSignupFailed_LABEL.setText("*Signup Failed: username taken");
+//        UsernameSignupFailed_LABEL.setText("*Signup Failed: username taken");
 
         Password_PASSWORDFIELD1.setBackground(new java.awt.Color(251, 247, 255));
         Password_PASSWORDFIELD1.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
@@ -146,9 +151,10 @@ public class SignupView extends javax.swing.JFrame {
         PasswordSignupFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         PasswordSignupFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         PasswordSignupFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        PasswordSignupFailed_LABEL.setText("*Signup Failed: password doesn't match");
+//        PasswordSignupFailed_LABEL.setText("*Signup Failed: password doesn't match");
 
         SignUp_BUTTON.setText("Sign Up");
+
         SignUp_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SignUp_BUTTONActionPerformed(evt);
@@ -228,19 +234,83 @@ public class SignupView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void Password_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt){
+        new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e) {
 
-    private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
-        // TODO add your handling code here:
+                    SignupState currentState = signupViewModel.getState();
+                    currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
+                    signupViewModel.setState(currentState);
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+    private void RepeatPassword_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
+        new KeyListener(){
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                SignupState currentState = signupViewModel.getState();
+                currentState.setRepeatPassword(Password_PASSWORDFIELD1.getText() + e.getKeyChar());
+                signupViewModel.setState(currentState);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
+        private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
+
+            new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                SignupState currentState = signupViewModel.getState();
+                String text = Username_TEXTFIELD.getText() + e.getKeyChar();
+                currentState.setUsername(text);
+                signupViewModel.setState(currentState);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };// TODO add your handling code here:
     }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
+
+
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
         if (evt.getSource().equals(SignUp_BUTTON)) {
             SignupState currentState = signupViewModel.getState();
-        // TODO: implement this
-//            signupController.execute(
-//                    currentState.getUsername(),
-//                    currentState.getPassword(),
-//                    currentState.getRepeatPassword())
+            signupController.execute(
+                    currentState.getUsername(),"",
+                    currentState.getPassword(),
+                    currentState.getRepeatPassword(),"","","");
         }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
