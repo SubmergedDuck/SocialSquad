@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ public class EventLoader extends JPanel {
     ArrayList<Event> eventArrayList;
     private final PropertyChangeSupport observable = new PropertyChangeSupport(this);
 
-    public EventLoader(SearchNearbyBasicView searchNearbyBasicView) {
-        observable.addPropertyChangeListener("View event details", searchNearbyBasicView); //The view now observes changes from this event loader
+    public EventLoader(JFrame searchNearbyBasicView) {
+        observable.addPropertyChangeListener("View event details", (PropertyChangeListener) searchNearbyBasicView); //The view now observes changes from this event loader
 
         JLabel title = new JLabel("Here are the events within 2KM from you.");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
