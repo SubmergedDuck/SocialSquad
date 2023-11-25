@@ -1,10 +1,11 @@
 package data_access;
 
 import entity.Users.User;
+import use_case.logout.LogoutCurrentUserDataAccessInterface;
 
 // TODO: Class should implement interfaces in:
 //  LoginUseCase, LogoutUseCase, JoinEventUseCase, LeaveEventUseCase, CreateEventUseCase, & GetDirectionUseCase
-public class InMemoryCurrentUserLoggedInDAO {
+public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterface {
     private User currentUser;
 
     /**
