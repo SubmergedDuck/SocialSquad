@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 public class LeaveEventOutputData {
 
+    // We're outputting this to use to get the number of people joined
     private final ArrayList<String> getPeopleJoined;
 
     /**

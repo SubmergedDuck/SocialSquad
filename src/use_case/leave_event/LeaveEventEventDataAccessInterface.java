@@ -1,9 +1,7 @@
 package use_case.leave_event;
 
-import java.util.ArrayList;
-
 /**
- * The data access interface for the leave event use case.
+ * The event data access interface for the leave event use case.
  */
 
 public interface LeaveEventEventDataAccessInterface {
