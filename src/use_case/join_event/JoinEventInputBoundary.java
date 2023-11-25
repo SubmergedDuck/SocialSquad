@@ -1,5 +1,9 @@
 package use_case.join_event;
 
+/**
+ * Input boundary for the join event use case.
+ */
+
 public interface JoinEventInputBoundary {
     /**
      * Executes the join event use case.
