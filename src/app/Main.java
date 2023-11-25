@@ -1,18 +1,10 @@
 package app;
 
-import data_access.FileEventsDataAccessObject;
-import data_access.FileUserDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
-import entity.Events.*;
-import entity.Events.Event;
-import entity.Location.CommonLocationFactory;
-import entity.Location.Location;
-import entity.Users.CommonUserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
-import view.HomeView;
 import view.LoginView;
 import view.SignupView;
 import view.ViewManager;
@@ -20,8 +12,6 @@ import view.ViewManager;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -50,34 +40,12 @@ public class Main {
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
 
-        FileUserDataAccessObject userDataAccessObject;
-        try {
-            userDataAccessObject = new FileUserDataAccessObject("./users.csv", new FileEventsDataAccessObject("./user.csv", new EventFactory() {
-                @Override
-                public Event create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity) {
-                    return null;
-                }
-            }, new InviteOnlyEventFactory() {
-                @Override
-                public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, ArrayList<String> peopleInvited) {
-                    return null;
-                }
-            },new CommonRestrictedEventFactory(), new CommonLocationFactory()), new CommonLocationFactory(),
-            new CommonUserFactory());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         // TODO: change this to the real DAOs later
-//        InMemoryUsersDataAccessObject userDataAccessObject;
-//        userDataAccessObject = new InMemoryUsersDataAccessObject();
+        InMemoryUsersDataAccessObject userDataAccessObject;
+        userDataAccessObject = new InMemoryUsersDataAccessObject();
 
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
-        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, userDataAccessObject);
-        views.add(loginView, loginView.viewName);
-        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
-        views.add(loggedInView, loggedInView.viewName);
 
 
         viewManagerModel.setActiveView(signupView.viewName);

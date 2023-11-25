@@ -4,9 +4,17 @@
  */
 package view;
 
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Users.CommonUserFactory;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
+import use_case.signup.SignupInputBoundary;
+import use_case.signup.SignupInteractor;
+import use_case.signup.SignupOutputBoundary;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -347,4 +355,18 @@ public class SignupView extends javax.swing.JFrame {
     private javax.swing.JLabel Username_LABEL;
     private javax.swing.JTextField Username_TEXTFIELD;
     // End of variables declaration//GEN-END:variables
+
+    public static void main(String[] args) {
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        SignupViewModel signupViewmodel = new SignupViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        CommonUserFactory factory = new CommonUserFactory();
+        SignupOutputBoundary presenter = new SignupPresenter(viewManagerModel, signupViewmodel, loginViewModel);
+        SignupInputBoundary interactor = new SignupInteractor(new InMemoryUsersDataAccessObject(), presenter, factory);
+
+        SignupController controller = new SignupController(interactor);
+        SignupView signupView = new SignupView(controller, signupViewmodel);
+
+        signupView.setVisible(true);
+    }
 }
