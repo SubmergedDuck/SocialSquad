@@ -17,7 +17,7 @@ import java.security.Key;
  *
  * @author submergedduck
  */
-public class SignupView extends javax.swing.JFrame {
+public class SignupView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     public final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
@@ -31,6 +31,20 @@ public class SignupView extends javax.swing.JFrame {
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
     }
+    private ButtonGradient Back_BUTTON;
+    private javax.swing.JPanel Main_PANEL;
+    private javax.swing.JLabel PasswordSignupFailed_LABEL;
+    private javax.swing.JLabel Password_LABEL;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
+    private javax.swing.JLabel ReEnterPassword_LABEL;
+    private ButtonGradient SignUp_BUTTON;
+    private javax.swing.JLabel SocialSquadTitle_LABEL;
+    private javax.swing.JPanel TopSeperator_PANEL;
+    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private javax.swing.JLabel UsernameSignupFailed_LABEL;
+    private javax.swing.JLabel Username_LABEL;
+    private javax.swing.JTextField Username_TEXTFIELD;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -110,6 +124,7 @@ public class SignupView extends javax.swing.JFrame {
         Password_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Password_LABEL.setText("Password");
 
+
         Password_PASSWORDFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Password_PASSWORDFIELD.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         Password_PASSWORDFIELD.setForeground(new java.awt.Color(196, 182, 206));
@@ -118,17 +133,55 @@ public class SignupView extends javax.swing.JFrame {
         Password_PASSWORDFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Password_PASSWORDFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
 
+        Password_PASSWORDFIELD.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        SignupState currentState = signupViewModel.getState();
+                        currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
+                        signupViewModel.setState(currentState);
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );//random comment
+
         Username_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Username_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
         Username_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
         Username_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Username_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Username_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Username_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Username_TEXTFIELDActionPerformed(evt);
-            }
-        });
+        Username_TEXTFIELD.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        SignupState currentState = signupViewModel.getState();
+                        String text = Username_TEXTFIELD.getText() + e.getKeyChar();
+                        currentState.setUsername(text);
+                        signupViewModel.setState(currentState);
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );
 
         UsernameSignupFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         UsernameSignupFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
@@ -142,6 +195,26 @@ public class SignupView extends javax.swing.JFrame {
         Password_PASSWORDFIELD1.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Password_PASSWORDFIELD1.setCaretColor(new java.awt.Color(196, 182, 206));
         Password_PASSWORDFIELD1.setSelectionColor(new java.awt.Color(140, 100, 255));
+        Password_PASSWORDFIELD1.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        SignupState currentState = signupViewModel.getState();
+                        currentState.setRepeatPassword(Password_PASSWORDFIELD1.getText() + e.getKeyChar());
+                        signupViewModel.setState(currentState);
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );
 
         ReEnterPassword_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         ReEnterPassword_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -234,73 +307,7 @@ public class SignupView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void Password_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt){
-        new KeyListener(){
-            @Override
-            public void keyTyped(KeyEvent e) {
 
-                    SignupState currentState = signupViewModel.getState();
-                    currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
-                    signupViewModel.setState(currentState);
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        };
-    }
-    private void RepeatPassword_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
-        new KeyListener(){
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                SignupState currentState = signupViewModel.getState();
-                currentState.setRepeatPassword(Password_PASSWORDFIELD1.getText() + e.getKeyChar());
-                signupViewModel.setState(currentState);
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        };
-    }
-
-        private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
-
-            new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                SignupState currentState = signupViewModel.getState();
-                String text = Username_TEXTFIELD.getText() + e.getKeyChar();
-                currentState.setUsername(text);
-                signupViewModel.setState(currentState);
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        };// TODO add your handling code here:
-    }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
 
 
 
@@ -318,6 +325,23 @@ public class SignupView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Back_BUTTONActionPerformed
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        SignupState state = (SignupState) evt.getNewValue();
+        if (state.getUsernameError() != null) {
+            JOptionPane.showMessageDialog(this, state.getUsernameError());
+        }
+        if (state.getPasswordError() != null) {
+            JOptionPane.showMessageDialog(this, state.getPasswordError());
+        }
+
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -332,19 +356,6 @@ public class SignupView extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private ButtonGradient Back_BUTTON;
-    private javax.swing.JPanel Main_PANEL;
-    private javax.swing.JLabel PasswordSignupFailed_LABEL;
-    private javax.swing.JLabel Password_LABEL;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
-    private javax.swing.JLabel ReEnterPassword_LABEL;
-    private ButtonGradient SignUp_BUTTON;
-    private javax.swing.JLabel SocialSquadTitle_LABEL;
-    private javax.swing.JPanel TopSeperator_PANEL;
-    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    private javax.swing.JLabel UsernameSignupFailed_LABEL;
-    private javax.swing.JLabel Username_LABEL;
-    private javax.swing.JTextField Username_TEXTFIELD;
+
     // End of variables declaration//GEN-END:variables
 }

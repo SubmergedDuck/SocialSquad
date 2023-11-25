@@ -28,7 +28,7 @@ public class SignupInteractor implements SignupInputBoundary{
             userPresenter.prepareFailView("Invalid sex");
         } else {
             // All the inputs are good.
-            // TODO commented out the below codes because userFactory.create() gives compilation errors
+
             User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
                     signupInputData.getSex(), signupInputData.getContact());
             userDataAccessObject.save(user);

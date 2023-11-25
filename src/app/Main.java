@@ -75,9 +75,9 @@ public class Main {
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, userDataAccessObject);
-        views.add(loginView, loginView.viewName);
-        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
-        views.add(loggedInView, loggedInView.viewName);
+        views.add(loginView.getRootPane(), loginView.viewName);
+//        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
+//        views.add(loggedInView.getRootPane(), loggedInView.viewName);
 
 
         viewManagerModel.setActiveView(signupView.viewName);
