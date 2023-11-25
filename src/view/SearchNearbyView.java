@@ -2,6 +2,10 @@
 
 package view;
 
+import interface_adapter.join_event.JoinEventController;
+import interface_adapter.search_nearby.SearchNearbyController;
+import interface_adapter.search_nearby.SearchNearbyViewModel;
+
 /**
  *
  * @author submergedduck
@@ -11,6 +15,13 @@ public class SearchNearbyView extends javax.swing.JFrame {
     /**
      * Creates new form SearchNearbyView
      */
+    public final String viewName = "search nearby";
+    private final SearchNearbyViewModel searchNearbyViewModel;
+
+    private final SearchNearbyController searchNearbyController;
+    // private final GoBackController TODO: GoBack should be implemented as a use case
+    private final JoinEventController joinEventController;
+    private EventLoader eventLoader = new EventLoader(this); // This JPane will give the View event details and a list of events searched
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private ButtonGradient EventDetails_BUTTON;
@@ -23,8 +34,13 @@ public class SearchNearbyView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-    public SearchNearbyView() {
+    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel, SearchNearbyController searchNearbyController,
+                            JoinEventController joinEventController) {
         initComponents();
+        this.searchNearbyViewModel = searchNearbyViewModel;
+        this.searchNearbyController = searchNearbyController;
+        //TODO BackButtonController should be added to here
+        this.joinEventController = joinEventController;
     }
 
     private void initComponents() {
@@ -215,35 +231,35 @@ public class SearchNearbyView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//
-//        /* Create and display the form */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        /* Create and display the form */
 //        java.awt.EventQueue.invokeLater(new Runnable() {
 //            public void run() {
-//                new searchNearbyView().setVisible(true);
+//                new SearchNearbyView().setVisible(true);
 //            }
 //        });
-//    }
+    }
 
 }
