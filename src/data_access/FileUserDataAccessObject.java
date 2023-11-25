@@ -14,7 +14,7 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-                                                 JoinEventDataAccessInterface{
+        JoinEventDataAccessInterface{
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String,User> usernameToUser = new HashMap<>();
@@ -160,14 +160,13 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
         return false;
     }
 
-    @Override
-    public void save(CommonUser commonUser) {
-
-    }
-
-    @Override
-    public CommonUser get(String username) {
-        return null;
-    }
+//    @Override
+//    public void save(CommonUser commonUser) {
+//
+//    }
+//
+//    @Override
+//    public CommonUser get(String username) {
+//        return null;
+//    }
 }
-
