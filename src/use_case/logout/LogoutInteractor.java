@@ -6,13 +6,13 @@ package use_case.logout;
 
 public class LogoutInteractor implements LogoutInputBoundary{
 
-        private LogoutOutputBoundary outputBoundary;
+        private LogoutOutputBoundary loginPresenter;
         private LogoutCurrentUserDataAccessInterface dataAccessInterface;
 
-        public LogoutInteractor(LogoutOutputBoundary outputBoundary,
+        public LogoutInteractor(LogoutOutputBoundary loginPresenter,
                                 LogoutCurrentUserDataAccessInterface dataAccessInterface) {
 
-            this.outputBoundary = outputBoundary;
+            this.loginPresenter = loginPresenter;
             this.dataAccessInterface = dataAccessInterface;
         }
 
@@ -21,7 +21,7 @@ public class LogoutInteractor implements LogoutInputBoundary{
         */
         public void execute() {
             dataAccessInterface.logoutCurrentUser();
-            outputBoundary.prepareView();
+            loginPresenter.prepareView();
         }
 
 }
