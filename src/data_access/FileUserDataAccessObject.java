@@ -3,6 +3,7 @@ package data_access;
 import entity.Users.CommonUser;
 import entity.Users.UserFactory;
 import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 import java.io.*;
@@ -144,6 +145,9 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             throw new RuntimeException(e);
         }
     }
+
+
+
     public Integer generateEventID() {
         return null;
     }
@@ -157,7 +161,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
     @Override
     public boolean existsByName(String identifier) {
-        return false;
+        return usernameToUser.containsKey(identifier);
     }
 
 //    @Override

@@ -34,7 +34,7 @@ public class InMemoryUsersDataAccessObject implements
 
     @Override
     public boolean existsByName(String identifier) {
-        return false;
+        return usernameToUser.containsKey(identifier);
     }
     //TODO: should this be return usernameToUser.containsKey(identifier);
 
