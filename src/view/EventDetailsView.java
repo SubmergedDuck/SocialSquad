@@ -37,8 +37,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
      */
     public final String viewName = "event details";
     private final GetEventDetailsViewModel getEventDetailsViewModel;
-//    private final BackOutController backOutController;
-//    private final JoinEventController joinEventController;
+    private final BackOutController backOutController;
+    private final JoinEventController joinEventController;
 
 
     private ButtonGradient Back_BUTTON;
@@ -64,19 +64,19 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     private javax.swing.JLabel TypeByUser_LABEL;
 
-//    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
-//                            BackOutController backOutController) {
-//        initComponents();
-//        this.getEventDetailsViewModel = getEventDetailsViewModel;
-//        this.joinEventController = joinEventController;
-//        this.backOutController = backOutController;
-//    }
-
-    // A constructor just for testing
-    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel) {
+    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
+                            BackOutController backOutController) {
         initComponents();
         this.getEventDetailsViewModel = getEventDetailsViewModel;
+        this.joinEventController = joinEventController;
+        this.backOutController = backOutController;
     }
+
+//    // A constructor just for testing
+//    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel) {
+//        initComponents();
+//        this.getEventDetailsViewModel = getEventDetailsViewModel;
+//    }
 
     private void initComponents() {
 
@@ -115,7 +115,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Title_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 14)); // NOI18N
         Title_LABEL.setForeground(new java.awt.Color(255, 255, 255));
         Title_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Title_LABEL.setText("Create Your Own Event");
+        Title_LABEL.setText("Event details");
         Title_LABEL.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 1, 1, 1));
 
         TopSeperator_PANEL.setBackground(new java.awt.Color(118, 43, 236));
@@ -404,11 +404,13 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     }
 
     private void JoinLeaveEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // TODO change this for later
+        System.out.println("You just joined this event!");
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // TODO change this later
+        System.out.println("Go back");
     }
 
     /**
@@ -437,7 +439,11 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             public void run() {
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
-                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel);
+
+                JoinEventController joinEventController = new JoinEventController();
+                BackOutController backOutController = new BackOutController();
+
+                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
 
 
@@ -453,14 +459,6 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                             event.getEventName(), event.getEventAddress(), event.getEventDate(), event.getDescription(),
                             String.valueOf(event.getCapacity()));
                     presenter.prepareView(outputData);
-
-//                    ArrayList<Event> eventArrayList = new ArrayList<>();
-//                    eventArrayList.add(event);
-//                    eventArrayList.add(event2);
-//                    state.setEventsSearched(eventArrayList);
-//                    searchNearbyViewModel.setState(state);
-//                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, new ViewManagerModel());
-//                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
                     view.setVisible(true);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
