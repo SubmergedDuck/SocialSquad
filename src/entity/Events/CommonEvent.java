@@ -87,4 +87,17 @@ public class CommonEvent implements Event {
     public Integer getCapacity() {
         return capacity;
     }
+
+    @Override
+    public String getEventAddress() {
+        return location.getAddress();
+    }
+
+    @Override
+    public String getEventDate() {
+        String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
+                String.valueOf(time.getDayOfMonth()) + "/" + String.valueOf(time.getMonth()) + "/" +
+                String.valueOf(time.getYear()) + " ";
+        return strTime;
+    }
 }
