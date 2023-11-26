@@ -1,13 +1,39 @@
 package view;
+import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.CommonEvent;
+import entity.Events.Event;
+import entity.Location.*;
+import entity.Users.CommonUser;
+import entity.Users.User;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.create_event.CreateEventController;
+import interface_adapter.get_event_details.GetEventDetailsController;
+import interface_adapter.get_event_details.GetEventDetailsPresenter;
+import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.search_event.SearchEventController;
+import interface_adapter.search_nearby.SearchNearbyController;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
+import interface_adapter.search_nearby.SearchNearbyState;
+import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
+import use_case.search_nearby.SearchNearbyInteractor;
+import use_case.search_nearby.SearchNearbyOutputData;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,8 +45,12 @@ public class HomeView extends javax.swing.JFrame {
     /**
      * Creates new form HomeView
      */
+    public final String viewName = "home";
     private final LoggedInViewModel loggedInViewModel;
     private final LoggedInController loggedInController;
+    private final SearchNearbyController searchNearbyController;
+    private final CreateEventController createEventController;
+
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
     private javax.swing.JLabel LogoutIcon_LABEL;
@@ -32,9 +62,12 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-    public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController) {
+    public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController) {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
+        this.searchNearbyController = searchNearbyController;
+        this.createEventController = createEventController;
         initComponents();
     }
 
@@ -102,7 +135,11 @@ public class HomeView extends javax.swing.JFrame {
         SearchEvent_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
         SearchEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SearchEvent_BUTTONActionPerformed(evt);
+                try {
+                    SearchEvent_BUTTONActionPerformed(evt);
+                } catch (IOException e) {
+                    System.out.println("IOException occured.");
+                }
             }
         });
 
@@ -205,11 +242,31 @@ public class HomeView extends javax.swing.JFrame {
     }
 
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (evt.getSource().equals(CreateEvent_BUTTON)) {
+            createEventController.execute();
+        }
     }
 
-    private void SearchEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+    private void SearchEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
+        if (evt.getSource().equals(SearchEvent_BUTTON)) {
+            try {
+                // TODO right now the IP API is not working, so I will fake a location. The code commented out should be the right code to call.
+//                String[] coordinates = CoordinatesFromIP.getCoordinates();
+//                CoordinatesToAddress coordinatesToAddress = new CoordinatesToAddress(coordinates);
+//                String address = coordinatesToAddress.getAddress();
+//                LocationFactory factory = new CommonLocationFactory();
+//                Location  userLocation = factory.create(coordinates, address, "Canada");
+                LocationFactory factory = new CommonLocationFactory();
+                Location userLocation = factory.makeLocation("(43.665510,-79.387280)");
+                searchNearbyController.execute(userLocation);
+
+            } catch (IOException e) {
+                System.out.println("fail to obtain user's current location");
+            } catch (Exception e) {
+                System.out.println("run time exception occured.");;
+            }
+
+        }
     }
 
     /**
@@ -237,14 +294,90 @@ public class HomeView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                JFrame application = new JFrame("Home - Search nearby - Event detail demo");
+                SearchNearbyState state = new SearchNearbyState();
+                SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
+                InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+
+                SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
+                SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
+
+                CreateEventController createEventController = new CreateEventController();
+
+                GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+                GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
+                GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
+                GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
+
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(), new BackOutController());
+
+                searchNearbyViewModel.addPropertyChangeListener(view);
+                getEventDetailsViewModel.addPropertyChangeListener(view);
+                getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
 
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel("log in"));
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                new HomeView(loggedInViewModel1, loggedInController).setVisible(true);
+                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController);
+                //homeView.setVisible(true);
+
+                homeView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                view.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+                CardLayout cardLayout = new CardLayout();
+                JPanel views = new JPanel(cardLayout);
+                application.add(views);
+
+                views.add(view.getRootPane(), "search nearby");
+                views.add(eventDetailsView.getRootPane(), "get event details");
+                views.add(homeView.getRootPane(), "home");
+
+                ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);
+                viewManagerModel.addPropertyChangeListener(viewManager);
+
+                try {
+                    User user = new CommonUser("owner", "password", 20, "f", "contact");
+
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
+                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
+
+                    ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
+                    eventArrayList.add(event);
+                    eventArrayList.add(event2);
+
+                    user.setCreatedEvents(eventArrayList); // Let the user create these events
+
+                    // Save the objects to inMemoryDAOs for use
+                    inMemoryUsersDataAccessObject.save(user);
+                    for (Event event1: eventArrayList) {
+                        inMemoryEventsDataAccessObject.save(event1);
+                    }
+
+                    state.setEventsSearched(eventArrayList);
+                    searchNearbyViewModel.setState(state);
+                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
+                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
+
+                    viewManagerModel.setActiveView(homeView.viewName);
+                    viewManagerModel.firePropertyChanged();
+                    homeView.setVisible(true);
+
+
+                    application.pack();
+                    application.setVisible(true);
+                } catch (Exception e) {
+                    System.out.println("run time exceptions occured.");;
+                }
             }
         });
     }
