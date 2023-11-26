@@ -69,7 +69,7 @@ public class FileEventDataAccessObject {
                     eventsToID.put(createdEvent.getEventID(),createdEvent);
                 }
             } catch (IOException e){
-                throw e;
+                throw new RuntimeException(e);
             }
         }
     }
