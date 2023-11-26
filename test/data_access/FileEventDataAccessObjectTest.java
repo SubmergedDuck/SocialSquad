@@ -76,8 +76,9 @@ public class FileEventDataAccessObjectTest {
             String[] eventOneCoordinates = testEvent1.getLocation().getCoordinates();
             String formattedCoordinates = String.format("(%s%s%s)",eventOneCoordinates[0],
                     eventDataAccessObject.getElementSeperator(),eventOneCoordinates[1]);
-            String peopleJoined = formatStringList(testEvent1.getPeopleJoined());
-            String peopledWaitlisted = formatStringList(testEvent1.getPeopleWaitlisted());
+            String elementSeperator = eventDataAccessObject.getElementSeperator();
+            String peopleJoined = FormatStringList.formatStringList(testEvent1.getPeopleJoined(), elementSeperator);
+            String peopledWaitlisted = FormatStringList.formatStringList(testEvent1.getPeopleWaitlisted(),elementSeperator);
             String eventTime = testEvent1.getTime().format(formatter);
             String expectedResult = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",testEvent1.getOwnerUser(),
                     testEvent1.getEventID().toString(),testEvent1.getEventName(),formattedCoordinates,peopleJoined,peopledWaitlisted,eventTime
@@ -95,18 +96,6 @@ public class FileEventDataAccessObjectTest {
     @Test
     public void saveEvent(){
         assertEquals(eventDataAccessObject.getEvent(0).getEventName(),testEvent1.getEventName());
-    }
-
-    private String formatStringList(ArrayList<String> stringList){
-        String currentString = "";
-        for (int i = 0; i < stringList.size(); i++){
-            if (i == stringList.size() - 1){
-                currentString = currentString + stringList.get(i);
-            } else {
-                currentString = currentString + stringList.get(i) + eventDataAccessObject.getElementSeperator();
-            }
-        }
-        return currentString;
     }
 
 }

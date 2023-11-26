@@ -114,8 +114,8 @@ public class FileEventDataAccessObject {
             for (Event event : eventsToID.values()){
                 String[] coordinates = event.getLocation().getCoordinates();
                 String formattedCoordinates = String.format("(%s%s%s)", coordinates[0], elementSeperator, coordinates[1]);
-                String peopleJoined = formatStringList(event.getPeopleJoined());
-                String peopleWaitlisted = formatStringList(event.getPeopleWaitlisted());
+                String peopleJoined = FormatStringList.formatStringList(event.getPeopleJoined(),elementSeperator);
+                String peopleWaitlisted = FormatStringList.formatStringList(event.getPeopleWaitlisted(),elementSeperator);
                 String eventTime = event.getTime().format(formatter);
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", event.getOwnerUser(), event.getEventID(),
                         event.getEventName(), formattedCoordinates, peopleJoined, peopleWaitlisted, eventTime,
