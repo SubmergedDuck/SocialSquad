@@ -1,9 +1,7 @@
 package data_access;
 
-import entity.Events.CommonEventFactory;
 import entity.Events.Event;
 import entity.Events.EventFactory;
-import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 
