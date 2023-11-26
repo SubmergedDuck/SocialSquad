@@ -2,15 +2,30 @@
 
 package view;
 
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.get_event_details.GetEventDetailsController;
+import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.join_event.JoinEventController;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 /**
  *
  * @author submergedduck
  */
-public class EventDetailsView extends javax.swing.JFrame {
+public class EventDetailsView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
 
     /**
      * Creates new form loginView
      */
+    public final String viewName = "event details";
+    private final GetEventDetailsViewModel getEventDetailsViewModel;
+//    private final BackOutController backOutController;
+//    private final JoinEventController joinEventController;
+
 
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -34,8 +49,19 @@ public class EventDetailsView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     private javax.swing.JLabel TypeByUser_LABEL;
-    public EventDetailsView() {
+
+//    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
+//                            BackOutController backOutController) {
+//        initComponents();
+//        this.getEventDetailsViewModel = getEventDetailsViewModel;
+//        this.joinEventController = joinEventController;
+//        this.backOutController = backOutController;
+//    }
+
+    // A constructor just for testing
+    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel) {
         initComponents();
+        this.getEventDetailsViewModel = getEventDetailsViewModel;
     }
 
     private void initComponents() {
@@ -374,30 +400,42 @@ public class EventDetailsView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new eventDetailsView().setVisible(true);
-//            }
-//        });
-//    }
+    public static void main(String args[]) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel);
+                //getEventDetailsViewModel.addPropertyChangeListener(view;
+                view.setVisible(true);
+            }
+        });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+    }
 }
