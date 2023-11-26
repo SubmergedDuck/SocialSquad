@@ -2,15 +2,29 @@
 
 package view;
 
+import entity.Events.CommonEvent;
+import entity.Events.Event;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Location.LocationFactory;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.get_event_details.GetEventDetailsController;
+import interface_adapter.get_event_details.GetEventDetailsPresenter;
+import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
+import use_case.get_event_details.GetEventDetailsOutputData;
+import use_case.search_nearby.SearchNearbyOutputData;
 
+import javax.swing.text.View;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  *
@@ -151,7 +165,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         EventName_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         EventName_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         EventName_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        EventName_LABEL.setText("Drop-In Outdoor Frisbee, Aug 12 '23");
+//        EventName_LABEL.setText("Drop-In Outdoor Frisbee, Aug 12 '23");
 
         JoinLeaveEvent_BUTTON.setText("Join Event");
         JoinLeaveEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
@@ -253,7 +267,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Description_TEXTAREA.setForeground(new java.awt.Color(140, 100, 255));
         Description_TEXTAREA.setLineWrap(true);
         Description_TEXTAREA.setRows(5);
-        Description_TEXTAREA.setText("Join us for a day of spirited throws and friendly competition at our Drop-In Outdoor Frisbee sessions! No experience? No problem! Players of all levels are encouraged to join.");
+//        Description_TEXTAREA.setText("Join us for a day of spirited throws and friendly competition at our Drop-In Outdoor Frisbee sessions! No experience? No problem! Players of all levels are encouraged to join.");
         Description_TEXTAREA.setCaretColor(new java.awt.Color(255, 255, 255));
         Description_TEXTAREA.setSelectionColor(new java.awt.Color(140, 100, 255));
         Description_SCROLLPANE.setViewportView(Description_TEXTAREA);
@@ -261,7 +275,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         TypeByUser_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
         TypeByUser_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         TypeByUser_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        TypeByUser_LABEL.setText("Frisbee by iloveDucks");
+//        TypeByUser_LABEL.setText("Frisbee by iloveDucks");
 
         BottomSeperator_PANEL1.setBackground(new java.awt.Color(229, 222, 233));
         BottomSeperator_PANEL1.setPreferredSize(new java.awt.Dimension(100, 1));
@@ -280,7 +294,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Capacity_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         Capacity_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         Capacity_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        Capacity_LABEL.setText("4/12 People");
+//        Capacity_LABEL.setText("4/12 People"); //TODO here
 
         Location_SCROLLPANE.setBorder(null);
         Location_SCROLLPANE.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -293,7 +307,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Location_TEXTAREA.setForeground(new java.awt.Color(140, 100, 255));
         Location_TEXTAREA.setLineWrap(true);
         Location_TEXTAREA.setRows(5);
-        Location_TEXTAREA.setText("Toronto, ON, Canada, M5S 2E5\nBack Campus");
+//        Location_TEXTAREA.setText("Toronto, ON, Canada, M5S 2E5\nBack Campus"); //TODO here
         Location_TEXTAREA.setCaretColor(new java.awt.Color(255, 255, 255));
         Location_TEXTAREA.setSelectionColor(new java.awt.Color(140, 100, 255));
         Location_SCROLLPANE.setViewportView(Location_TEXTAREA);
@@ -301,7 +315,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         TimeDescription_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         TimeDescription_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         TimeDescription_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        TimeDescription_LABEL.setText("10:00 AM to 01:00 PM");
+//        TimeDescription_LABEL.setText("10:00 AM to 01:00 PM"); //TODO here
 
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -421,9 +435,37 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
                 EventDetailsView view = new EventDetailsView(getEventDetailsViewModel);
-                //getEventDetailsViewModel.addPropertyChangeListener(view;
+                getEventDetailsViewModel.addPropertyChangeListener(view);
+
+
+                try {
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+
+                    GetEventDetailsPresenter presenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
+                    GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(event.getOwnerUser(),
+                            event.getEventName(), event.getEventAddress(), event.getEventDate(), event.getDescription(),
+                            String.valueOf(event.getCapacity()));
+                    presenter.prepareView(outputData);
+
+//                    ArrayList<Event> eventArrayList = new ArrayList<>();
+//                    eventArrayList.add(event);
+//                    eventArrayList.add(event2);
+//                    state.setEventsSearched(eventArrayList);
+//                    searchNearbyViewModel.setState(state);
+//                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, new ViewManagerModel());
+//                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
+                    view.setVisible(true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
                 view.setVisible(true);
             }
         });
@@ -436,6 +478,26 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("state")) { // Set the label by values given
+            GetEventDetailsState state = (GetEventDetailsState) evt.getNewValue();
+            String ownerUser = state.getOwnerUser();
+            String name = state.getEventName();
+            String address = state.getEventAddress();
+            String time = state.getEventDate();
+            String description = state.getEventDescription();
+            String capacity = state.getEventCapacity();
+
+            TypeByUser_LABEL.setText(name + " by " + ownerUser);
+            Capacity_LABEL.setText(capacity + " People");
+            Location_TEXTAREA.setText(address);
+            TimeDescription_LABEL.setText(time);
+            Description_TEXTAREA.setText(description);
+            EventName_LABEL.setText(name + " " + time);
+
+
+
+
+        }
 
     }
 }
