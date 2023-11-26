@@ -1,5 +1,3 @@
-//TODO: Add imports
-
 package view;
 
 import entity.Events.CommonEvent;
@@ -8,9 +6,12 @@ import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.get_event_details.GetEventDetailsInputData;
 import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
@@ -18,13 +19,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
  *
- * @author submergedduck
+ * @author submergedduck (Utami Widowati), Katrina Sha
  */
 public class SearchNearbyView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
 
@@ -33,10 +33,8 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
      */
     public final String viewName = "search nearby";
     private final SearchNearbyViewModel searchNearbyViewModel;
-
-//    private final BackOutController backOutController;
-//    private final GetEventDetailsController getEventDetailsController;
-    private EventLoader eventLoader = new EventLoader(this); // This JPane will give the View event details and a list of events searched
+    private final BackOutController backOutController;
+    private final GetEventDetailsController getEventDetailsController;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private ButtonGradient EventDetails_BUTTON;
@@ -49,21 +47,21 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-//    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel,
-//                            GetEventDetailsController getEventDetailsController, BackOutController backOutController) {
-//        initComponents();
-//        this.searchNearbyViewModel = searchNearbyViewModel;
-//        this.getEventDetailsController = getEventDetailsController;
-//        this.backOutController = backOutController;
-//    }
-
-    // this constructor is only for testing out
-    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel) {
+    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel,
+                            GetEventDetailsController getEventDetailsController, BackOutController backOutController) {
         initComponents();
         this.searchNearbyViewModel = searchNearbyViewModel;
-//        this.getEventDetailsController = getEventDetailsController;
-//        this.backOutController = backOutController;
+        this.getEventDetailsController = getEventDetailsController;
+        this.backOutController = backOutController;
     }
+
+//    // this constructor is only for testing out
+//    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel) {
+//        initComponents();
+//        this.searchNearbyViewModel = searchNearbyViewModel;
+////        this.getEventDetailsController = getEventDetailsController;
+////        this.backOutController = backOutController;
+//    }
 
     private void initComponents() {
 
@@ -154,21 +152,6 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
         Events_SCROLLPANE.setToolTipText("");
         Events_SCROLLPANE.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 0, 5));
 
-//        TODO: move it to somewhere else
-//        Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
-//        Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
-//        Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
-//
-//// TODO: Note: this is a placeholder for the list of events
-//            String[] strings = { "Bob's Building Workshop (Jun 19 '23) [Cap: 7/10]", "Outdoor Frisbee (Jun 10 '23) [Cap: 4/10]", "LoL 5 v 5 Tourney (Sep 10 '23) [Cap: 25/50]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]" };
-//            public int getSize() { return strings.length; }
-//            public String getElementAt(int i) { return strings[i]; }
-//        });
-//        Events_LIST.setFixedCellHeight(40);
-//        Events_LIST.setSelectionBackground(new java.awt.Color(251, 247, 255));
-//        Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));
-//        Events_SCROLLPANE.setViewportView(Events_LIST);
-
         EventDetails_BUTTON.setText("Event Details");
         EventDetails_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -195,7 +178,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                                                 .addGap(47, 47, 47)
                                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(Event_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(EventNameCreateFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                                        .addComponent(EventNameCreateFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(Events_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
@@ -217,7 +200,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Events_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(51, 51, 51)
-                                .addComponent(EventNameCreateFailed_LABEL)
+//                                .addComponent(EventNameCreateFailed_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -247,18 +230,22 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
         // make sure an event is clicked on
         if (evt.getSource().equals(EventDetails_BUTTON)) {
             if (Events_LIST.getSelectedIndex() != -1) {
-                System.out.println(eventArrayList.get(Events_LIST.getSelectedIndex()).getEventName() + " is selected to view details.");// someething is selected
+                Event eventSelected = eventArrayList.get(Events_LIST.getSelectedIndex());
+                System.out.println(eventSelected.getEventName() + " is selected to view details.");// someething is selected
+
+                // Create input data for GetEventDetailController and execute
+                GetEventDetailsInputData inputData = new GetEventDetailsInputData(eventSelected.getEventID());
+                getEventDetailsController.execute(inputData);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select an event first.");
             }
         }
-
-        // prepare input data
-        // controller execute
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (evt.getSource().equals(Back_BUTTON)) {
+            backOutController.execute();
+        }
     }
 
     /**
@@ -292,7 +279,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
             public void run() {
                 SearchNearbyState state = new SearchNearbyState();
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
-                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel);
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, new GetEventDetailsController(), new BackOutController());
                 searchNearbyViewModel.addPropertyChangeListener(view);
 
                 // make some events to load
@@ -335,37 +322,33 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
 
             } else {
                 ArrayList<Event> eventsFound = state.getEventsSearched();
-        Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
-        Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
-        Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
-            public int getSize() { return eventsFound.size(); }
-            public String getElementAt(int i) {// formalize text here
-                String result = "";
+                Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
+                Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
+                Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
+                public int getSize() { return eventsFound.size(); }
+                public String getElementAt(int i) {// formalize text here
+                    String result = "";
 
-                Event event = eventsFound.get(i);
-                String name = event.getEventName() + " ";
+                    Event event = eventsFound.get(i);
+                    String name = event.getEventName() + " ";
 
-                LocalDateTime time = event.getTime();
-                String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
-                String.valueOf(time.getDayOfMonth()) + "/" + String.valueOf(time.getMonth()) + "/" +
-                        String.valueOf(time.getYear()) + " ";
-                String location = event.getLocation().getAddress() + " ";
-                String capacity = "[" + String.valueOf(event.getCapacity()) + "] ";
+                    LocalDateTime time = event.getTime();
+                    String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
+                    String.valueOf(time.getDayOfMonth()) + "/" + String.valueOf(time.getMonth()) + "/" +
+                            String.valueOf(time.getYear()) + " ";
+                    String location = event.getLocation().getAddress() + " ";
+                    String capacity = "[" + String.valueOf(event.getCapacity()) + "] ";
 
-                result = result + name + strTime + location + capacity;
+                    result = result + name + strTime + location + capacity;
 
-                return result;
+                    return result;
+                }
+            });
+                Events_LIST.setFixedCellHeight(40);
+                Events_LIST.setSelectionBackground(new java.awt.Color(251, 247, 255));
+                Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));
+                Events_SCROLLPANE.setViewportView(Events_LIST);
             }
-        });
-        Events_LIST.setFixedCellHeight(40);
-        Events_LIST.setSelectionBackground(new java.awt.Color(251, 247, 255));
-        Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));
-        Events_SCROLLPANE.setViewportView(Events_LIST);
-            }
-        } else if (evt.getPropertyName().equals("View event details")) { //When an event is selected to view the details
-            // TODO: add event detail controller
-            // eventDetailController.execute(evt.getNewValue()); // Execute EventDetails use case
-
         }
 
     }
