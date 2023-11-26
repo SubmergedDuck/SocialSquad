@@ -13,11 +13,11 @@ class BackOutInteractorTest {
     void execute() {
         ViewManagerModel viewManagermodel = new ViewManagerModel();
         //ViewManager viewManager = new ViewManager(new JPanel(), new CardLayout(), viewManagermodel);
-        ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagermodel, null);
+        ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagermodel);
         viewManagermodel.addPropertyChangeListener(viewManagerModelAdapter); // The Adapter listens to the ViewMangaerModel
 
         // test when a view switch is performed
-        viewManagerModelAdapter.setActiveView("view 1");
+        viewManagermodel.setActiveView("view 1");
         System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // should be null
 
         viewManagermodel.setActiveView("view 2");
