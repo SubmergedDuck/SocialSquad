@@ -476,7 +476,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) { // Set the label by values given
+        if (evt.getPropertyName().equals("event details")) { // Set the label by values given
             GetEventDetailsState state = (GetEventDetailsState) evt.getNewValue();
             String ownerUser = state.getOwnerUser();
             String name = state.getEventName();
