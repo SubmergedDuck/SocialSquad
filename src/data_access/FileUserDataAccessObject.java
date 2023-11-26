@@ -1,5 +1,6 @@
 package data_access;
 
+import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
 
@@ -47,6 +48,11 @@ public class FileUserDataAccessObject {
         }
     }
 
+    public void save(User savedUser){
+        usernameToUser.put(savedUser.getUsername(),savedUser);
+        save();
+    }
+
     private void save(){
         BufferedWriter writer;
         try{
@@ -63,5 +69,12 @@ public class FileUserDataAccessObject {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static void main(String[] args) throws IOException {
+        String csvPath = "users.csv";
+        UserFactory userFactory = new CommonUserFactory();
+        User testUser = userFactory.create("testUser","testPassword",15,"m","testcontact");
+        FileUserDataAccessObject testDAO = new FileUserDataAccessObject(csvPath, userFactory);
+        testDAO.save(testUser);
     }
 }

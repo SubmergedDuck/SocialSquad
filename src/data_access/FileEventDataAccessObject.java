@@ -92,8 +92,9 @@ public class FileEventDataAccessObject {
                 String formattedCoordinates = String.format("(%s%s%s)", coordinates[0], elementSeperator, coordinates[1]);
                 String peopleJoined = formatStringList(event.getPeopleJoined());
                 String peopleWaitlisted = formatStringList(event.getPeopleWaitlisted());
+                String eventTime = event.getTime().format(formatter);
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", event.getOwnerUser(), event.getEventID(),
-                        event.getEventName(), formattedCoordinates, peopleJoined, peopleWaitlisted, event.getTime().toString(),
+                        event.getEventName(), formattedCoordinates, peopleJoined, peopleWaitlisted, eventTime,
                         event.getType(), event.getDescription(), event.getPrivacy().toString(),event.getCapacity().toString());
                 writer.write(line);
                 writer.newLine();
@@ -103,6 +104,7 @@ public class FileEventDataAccessObject {
             throw new RuntimeException(e);
         }
     }
+    public String getElementSeperator(){return this.elementSeperator;}
     private String formatStringList(ArrayList<String> stringList){
         String currentString = "";
         for (int i = 0; i < stringList.size(); i++){
