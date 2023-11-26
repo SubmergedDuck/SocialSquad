@@ -6,6 +6,7 @@ import use_case.generate_static_map.GSMUserDataAccessInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionUserDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
         SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
-        GetDirectionUserDataAccessInterface, CreateEventDataAccessInterface,GSMUserDataAccessInterface {
+        GetDirectionUserDataAccessInterface, CreateEventDataAccessInterface,GSMUserDataAccessInterface, LoggedInUserDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
@@ -42,6 +43,12 @@ public class InMemoryUsersDataAccessObject implements
     public void save(User user){
         usernameToUser.put(user.getUsername(), user);
     }
+
+    @Override
+    public User get(String username) {
+        return usernameToUser.get(username);
+    }
+
     @Override
     public ArrayList<Event> getFullMatchEvents(SearchEventInputData inputData) {
         return null;
