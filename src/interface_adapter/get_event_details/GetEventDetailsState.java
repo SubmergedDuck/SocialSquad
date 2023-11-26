@@ -1,6 +1,7 @@
 package interface_adapter.get_event_details;
 
 public class GetEventDetailsState {
+    private String ownerUser = "";
     private String eventName = "";
     private String eventAddress = "";
     private String eventDate = "";
@@ -8,6 +9,7 @@ public class GetEventDetailsState {
     private String eventCapacity = "";
 
     public GetEventDetailsState(GetEventDetailsState copy) {
+        this.ownerUser = copy.ownerUser;
         eventName = copy.eventName;
         eventAddress = copy.eventAddress;
         eventDate= copy.eventDate;
@@ -15,6 +17,10 @@ public class GetEventDetailsState {
     }
 
     public GetEventDetailsState() {
+    }
+
+    public String getOwnerUser() {
+        return ownerUser;
     }
 
     public String getEventName() {
@@ -37,6 +43,9 @@ public class GetEventDetailsState {
         return eventCapacity;
     }
 
+    public void setOwnerUser(String ownerUser) {
+        this.ownerUser = ownerUser;
+    }
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }

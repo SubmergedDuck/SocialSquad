@@ -17,6 +17,7 @@ public class GetEventDetailsPresenter implements GetEventDetailsOutputBoundary {
     @Override
     public void prepareView(GetEventDetailsOutputData outputData) {
         GetEventDetailsState state = getEventDetailsViewModel.getState();
+        state.setOwnerUser(outputData.getOwnerUser());
         state.setEventName(outputData.getEventName());
         state.setEventAddress(outputData.getEventAddress());
         state.setEventDate(outputData.getDate());
