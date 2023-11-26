@@ -161,15 +161,17 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 
     @Override
     public boolean existsByName(String identifier) {
-        return usernameToUser.containsKey(identifier);
-    }
-    @Override
-    public void save(CommonUser commonUser) {
-
+        return false;
     }
 
-    @Override
-    public CommonUser get(String username) {
-        return null;
-    }
+//    @Override
+//    public void save(CommonUser commonUser) {
+//
+//    }
+//
+//    @Override
+//    public CommonUser get(String username) {
+//        return null;
+//    }
 }
+
