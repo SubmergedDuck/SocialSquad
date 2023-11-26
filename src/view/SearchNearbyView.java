@@ -1,31 +1,67 @@
-//TODO: Add imports
-
 package view;
+
+import entity.Events.CommonEvent;
+import entity.Events.Event;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Location.LocationFactory;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.get_event_details.GetEventDetailsController;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
+import interface_adapter.search_nearby.SearchNearbyState;
+import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.get_event_details.GetEventDetailsInputData;
+import use_case.search_nearby.SearchNearbyOutputData;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  *
- * @author submergedduck
+ * @author submergedduck (Utami Widowati), Katrina Sha
  */
-public class SearchNearbyView extends javax.swing.JFrame {
+public class SearchNearbyView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
 
     /**
      * Creates new form SearchNearbyView
      */
+    public final String viewName = "search nearby";
+    private final SearchNearbyViewModel searchNearbyViewModel;
+    private final BackOutController backOutController;
+    private final GetEventDetailsController getEventDetailsController;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private ButtonGradient EventDetails_BUTTON;
     private javax.swing.JLabel EventNameCreateFailed_LABEL;
     private javax.swing.JLabel Event_LABEL;
-    private javax.swing.JList<String> Events_LIST;
+    private JList<String> Events_LIST;
     private javax.swing.JScrollPane Events_SCROLLPANE;
     private javax.swing.JPanel Main_PANEL;
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-    public SearchNearbyView() {
+    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel,
+                            GetEventDetailsController getEventDetailsController, BackOutController backOutController) {
         initComponents();
+        this.searchNearbyViewModel = searchNearbyViewModel;
+        this.getEventDetailsController = getEventDetailsController;
+        this.backOutController = backOutController;
     }
+
+//    // this constructor is only for testing out
+//    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel) {
+//        initComponents();
+//        this.searchNearbyViewModel = searchNearbyViewModel;
+////        this.getEventDetailsController = getEventDetailsController;
+////        this.backOutController = backOutController;
+//    }
 
     private void initComponents() {
 
@@ -37,7 +73,7 @@ public class SearchNearbyView extends javax.swing.JFrame {
         Event_LABEL = new javax.swing.JLabel();
         EventNameCreateFailed_LABEL = new javax.swing.JLabel();
         Events_SCROLLPANE = new javax.swing.JScrollPane();
-        Events_LIST = new javax.swing.JList<>();
+        Events_LIST = new JList<String>();
         EventDetails_BUTTON = new ButtonGradient();
         Back_BUTTON = new ButtonGradient();
 
@@ -116,22 +152,6 @@ public class SearchNearbyView extends javax.swing.JFrame {
         Events_SCROLLPANE.setToolTipText("");
         Events_SCROLLPANE.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 0, 5));
 
-        Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
-        Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
-        Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
-
-
-
-// TODO: Note: this is a placeholder for the list of events
-            String[] strings = { "Bob's Building Workshop (Jun 19 '23) [Cap: 7/10]", "Outdoor Frisbee (Jun 10 '23) [Cap: 4/10]", "LoL 5 v 5 Tourney (Sep 10 '23) [Cap: 25/50]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        Events_LIST.setFixedCellHeight(40);
-        Events_LIST.setSelectionBackground(new java.awt.Color(251, 247, 255));
-        Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));
-        Events_SCROLLPANE.setViewportView(Events_LIST);
-
         EventDetails_BUTTON.setText("Event Details");
         EventDetails_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,7 +178,7 @@ public class SearchNearbyView extends javax.swing.JFrame {
                                                 .addGap(47, 47, 47)
                                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(Event_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(EventNameCreateFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+//                                                        .addComponent(EventNameCreateFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(Events_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
@@ -180,7 +200,7 @@ public class SearchNearbyView extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Events_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(51, 51, 51)
-                                .addComponent(EventNameCreateFailed_LABEL)
+//                                .addComponent(EventNameCreateFailed_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -205,45 +225,131 @@ public class SearchNearbyView extends javax.swing.JFrame {
     }
 
     private void EventDetails_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        ArrayList<Event> eventArrayList = searchNearbyViewModel.getState().getEventsSearched();
+        // get what event is clicked on
+        // make sure an event is clicked on
+        if (evt.getSource().equals(EventDetails_BUTTON)) {
+            if (Events_LIST.getSelectedIndex() != -1) {
+                Event eventSelected = eventArrayList.get(Events_LIST.getSelectedIndex());
+                System.out.println(eventSelected.getEventName() + " is selected to view details.");// someething is selected
+
+                // Create input data for GetEventDetailController and execute
+                GetEventDetailsInputData inputData = new GetEventDetailsInputData(eventSelected.getEventID());
+                getEventDetailsController.execute(inputData);
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select an event first.");
+            }
+        }
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (evt.getSource().equals(Back_BUTTON)) {
+            backOutController.execute();
+        }
     }
 
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(searchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new searchNearbyView().setVisible(true);
-//            }
-//        });
-//    }
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(SearchNearbyView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                SearchNearbyState state = new SearchNearbyState();
+                SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, new GetEventDetailsController(), new BackOutController());
+                searchNearbyViewModel.addPropertyChangeListener(view);
+
+                // make some events to load
+                try {
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
+                    Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+                    Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
+
+                    ArrayList<Event> eventArrayList = new ArrayList<>();
+                    eventArrayList.add(event);
+                    eventArrayList.add(event2);
+                    state.setEventsSearched(eventArrayList);
+                    searchNearbyViewModel.setState(state);
+                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, new ViewManagerModel());
+                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
+                    view.setVisible(true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        ;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("search event")) {
+            SearchNearbyState state = (SearchNearbyState) evt.getNewValue();
+            if (state.getNoEventsFound()) { // no event is found as the result of the SearchNearby use case
+                JOptionPane.showMessageDialog(this, "No events are found within 2KM from you.");
+
+            } else {
+                ArrayList<Event> eventsFound = state.getEventsSearched();
+                Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
+                Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
+                Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
+                public int getSize() { return eventsFound.size(); }
+                public String getElementAt(int i) {// formalize text here
+                    String result = "";
+
+                    Event event = eventsFound.get(i);
+                    String name = event.getEventName() + " ";
+
+                    LocalDateTime time = event.getTime();
+                    String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
+                    String.valueOf(time.getDayOfMonth()) + "/" + String.valueOf(time.getMonth()) + "/" +
+                            String.valueOf(time.getYear()) + " ";
+                    String location = event.getLocation().getAddress() + " ";
+                    String capacity = "[" + String.valueOf(event.getCapacity()) + "] ";
+
+                    result = result + name + strTime + location + capacity;
+
+                    return result;
+                }
+            });
+                Events_LIST.setFixedCellHeight(40);
+                Events_LIST.setSelectionBackground(new java.awt.Color(251, 247, 255));
+                Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));
+                Events_SCROLLPANE.setViewportView(Events_LIST);
+            }
+        }
+
+    }
 }

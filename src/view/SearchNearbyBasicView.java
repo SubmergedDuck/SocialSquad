@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SearchNearbyBasicView extends JPanel implements ActionListener, PropertyChangeListener {
+public class SearchNearbyBasicView extends JFrame implements ActionListener, PropertyChangeListener {
 
     public final String viewName = "search nearby";
     private final SearchNearbyViewModel searchNearbyViewModel;
