@@ -1,5 +1,6 @@
 package view;
 
+import data_access.InMemoryEventsDataAccessObject;
 import entity.Events.CommonEvent;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
@@ -8,10 +9,14 @@ import entity.Location.LocationFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.get_event_details.GetEventDetailsController;
+import interface_adapter.get_event_details.GetEventDetailsPresenter;
+import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.get_event_details.GetEventDetailsInputData;
+import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.search_nearby.SearchNearbyInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
@@ -233,9 +238,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 Event eventSelected = eventArrayList.get(Events_LIST.getSelectedIndex());
                 System.out.println(eventSelected.getEventName() + " is selected to view details.");// someething is selected
 
-                // Create input data for GetEventDetailController and execute
-                GetEventDetailsInputData inputData = new GetEventDetailsInputData(eventSelected.getEventID());
-                getEventDetailsController.execute(inputData);
+                getEventDetailsController.execute(eventSelected);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select an event first.");
             }
@@ -279,7 +282,14 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
             public void run() {
                 SearchNearbyState state = new SearchNearbyState();
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
-                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, new GetEventDetailsController(), new BackOutController());
+                SearchNearbyInteractor interactor = new SearchNearbyInteractor(new InMemoryEventsDataAccessObject(), new SearchNearbyPresenter(searchNearbyViewModel, new ViewManagerModel()));
+
+                GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
+                GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
+                GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, new InMemoryEventsDataAccessObject());
+                GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
                 searchNearbyViewModel.addPropertyChangeListener(view);
 
                 // make some events to load
