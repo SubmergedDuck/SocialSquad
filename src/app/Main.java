@@ -87,7 +87,7 @@ public class Main {
         loggedInViewModel.addPropertyChangeListener(loggedInView);
 
 
-        viewManagerModel.setActiveView(signupView.viewName);
+        viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
 
 

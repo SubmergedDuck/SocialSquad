@@ -7,21 +7,19 @@ package view;
 
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Users.CommonUser;
-import entity.Users.CommonUserFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.create_account.CreateAccountController;
+import interface_adapter.create_account.CreateAccountPresesnter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import use_case.create_account.CreateAccountInputBoundary;
+import use_case.create_account.CreateAccountInteractor;
+import use_case.create_account.CreateAccountOutputBoundary;
 import use_case.login.*;
-import use_case.signup.SignupInputBoundary;
-import use_case.signup.SignupInteractor;
-import use_case.signup.SignupOutputBoundary;
-import use_case.signup.SignupUserDataAccessInterface;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -45,7 +43,10 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
     private final LoginViewModel loginViewModel;
 
     private final LoginController loginController;
-    public LoginView(LoginViewModel loginViewModel, LoginController controller) {
+
+    private final CreateAccountController controller;
+    public LoginView(LoginViewModel loginViewModel, LoginController controller, CreateAccountController createAccountController) {
+        this.controller = createAccountController;
         initComponents();
 
         this.loginController = controller;
@@ -138,11 +139,16 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignIn_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(SignIn_BUTTON)) {
-                    LoginState currentState = loginViewModel.getState();
-
-                    loginController.execute(Username_TEXTFIELD.getText(),
+                    loginController.execute(
+                            Username_TEXTFIELD.getText(),
                             String.valueOf(Password_PASSWORDFIELD.getPassword())
                     );
+//                    LoginState currentState = loginViewModel.getState();
+//
+//                    loginController.execute(
+//                            currentState.getUsername(),
+//                            currentState.getPassword()
+//                    );
                 }
             }
         });
@@ -150,8 +156,14 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignUp_BUTTON.setText("Create Account");
         SignUp_BUTTON.setHorizontalTextPosition(SwingConstants.CENTER);
         SignUp_BUTTON.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SignUp_BUTTONActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(SignIn_BUTTON)){
+                    LoginState currentState = loginViewModel.getState();
+
+                    controller.execute();
+                }
+
+
             }
         });
 
@@ -436,8 +448,9 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
-        CommonUserFactory factory = new CommonUserFactory();
+        SignupViewModel signupViewModel = new SignupViewModel();
         LoginOutputBoundary presenter = new LoginPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        CreateAccountOutputBoundary createAccountOutputBoundary = new CreateAccountPresesnter(viewManagerModel,signupViewModel,loginViewModel);
 
 
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
@@ -445,7 +458,9 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
 
         LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter);
         LoginController loginController  = new LoginController(interactor);
-        LoginView loginView = new LoginView(loginViewModel,loginController);
+        CreateAccountInputBoundary createAccountInputBoundary = new CreateAccountInteractor(createAccountOutputBoundary);
+        CreateAccountController createAccountController = new CreateAccountController(createAccountInputBoundary);
+        LoginView loginView = new LoginView(loginViewModel,loginController, createAccountController);
         loginViewModel.addPropertyChangeListener(loginView);
 
 
