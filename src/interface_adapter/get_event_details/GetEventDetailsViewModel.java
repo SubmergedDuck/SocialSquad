@@ -25,7 +25,7 @@ public class GetEventDetailsViewModel extends ViewModel {
 
     @Override
     public void firePropertyChanged() {
-        observable.firePropertyChange("state", null, this.state);
+        observable.firePropertyChange("event details", null, this.state);
 
     }
 

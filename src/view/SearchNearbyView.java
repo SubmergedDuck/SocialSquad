@@ -1,16 +1,20 @@
 package view;
 
 import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEvent;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
+import entity.Users.CommonUser;
+import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.join_event.JoinEventController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
@@ -20,6 +24,7 @@ import use_case.search_nearby.SearchNearbyInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -280,20 +285,42 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                JFrame application = new JFrame("Search nearby - Event detail demo");
                 SearchNearbyState state = new SearchNearbyState();
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
-                SearchNearbyInteractor interactor = new SearchNearbyInteractor(new InMemoryEventsDataAccessObject(), new SearchNearbyPresenter(searchNearbyViewModel, new ViewManagerModel()));
+                InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+                InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
+
+                SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
 
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
-                ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
-                GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, new InMemoryEventsDataAccessObject());
+                GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
-                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
-                searchNearbyViewModel.addPropertyChangeListener(view);
 
-                // make some events to load
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(), new BackOutController());
+
+                searchNearbyViewModel.addPropertyChangeListener(view);
+                getEventDetailsViewModel.addPropertyChangeListener(view);
+                getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
+
+                view.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+                CardLayout cardLayout = new CardLayout();
+                JPanel views = new JPanel(cardLayout);
+                application.add(views);
+
+                views.add(view.getRootPane(), "search nearby");
+                views.add(eventDetailsView.getRootPane(), "get event details");
+                ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);
+                viewManagerModel.addPropertyChangeListener(viewManager);
+
+                // test run: received events nearby --> view event details --> join event
                 try {
+                    User user = new CommonUser("owner", "password", 20, "f", "contact");
+
                     LocationFactory factory = new CommonLocationFactory();
                     Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
                     Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
@@ -306,11 +333,26 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                     ArrayList<Event> eventArrayList = new ArrayList<>();
                     eventArrayList.add(event);
                     eventArrayList.add(event2);
+
+                    user.setCreatedEvents(eventArrayList); // Let the user create these events
+
+                    // Save the objects to inMemoryDAOs for use
+                    inMemoryUsersDataAccessObject.save(user);
+                    for (Event event1: eventArrayList) {
+                        inMemoryEventsDataAccessObject.save(event1);
+                    }
+
                     state.setEventsSearched(eventArrayList);
                     searchNearbyViewModel.setState(state);
-                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, new ViewManagerModel());
+                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
                     presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
-                    view.setVisible(true);
+
+                    getEventDetailsController.execute(event);
+                    viewManagerModel.setActiveView(view.viewName);
+                    viewManagerModel.firePropertyChanged();
+
+                    application.pack();
+                    application.setVisible(true);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -359,6 +401,9 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));
                 Events_SCROLLPANE.setViewportView(Events_LIST);
             }
+        } else if (evt.getPropertyName().equals("event details")) {
+            System.out.println("getting event details");
+
         }
 
     }
