@@ -20,6 +20,9 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
+/**
+ * Tests for the file event DAO
+ */
 public class FileEventDataAccessObjectTest {
     private FileEventDataAccessObject eventDataAccessObject;
     private Event testEvent1;
@@ -28,6 +31,10 @@ public class FileEventDataAccessObjectTest {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    /**
+     * Initializes all the objects used for testing.
+     * @throws IOException possible error with the api call
+     */
     @Before
     public void init() throws IOException{
         EventFactory eventFactory = new CommonEventFactory();
@@ -44,6 +51,9 @@ public class FileEventDataAccessObjectTest {
         eventDataAccessObject.save(testEvent1);
     }
 
+    /**
+     * Checks if the header in the csv file is correct.
+     */
     @Test
     public void readHeader(){
         try (BufferedReader reader = new BufferedReader(new FileReader(eventDatabase))) {
@@ -55,6 +65,9 @@ public class FileEventDataAccessObjectTest {
         }
     }
 
+    /**
+     * Tests if an event was properly stored in the file.
+     */
     @Test
     public void readEventLine(){
         try (BufferedReader reader = new BufferedReader(new FileReader(eventDatabase))) {
@@ -76,6 +89,9 @@ public class FileEventDataAccessObjectTest {
         }
     }
 
+    /**
+     * Tests if an event was stored in the event DAO's map.
+     */
     @Test
     public void saveEvent(){
         assertEquals(eventDataAccessObject.getEvent(0).getEventName(),testEvent1.getEventName());

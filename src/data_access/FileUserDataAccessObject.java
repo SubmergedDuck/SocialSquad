@@ -1,6 +1,5 @@
 package data_access;
 
-import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
 
@@ -9,12 +8,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * File data access object for users.
+ */
 public class FileUserDataAccessObject {
     private final File userDataBase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();
     private final UserFactory userFactory;
 
+    /**
+     * Constructor for FileUserDataAccessObject. It reads the csv file that stores the users and creates new user objects and saves them
+     * to the user map.
+     * @param csvPath the csv file that stores the users
+     * @param userFactory user factory
+     * @throws IOException error when reading the csv file
+     */
     public FileUserDataAccessObject(String csvPath, UserFactory userFactory) throws IOException{
         this.userDataBase = new File(csvPath);
         this.userFactory = userFactory;
@@ -48,6 +57,10 @@ public class FileUserDataAccessObject {
         }
     }
 
+    /**
+     * Saves the user to the map and updates the file to store the user.
+     * @param savedUser the user that is being saved.
+     */
     public void save(User savedUser){
         usernameToUser.put(savedUser.getUsername(),savedUser);
         save();
@@ -69,12 +82,5 @@ public class FileUserDataAccessObject {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-    public static void main(String[] args) throws IOException {
-        String csvPath = "users.csv";
-        UserFactory userFactory = new CommonUserFactory();
-        User testUser = userFactory.create("testUser","testPassword",15,"m","testcontact");
-        FileUserDataAccessObject testDAO = new FileUserDataAccessObject(csvPath, userFactory);
-        testDAO.save(testUser);
     }
 }

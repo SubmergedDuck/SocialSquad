@@ -10,6 +10,9 @@ import java.io.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * Tests for the file user DAO.
+ */
 public class FileUserDataAccessObjectTest {
     private FileUserDataAccessObject userDataAccessObject;
     private User testUser1;
@@ -17,6 +20,10 @@ public class FileUserDataAccessObjectTest {
     private final String csvPath = "TestUserDatabase.csv";
     private final File userDatabase = new File(csvPath);
 
+    /**
+     * Initialzies all the objects used for testing.
+     * @throws IOException
+     */
     @Before
     public void init() throws IOException {
         UserFactory userFactory = new CommonUserFactory();
@@ -27,6 +34,9 @@ public class FileUserDataAccessObjectTest {
         userDataAccessObject.save(testUser2);
     }
 
+    /**
+     * Checks if the header in the csv file is correct.
+     */
     @Test
     public void readHeader(){
         try (BufferedReader reader = new BufferedReader(new FileReader(userDatabase))) {
@@ -38,6 +48,9 @@ public class FileUserDataAccessObjectTest {
         }
     }
 
+    /**
+     * Tests if the first user line is properly formatted
+     */
     @Test
     public void readFirstUserLine(){
         try (BufferedReader reader = new BufferedReader(new FileReader(userDatabase))) {
@@ -51,6 +64,9 @@ public class FileUserDataAccessObjectTest {
         }
     }
 
+    /**
+     * Tests if the properly file has stored more than one event.
+     */
     @Test
     public void readSubsequentUserLines(){
         try (BufferedReader reader = new BufferedReader(new FileReader(userDatabase))) {

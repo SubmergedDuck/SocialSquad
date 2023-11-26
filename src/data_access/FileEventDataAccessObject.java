@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
+/**
+ * File data access object for events.
+ */
 public class FileEventDataAccessObject {
     private final File eventDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
@@ -20,6 +22,14 @@ public class FileEventDataAccessObject {
     private final String elementSeperator = " ";
     private final DateTimeFormatter formatter;
 
+    /**
+     * Constructor for FileEventDataAccessObject. This reads the csv file and creates new event objects and saves it to the event map.
+     * @param csvPath the csv file name
+     * @param eventFactory an event factory
+     * @param locationFactory a location factory
+     * @param formatter localdatetime formatter
+     * @throws IOException error when reading the csv file
+     */
     public FileEventDataAccessObject(String csvPath,EventFactory eventFactory, LocationFactory locationFactory, DateTimeFormatter formatter) throws IOException {
         this.eventDatabase = new File(csvPath);
         this.eventFactory = eventFactory;
@@ -74,13 +84,27 @@ public class FileEventDataAccessObject {
         }
     }
 
+    /**
+     * Saves an event and stores it in the file.
+     * @param event the event that is being saved
+     */
     public void save(Event event){
         eventsToID.put(event.getEventID(), event);
         save();
     }
+
+    /**
+     * Retrieves an event based on its ID
+     * @param id the ID of the event
+     * @return the selected event
+     */
     public Event getEvent(int id){
         return eventsToID.get(id);
     }
+
+    /**
+     * Rewrites the entire csv file to save all events in the map.
+     */
     private void save(){
         BufferedWriter writer;
         try {
@@ -104,6 +128,11 @@ public class FileEventDataAccessObject {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Provides the element seperator that seperates elements in a collection in the csv file.
+     * @return the element seperator
+     */
     public String getElementSeperator(){return this.elementSeperator;}
     private String formatStringList(ArrayList<String> stringList){
         String currentString = "";
