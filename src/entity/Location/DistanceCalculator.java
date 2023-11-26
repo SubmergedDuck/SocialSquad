@@ -75,7 +75,7 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
         JSONObject results = resources.getJSONObject(0);
         JSONArray result = results.getJSONArray("results");
         JSONObject details = result.getJSONObject(0);
-        BigDecimal distance = (BigDecimal) details.get("travelDistance");
+        Number distance = (Number) details.get("travelDistance");
 
         return distance.doubleValue();
     }
