@@ -4,15 +4,34 @@
  */
 package view;
 
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Users.CommonUser;
+import entity.Users.CommonUserFactory;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
+import org.json.Property;
+import use_case.signup.SignupInputBoundary;
+import use_case.signup.SignupInteractor;
+import use_case.signup.SignupOutputBoundary;
+import use_case.signup.SignupUserDataAccessInterface;
+
+import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.security.Key;
 
 /**
  *
  * @author submergedduck
  */
-public class SignupView extends javax.swing.JFrame {
+public class SignupView extends javax.swing.JFrame implements PropertyChangeListener {
     public final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
@@ -71,28 +90,28 @@ public class SignupView extends javax.swing.JFrame {
         javax.swing.GroupLayout TopSeperator_PANELLayout = new javax.swing.GroupLayout(TopSeperator_PANEL);
         TopSeperator_PANEL.setLayout(TopSeperator_PANELLayout);
         TopSeperator_PANELLayout.setHorizontalGroup(
-            TopSeperator_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                TopSeperator_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
         );
         TopSeperator_PANELLayout.setVerticalGroup(
-            TopSeperator_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1, Short.MAX_VALUE)
+                TopSeperator_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout Top_GRADIENTPANELLayout = new javax.swing.GroupLayout(Top_GRADIENTPANEL);
         Top_GRADIENTPANEL.setLayout(Top_GRADIENTPANELLayout);
         Top_GRADIENTPANELLayout.setHorizontalGroup(
-            Top_GRADIENTPANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(SocialSquadTitle_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(TopSeperator_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                Top_GRADIENTPANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(SocialSquadTitle_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TopSeperator_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
         Top_GRADIENTPANELLayout.setVerticalGroup(
-            Top_GRADIENTPANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Top_GRADIENTPANELLayout.createSequentialGroup()
-                .addContainerGap(67, Short.MAX_VALUE)
-                .addComponent(SocialSquadTitle_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TopSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                Top_GRADIENTPANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Top_GRADIENTPANELLayout.createSequentialGroup()
+                                .addContainerGap(67, Short.MAX_VALUE)
+                                .addComponent(SocialSquadTitle_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TopSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         Username_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
@@ -128,7 +147,7 @@ public class SignupView extends javax.swing.JFrame {
         UsernameSignupFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         UsernameSignupFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         UsernameSignupFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        UsernameSignupFailed_LABEL.setText("*Signup Failed: username taken");
+//        UsernameSignupFailed_LABEL.setText("*Signup Failed: username taken");
 
         Password_PASSWORDFIELD1.setBackground(new java.awt.Color(251, 247, 255));
         Password_PASSWORDFIELD1.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
@@ -146,9 +165,10 @@ public class SignupView extends javax.swing.JFrame {
         PasswordSignupFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         PasswordSignupFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         PasswordSignupFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        PasswordSignupFailed_LABEL.setText("*Signup Failed: password doesn't match");
+//        PasswordSignupFailed_LABEL.setText("*Signup Failed: password doesn't match");
 
         SignUp_BUTTON.setText("Sign Up");
+
         SignUp_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SignUp_BUTTONActionPerformed(evt);
@@ -167,80 +187,145 @@ public class SignupView extends javax.swing.JFrame {
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
         Main_PANELLayout.setHorizontalGroup(
-            Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ReEnterPassword_LABEL)
-                    .addComponent(Password_PASSWORDFIELD1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(PasswordSignupFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Password_LABEL)
-                    .addComponent(Password_PASSWORDFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Username_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Username_LABEL)
-                    .addComponent(UsernameSignupFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(Main_PANELLayout.createSequentialGroup()
-                        .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(SignUp_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(46, 46, 46))
+                Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(ReEnterPassword_LABEL)
+                                        .addComponent(Password_PASSWORDFIELD1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(PasswordSignupFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(Password_LABEL)
+                                        .addComponent(Password_PASSWORDFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(Username_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(Username_LABEL)
+                                        .addComponent(UsernameSignupFailed_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(SignUp_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(46, 46, 46))
         );
         Main_PANELLayout.setVerticalGroup(
-            Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Main_PANELLayout.createSequentialGroup()
-                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                .addComponent(Username_LABEL)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Username_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(UsernameSignupFailed_LABEL)
-                .addGap(5, 5, 5)
-                .addComponent(Password_LABEL)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Password_PASSWORDFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
-                .addComponent(ReEnterPassword_LABEL)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Password_PASSWORDFIELD1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PasswordSignupFailed_LABEL)
-                .addGap(102, 102, 102)
-                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SignUp_BUTTON, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(106, 106, 106))
+                Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                                .addComponent(Username_LABEL)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Username_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(UsernameSignupFailed_LABEL)
+                                .addGap(5, 5, 5)
+                                .addComponent(Password_LABEL)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Password_PASSWORDFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(23, 23, 23)
+                                .addComponent(ReEnterPassword_LABEL)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Password_PASSWORDFIELD1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(PasswordSignupFailed_LABEL)
+                                .addGap(102, 102, 102)
+                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(SignUp_BUTTON, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(106, 106, 106))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void Password_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+                SignupState currentState = signupViewModel.getState();
+                currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
+                signupViewModel.setState(currentState);
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
+    private void RepeatPassword_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
+        new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                SignupState currentState = signupViewModel.getState();
+                currentState.setRepeatPassword(Password_PASSWORDFIELD1.getText() + e.getKeyChar());
+                signupViewModel.setState(currentState);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
     private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
-        // TODO add your handling code here:
+
+        new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                SignupState currentState = signupViewModel.getState();
+                String text = Username_TEXTFIELD.getText() + e.getKeyChar();
+                currentState.setUsername(text);
+                signupViewModel.setState(currentState);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };// TODO add your handling code here:
     }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
+
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
         if (evt.getSource().equals(SignUp_BUTTON)) {
             SignupState currentState = signupViewModel.getState();
-        // TODO: implement this
-//            signupController.execute(
-//                    currentState.getUsername(),
-//                    currentState.getPassword(),
-//                    currentState.getRepeatPassword())
+            signupController.execute(
+                    currentState.getUsername(), "",
+                    currentState.getPassword(),
+                    currentState.getRepeatPassword(), "", "", "");
         }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
@@ -277,4 +362,32 @@ public class SignupView extends javax.swing.JFrame {
     private javax.swing.JLabel Username_LABEL;
     private javax.swing.JTextField Username_TEXTFIELD;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        SignupState state = (SignupState) evt.getNewValue();
+        if (state.getUsernameError() != null) {
+            JOptionPane.showMessageDialog(this, state.getUsernameError());
+        }
+    }
+
+    public static void main(String[] args) {
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        SignupViewModel signupViewmodel = new SignupViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        CommonUserFactory factory = new CommonUserFactory();
+        SignupOutputBoundary presenter = new SignupPresenter(viewManagerModel, signupViewmodel, loginViewModel);
+
+        SignupUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
+        inMemoryUserDAO.save(new CommonUser("123", "123", 1, "f", "contact"));
+        SignupInputBoundary interactor = new SignupInteractor(new InMemoryUsersDataAccessObject(), presenter, factory);
+
+        SignupController controller = new SignupController(interactor);
+        SignupView signupView = new SignupView(controller, signupViewmodel);
+        signupViewmodel.addPropertyChangeListener(signupView);
+
+        signupView.setVisible(true);
+    }
+
+
 }

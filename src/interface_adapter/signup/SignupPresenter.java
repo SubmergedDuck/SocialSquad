@@ -30,12 +30,12 @@ public class SignupPresenter implements SignupOutputBoundary {
 
     @Override
     public void prepareSuccessView(SignupOutputData output) {
-        // TODO Commented out this part of the code because it gives compilation errors (loginViewModel.getState() is not implemented)
-//        LoginState loginState = loginViewModel.getState();
-//        loginState.setUsername(output.getUsername());
-//        this.loginViewModel.setState(loginState);
-//        loginViewModel.firePropertyChanged();
-//        viewManagerModel.setActiveView(loginViewModel.getViewName());
-//        viewManagerModel.firePropertyChanged();
+        LoginState loginState = loginViewModel.getState();
+        loginState.setUsername(output.getUsername());
+        this.loginViewModel.setState(loginState);
+        loginViewModel.firePropertyChanged();
+
+        viewManagerModel.setActiveView(loginViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
     }
 }

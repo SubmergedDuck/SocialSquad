@@ -1,12 +1,17 @@
 package data_access;
 
 import entity.Events.Event;
+import use_case.generate_static_map.GSMEventDataAccessInterface;
+import entity.Location.DistanceCalculator;
+import entity.Location.DistanceCalculatorInterface;
+import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_event_details.GetEventDetailsDataAccessInterface;
-
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
+import use_case.search_nearby.SearchNearbyDataAccessInterface;
+import use_case.search_nearby.SearchNearbyInputData;
 import use_case.view_participants.ViewParticipantsDataAccessInterface;
 
 import java.util.ArrayList;
@@ -15,12 +20,25 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
-        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface, GetEventDetailsDataAccessInterface {
+        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
+        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
     private final Map<String, Event> nameToEvents = new HashMap<>();
     private final Map<Integer, Event> eventsToID = new HashMap<>();
+
+    @Override
+    public Integer generateEventID() {
+        Integer currentID = 0;
+        for (Integer eventID : eventsToID.keySet()){
+            //The new eventID will be the highest event ID.
+            if (currentID < eventID){
+                currentID = eventID + 1;
+            }
+        }
+        return currentID;
+    }
 
     /**
      * A public method that saves an event to the nameToEvent hashmap directory
@@ -110,10 +128,36 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     }
 
     @Override
+    public HashMap<Integer, Event> getEvents(int amount) {
+        HashMap<Integer, Event> outputMap = new HashMap<>();
+        for (Integer key : eventsToID.keySet()){
+            if (outputMap.size() < amount){
+                outputMap.put(key, eventsToID.get(key));
+            }
+        }
+        return outputMap;
+    }
+
+    @Override
+    public ArrayList<Event> getNearbyEvent(SearchNearbyInputData inputData) throws Exception {
+        ArrayList<Event> returnEvents = new ArrayList<>();
+        ArrayList<Event> events = new ArrayList(eventsToID.values());
+        String[] strCoord = inputData.getCoordinates();
+
+        DistanceCalculatorInterface distanceCalculator = new DistanceCalculator();
+        for (Event event: events) {
+            if (distanceCalculator.within2KM(strCoord, event)) {
+                returnEvents.add(event);
+            }
+        }
+        return returnEvents;
+    }
+
+    @Override
     public Event getEvent(int eventID) {
         return eventsToID.get(eventID);
     }
-    
+
     @Override
     public String[] getEventCoordinates(int eventID) {
         Event event = eventsToID.get(eventID);

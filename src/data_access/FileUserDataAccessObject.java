@@ -3,6 +3,7 @@ package data_access;
 import entity.Users.CommonUser;
 import entity.Users.UserFactory;
 import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 import java.io.*;
@@ -14,7 +15,7 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-                                                 JoinEventDataAccessInterface{
+        JoinEventDataAccessInterface{
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String,User> usernameToUser = new HashMap<>();
@@ -144,6 +145,9 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
             throw new RuntimeException(e);
         }
     }
+
+
+
     public Integer generateEventID() {
         return null;
     }
