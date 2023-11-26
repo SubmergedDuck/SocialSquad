@@ -324,13 +324,15 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
         if (evt.getSource().equals(SignUp_BUTTON)) {
-            SignupState currentState = signupViewModel.getState();
-            signupController.execute(
-                    currentState.getUsername(),"",
-                    currentState.getPassword(),
-                    currentState.getRepeatPassword(),"","","");
+
+            signupController.execute(Username_TEXTFIELD.getText(),"",
+                    String.valueOf(Password_PASSWORDFIELD.getPassword()),
+                    String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","");
         }
-    }//GEN-LAST:event_SignUp_BUTTONActionPerformed
+
+        }
+
+    //GEN-LAST:event_SignUp_BUTTONActionPerformed
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back_BUTTONActionPerformed
         // TODO add your handling code here:

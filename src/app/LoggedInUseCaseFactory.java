@@ -11,7 +11,6 @@ import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
-import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import view.HomeView;
 
 

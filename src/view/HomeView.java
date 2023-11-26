@@ -2,9 +2,12 @@ package view;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.search_event.SearchEventController;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -12,7 +15,7 @@ import java.awt.event.ActionListener;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame {
+public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -123,8 +126,18 @@ public class HomeView extends javax.swing.JFrame {
         CreateEvent_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
         CreateEvent_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateEvent_BUTTONActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+
+                if (evt.getSource().equals(CreateEvent_BUTTON)){
+                    LoggedInState currentState = loggedInViewModel.getState();
+                    //TODO:fix later
+//                    SearchEventController searchEventController =  new SearchEventController();
+//
+//                    searchEventController.execute(
+//                            currentState.getUsername()
+//                    );
+
+                }
             }
         });
 
@@ -133,7 +146,7 @@ public class HomeView extends javax.swing.JFrame {
 
         // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
         MapImage_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/GetDirectionsTester.png"));
-        MapImage_LABEL.setText("jLabel1");
+        MapImage_LABEL.setText("static map view");
 
         // TODO: Import logout image icon to src/view
         LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
@@ -228,6 +241,16 @@ public class HomeView extends javax.swing.JFrame {
 
     private void SearchEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        LoggedInState state = (LoggedInState) evt.getNewValue();
     }
 
     /**

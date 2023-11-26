@@ -73,19 +73,23 @@ public class Main {
         // TODO: change this to the real DAOs later
         InMemoryUsersDataAccessObject userDataAccessObject;
         userDataAccessObject = new InMemoryUsersDataAccessObject();
-//        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
+        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
 
 
-        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, userDataAccessObject);
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,signupViewModel, userDataAccessObject);
         views.add(loginView.getRootPane(), loginView.viewName);
-//        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
-//        views.add(signupView.getRootPane(), signupView.viewName);
-//        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
-//        views.add(loggedInView.getRootPane(), loggedInView.viewName);
+        loginViewModel.addPropertyChangeListener(loginView);
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
+        views.add(signupView.getRootPane(), signupView.viewName);
+        signupViewModel.addPropertyChangeListener(signupView);
+        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
+        views.add(loggedInView.getRootPane(), loggedInView.viewName);
+        loggedInViewModel.addPropertyChangeListener(loggedInView);
 
 
-        viewManagerModel.setActiveView(loginView.viewName);
+        viewManagerModel.setActiveView(signupView.viewName);
         viewManagerModel.firePropertyChanged();
+
 
         application.pack();
         application.setVisible(true);
