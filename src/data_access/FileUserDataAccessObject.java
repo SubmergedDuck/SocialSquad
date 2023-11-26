@@ -163,6 +163,7 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     public boolean existsByName(String identifier) {
         return usernameToUser.containsKey(identifier);
     }
+
 //    @Override
 //    public void save(CommonUser commonUser) {
 //
@@ -173,3 +174,4 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
 //        return null;
 //    }
 }
+
