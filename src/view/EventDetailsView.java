@@ -63,6 +63,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     private javax.swing.JLabel TypeByUser_LABEL;
+    private javax.swing.JLabel EventAlreadyJoinedWarning_LABEL;
 
     public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
                             BackOutController backOutController) {
@@ -103,6 +104,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Location_TEXTAREA = new javax.swing.JTextArea();
         TimeDescription_LABEL = new javax.swing.JLabel();
         GetDirection_BUTTON = new ButtonGradient();
+        EventAlreadyJoinedWarning_LABEL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -325,6 +327,11 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             }
         });
 
+        EventAlreadyJoinedWarning_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
+        EventAlreadyJoinedWarning_LABEL.setForeground(new java.awt.Color(255, 102, 197));
+        EventAlreadyJoinedWarning_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        EventAlreadyJoinedWarning_LABEL.setText("*Note: You have already joined the event!");
+
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
         Main_PANELLayout.setHorizontalGroup(
@@ -337,25 +344,10 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(EventName_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(TypeByUser_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(35, 35, 35)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(BottomSeperator_PANEL1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                                         .addComponent(Capacity_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(83, 83, 83)
-                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(57, 57, 57)
@@ -367,11 +359,26 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                         .addComponent(Time_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(TimeDescription_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(83, 83, 83)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(EventAlreadyJoinedWarning_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(EventName_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(TypeByUser_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
                 Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(Main_PANELLayout.createSequentialGroup()                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(EventName_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -400,7 +407,9 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(38, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(EventAlreadyJoinedWarning_LABEL)
+                                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -517,4 +526,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
     }
 }
+
+
+
+
 
