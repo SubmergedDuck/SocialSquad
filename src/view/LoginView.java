@@ -52,6 +52,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
 
         this.loginController = controller;
         this.loginViewModel = loginViewModel;
+        this.loginViewModel.addPropertyChangeListener(this);
         }
 
     /**
@@ -412,7 +413,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
     }
     }
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {System.out.println("Click " + e.getActionCommand());
     }
 
     @Override
@@ -421,10 +422,10 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         if (state.getUsernameError() != null) {
             JOptionPane.showMessageDialog(this, state.getUsernameError());
         }
-        if (state.getPasswordError() != null) {
-            JOptionPane.showMessageDialog(this, state.getPasswordError());
-        }
+        if (state.getPasswordError() != null){
 
+            JOptionPane.showMessageDialog(this,state.getPasswordError());
+        }
         setFields(state);
 
     }

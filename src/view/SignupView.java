@@ -41,6 +41,7 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
         initComponents();
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
+        this.signupViewModel.addPropertyChangeListener(this);
     }
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel Main_PANEL;

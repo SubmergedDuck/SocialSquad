@@ -78,10 +78,8 @@ public class Main {
 
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,signupViewModel, userDataAccessObject);
         views.add(loginView.getRootPane(), loginView.viewName);
-        loginViewModel.addPropertyChangeListener(loginView);
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
-        signupViewModel.addPropertyChangeListener(signupView);
         HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView);

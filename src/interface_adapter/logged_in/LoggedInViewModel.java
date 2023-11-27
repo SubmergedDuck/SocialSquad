@@ -18,7 +18,7 @@ public class LoggedInViewModel extends ViewModel {
     private String loggedInUser;
 
     public LoggedInViewModel() {
-        super("logged in");
+        super("Home");
     }
 
     public void setState(LoggedInState state) {
