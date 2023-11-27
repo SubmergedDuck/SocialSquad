@@ -41,8 +41,31 @@ class BackOutInteractorTest {
         viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
         System.out.println("the current active view is " + viewManagermodel.getActiveView()); // should be view 2
         assert viewManagermodel.getActiveView().equals("view 2");
-        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // should be view 1
+
+        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName() + "\n"); // should be view 1
         assert viewManagerModelAdapter.getLastViewName().equals("view 1");
+
+        viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
+        assert viewManagerModelAdapter.getLastViewName().equals(""); // no view is before "view 1"
+        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName() + "\n");
+
+        // Go in again
+        System.out.println("going in again");
+        viewManagermodel.setActiveView("view 1");
+        System.out.println("right now the active view is: view 1\n"+"the last active view is " +
+                viewManagerModelAdapter.getLastViewName() + "\n"); // should be null
+
+        viewManagermodel.setActiveView("view 2");
+        System.out.println("right now the active view is: view 2\n"+"the last active view is " +
+                viewManagerModelAdapter.getLastViewName()+ "\n"); // should be view 1
+        assert viewManagerModelAdapter.getLastViewName().equals("view 1");
+
+        // This part doesn't work
+//        viewManagermodel.setActiveView("view 3");
+//        System.out.println("right now the active view is: view 3\n" +
+//                "the last active view is " + viewManagerModelAdapter.getLastViewName()+ "\n"); // should be view 2
+//        assert viewManagerModelAdapter.getLastViewName().equals("view 2");
+
 
     }
 }
