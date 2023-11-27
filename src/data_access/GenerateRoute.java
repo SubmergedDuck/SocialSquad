@@ -27,8 +27,8 @@ public class GenerateRoute implements GetDirectionAPIDataAccessInterface {
                 return image;
             }
         } catch (IOException e){
-            return null;
+            return new BufferedImage();
         }
-        return null;
+        return new BufferedImage();
     }
 }
