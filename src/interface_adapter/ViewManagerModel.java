@@ -18,6 +18,12 @@ public class ViewManagerModel {
         this.activeViewName = newActiveView;
     }
 
+    public void setActiveView(String activeViewName, String description) {
+        if (description.equals("going back")) {
+            this.activeViewName = activeViewName; // don't record the view in the lastViews stack at the adapter
+        }
+    }
+
     // This is what the Signup Presenter will call to let the ViewModel know
     // to alert the View
     public void firePropertyChanged() {

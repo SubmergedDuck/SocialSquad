@@ -21,14 +21,7 @@ public class ViewManagerModelAdapter implements PropertyChangeListener {
     }
 
     public String getLastViewName() {
-        if (lastViews.isEmpty()) {
-            return null; // There is no previous view.
-        } else {
-            String lastViewName = lastViews.pop(); // store it
-            lastViews.add(lastViewName); // put it back
-            return lastViewName;
-
-        }
+            return previousViewName;
     }
 
     /**
@@ -40,10 +33,10 @@ public class ViewManagerModelAdapter implements PropertyChangeListener {
         previousViewName = lastViews.pop(); // the most top last view is now active, so pop
 //        this.lastViewName = lastViews.pop(); // the next view to go back is the second top on the stack
 //        lastViews.add(this.lastViewName); // put it back for now
-        if (previousViewName.equals(lastViewName)) {
+        if (previousViewName.equals(lastViewName)) { // we are going back now
             previousViewName = lastViews.pop();
         }
-        viewManagerModel.setActiveView(lastViewName);
+        viewManagerModel.setActiveView(lastViewName, "going back");
         viewManagerModel.firePropertyChanged();
     }
 
@@ -54,46 +47,18 @@ public class ViewManagerModelAdapter implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName().equals("store current view name")) {
-            if (!evt.getNewValue().equals("")) {
+            if (!evt.getNewValue().equals("")) { // not switching from "", which means nothing to store
                 String currentView = (String) evt.getNewValue();
                 visitingSequence.add(currentView);
-                if (!visitingSequence.contains(previousViewName)) { // means this is the case that previousView = ""
+                if (!lastViews.contains(currentView)) { // this current view is a new view to the stack, needs to be added
                     previousViewName = currentView;
-                    lastViews.add((String) evt.getNewValue());
-                } else if (//visitingSequence.indexOf(currentView) <= visitingSequence.indexOf(previousViewName)
-                        !lastViews.contains(currentView) // it is not popped out: it is not a previous view
-                ){ // the current view to store is already stored i.e. we are heading back now
-                    previousViewName = currentView;
-                    lastViews.add((String) evt.getNewValue());
+                    lastViews.add(currentView);
+                } else { // current view that we are leaving from is has already been visited
+                    ;
+
 
                 }
-//                if (visitingSequence.indexOf(previousViewName) > visitingSequence.indexOf(currentView)) { // decide if needed to add into last views
-//                    previousViewName = (String) evt.getNewValue();
-//                    lastViews.add((String) evt.getNewValue());
-//                }
-//                previousViewName = (String) evt.getNewValue();
-//                lastViews.add((String) evt.getNewValue());
-                // Add the current view to the visiting sequence first, for possible later comparison
-//                if (isEmpty) {
-//                    previousViewName = (String) evt.getNewValue();
-//                    //visitingSequence.add((String) evt.getNewValue());
-//                    lastViews.add((String) evt.getNewValue()); // store the current view name before letting view manager model to go back
-                //}
             }
-
-//        } else if (!(visitingSequence.contains(evt.getNewValue()) && visitingSequence.contains(previousViewName))) {
-//            previousViewName = (String) evt.getNewValue();
-//            visitingSequence.add((String) evt.getNewValue());
-//            lastViews.add((String) evt.getNewValue());
-//
-//        } else { // Need to compare if the new view switched into is a new view or a previous view
-//            int currentViewIndex = visitingSequence.indexOf(evt.getNewValue());
-//            int previousViewIndex = visitingSequence.indexOf(previousViewName);
-//            if (previousViewIndex <= currentViewIndex) {
-//                // do nothing, we are heading out, so no point to store this view
-//            } else {
-//                previousViewName = (String) evt.getNewValue();
-//            }
 
         }
     }

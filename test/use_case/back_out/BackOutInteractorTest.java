@@ -16,28 +16,33 @@ class BackOutInteractorTest {
         ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagermodel);
         viewManagermodel.addPropertyChangeListener(viewManagerModelAdapter); // The Adapter listens to the ViewMangaerModel
 
-        // test when a view switch is performed
+        // test when a view switch is performed outside of the GoBack use case
         viewManagermodel.setActiveView("view 1");
-        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // should be null
+        System.out.println("right now the active view is: view 1\n"+"the last active view is " +
+                viewManagerModelAdapter.getLastViewName() + "\n"); // should be null
 
         viewManagermodel.setActiveView("view 2");
-        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // should be view 1
+        System.out.println("right now the active view is: view 2\n"+"the last active view is " +
+                viewManagerModelAdapter.getLastViewName()+ "\n"); // should be view 1
         assert viewManagerModelAdapter.getLastViewName().equals("view 1");
 
         viewManagermodel.setActiveView("view 3");
-        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // should be view 2
+        System.out.println("right now the active view is: view 3\n" +
+                "the last active view is " + viewManagerModelAdapter.getLastViewName()+ "\n"); // should be view 2
         assert viewManagerModelAdapter.getLastViewName().equals("view 2");
 
-        System.out.println("the current active view is " + viewManagermodel.getActiveView()); // should be view 3
+        System.out.println("the current active view is " + viewManagermodel.getActiveView()+ "\n"); // should be view 3
         assert viewManagermodel.getActiveView().equals("view 3");
+
 
         System.out.println("\nbacking out to the last view...\n");
 
+        // Go back through the adapter
         viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
         System.out.println("the current active view is " + viewManagermodel.getActiveView()); // should be view 2
         assert viewManagermodel.getActiveView().equals("view 2");
+        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // should be view 1
+        assert viewManagerModelAdapter.getLastViewName().equals("view 1");
 
-        System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName()); // TODO: should be view 1
-        assert viewManagermodel.getActiveView().equals("view 1");
     }
 }
