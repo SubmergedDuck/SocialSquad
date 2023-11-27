@@ -44,6 +44,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
 
     private final LoginController loginController;
 
+
     private final CreateAccountController controller;
     public LoginView(LoginViewModel loginViewModel, LoginController controller, CreateAccountController createAccountController) {
         this.controller = createAccountController;
@@ -139,16 +140,12 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignIn_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(SignIn_BUTTON)) {
+                    LoginState currentState = loginViewModel.getState();
+
                     loginController.execute(
-                            Username_TEXTFIELD.getText(),
-                            String.valueOf(Password_PASSWORDFIELD.getPassword())
+                            currentState.getUsername(),
+                            currentState.getPassword()
                     );
-//                    LoginState currentState = loginViewModel.getState();
-//
-//                    loginController.execute(
-//                            currentState.getUsername(),
-//                            currentState.getPassword()
-//                    );
                 }
             }
         });
@@ -157,10 +154,13 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignUp_BUTTON.setHorizontalTextPosition(SwingConstants.CENTER);
         SignUp_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                if (evt.getSource().equals(SignIn_BUTTON)){
-                    LoginState currentState = loginViewModel.getState();
+                if (evt.getSource().equals(SignUp_BUTTON)){
+//                    LoginState currentState = loginViewModel.getState();
+//
+//                    controller.execute();
+                    loginController.linkTo(new SignupViewModel().getViewName());
 
-                    controller.execute();
+
                 }
 
 

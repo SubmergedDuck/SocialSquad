@@ -38,6 +38,13 @@ public class LoginInteractor implements LoginInputBoundary {
             }
         }
     }
+
+    @Override
+    public void linkTo(String viewname) {
+        loginPresenter.prepareLinkView(viewname);
+
+    }
+
     public static void main(String[] args) {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         SignupViewModel signupViewmodel = new SignupViewModel();
@@ -46,6 +53,11 @@ public class LoginInteractor implements LoginInputBoundary {
             @Override
             public void prepareSuccessView(LoginOutputData user) {
                 System.out.println("sign in succeed");
+            }
+
+            @Override
+            public void prepareLinkView(String viewname) {
+
             }
 
             @Override
