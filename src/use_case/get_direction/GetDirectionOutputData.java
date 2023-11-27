@@ -16,5 +16,5 @@ public class GetDirectionOutputData {
         this.directionImage = directionImage;
     }
 
-    BufferedImage getDirectionImage(){return this.directionImage;}
+    public BufferedImage getDirectionImage(){return this.directionImage;}
 }
