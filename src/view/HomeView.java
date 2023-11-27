@@ -174,6 +174,17 @@ public class HomeView extends javax.swing.JFrame {
         MapImage_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/GetDirectionsTester.png"));
         MapImage_LABEL.setText("[Static map here]");
 
+
+
+
+
+
+
+
+
+
+
+
         // TODO: Import logout image icon to src/view
         LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
         LogoutIcon_LABEL.setText("jLabel2");
