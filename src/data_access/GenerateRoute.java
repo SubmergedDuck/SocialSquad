@@ -12,10 +12,10 @@ import javax.imageio.ImageIO;
 public class GenerateRoute implements GetDirectionAPIDataAccessInterface {
     private final String apiKey = "An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
     @Override
-    public BufferedImage generateRouteImage(String coordinates1, String coordinates2) {
+    public BufferedImage generateRouteImage(String coordinates1, String coordinates2, String imageSize) {
         try {
-            String apiURL = String.format("https://dev.virtualearth.net/REST/v1/Imagery/Map/Road/Routes?wp.0=%s;64;1&wp.1=%s;66;2&key=%s",
-                    coordinates1, coordinates2, apiKey);
+            String apiURL = String.format("https://dev.virtualearth.net/REST/v1/Imagery/Map/Road/Routes?wp.0=%s;64;1&wp.1=%s;66;2&mapSize=%s&key=%s",
+                    coordinates1, coordinates2, imageSize, apiKey);
             URL url = new URL(apiURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
