@@ -40,7 +40,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private final BackOutController backOutController;
     private final JoinEventController joinEventController;
 
-
+    private ButtonGradient GetDirection_BUTTON;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private javax.swing.JPanel BottomSeperator_PANEL1;
@@ -102,6 +102,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Location_SCROLLPANE = new javax.swing.JScrollPane();
         Location_TEXTAREA = new javax.swing.JTextArea();
         TimeDescription_LABEL = new javax.swing.JLabel();
+        GetDirection_BUTTON = new ButtonGradient();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -317,6 +318,13 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         TimeDescription_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 //        TimeDescription_LABEL.setText("10:00 AM to 01:00 PM"); //TODO here
 
+        GetDirection_BUTTON.setText("Get Direction");
+        GetDirection_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GetDirection_BUTTONActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
         Main_PANELLayout.setHorizontalGroup(
@@ -344,6 +352,10 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(BottomSeperator_PANEL1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                                         .addComponent(Capacity_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(83, 83, 83)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(57, 57, 57)
@@ -380,7 +392,9 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                 .addComponent(Description_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Description_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48)
+                                .addGap(2, 2, 2)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -413,13 +427,17 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         System.out.println("Go back");
     }
 
+    private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("FlatLaf Light".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -499,3 +517,4 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
     }
 }
+
