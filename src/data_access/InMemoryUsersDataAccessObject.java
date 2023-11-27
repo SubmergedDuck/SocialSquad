@@ -2,7 +2,11 @@ package data_access;
 
 import entity.Events.Event;
 import entity.Users.User;
+import use_case.generate_static_map.GSMUserDataAccessInterface;
+import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.get_direction.GetDirectionUserDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -12,7 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
-        SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface {
+        SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
+        GetDirectionUserDataAccessInterface, CreateEventDataAccessInterface,GSMUserDataAccessInterface, LoggedInUserDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
@@ -32,13 +37,19 @@ public class InMemoryUsersDataAccessObject implements
 
     @Override
     public boolean existsByName(String identifier) {
-        return false;
+        return usernameToUser.containsKey(identifier);
     }
     //TODO: should be return usernameToUser.containsKey(identifier)?
 
     public void save(User user){
         usernameToUser.put(user.getUsername(), user);
     }
+
+    @Override
+    public User get(String username) {
+        return usernameToUser.get(username);
+    }
+
     @Override
     public ArrayList<Event> getFullMatchEvents(SearchEventInputData inputData) {
         return null;
@@ -48,5 +59,32 @@ public class InMemoryUsersDataAccessObject implements
     public ArrayList<Event> getPartialMatchEvents(SearchEventInputData inputData) {
         return null;
     }
-}
 
+    @Override
+    public String[] getUserCoordinates(String user) {
+        User selectedUser = usernameToUser.get(user);
+        String[] coordinates = selectedUser.getLocation().getCoordinates();
+        return coordinates;
+    }
+
+    @Override
+    public String[] getCoordinates(String user) {
+        User selectedUser = usernameToUser.get(user);
+        return selectedUser.getLocation().getCoordinates();
+    }
+
+    @Override
+    public Integer generateEventID() {
+        return null;
+    }
+    public User getUser(String username){
+        return usernameToUser.get(username);
+    }
+    @Override
+    public void save(Event event) {
+        String ownerUser = event.getOwnerUser();
+        User eventOwner = this.usernameToUser.get(ownerUser);
+        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
+        hostedEvents.add(event);
+    }
+}

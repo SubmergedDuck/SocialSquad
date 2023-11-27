@@ -18,4 +18,6 @@ public interface User {
     void setCreatedEvents(ArrayList<Event> eventsCreated);
 
     void setJoinedEvents(ArrayList<Event> eventsJoined);
+
+    void setLocation(Location location);
 }
