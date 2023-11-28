@@ -23,6 +23,7 @@ import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
@@ -311,8 +312,10 @@ public class HomeView extends javax.swing.JFrame {
                 GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(), new BackOutController());
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), new BackOutController());
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);

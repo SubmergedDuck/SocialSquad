@@ -20,6 +20,7 @@ import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.get_event_details.GetEventDetailsInputData;
 import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.join_event.JoinEventInteractor;
 import use_case.search_nearby.SearchNearbyInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
@@ -300,7 +301,9 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(), new BackOutController());
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel,
+                        new JoinEventController(joinEventInteractor), new BackOutController());
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);

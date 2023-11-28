@@ -16,6 +16,7 @@ import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import use_case.get_event_details.GetEventDetailsOutputData;
+import use_case.join_event.JoinEventInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.text.View;
@@ -467,7 +468,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
 
-                JoinEventController joinEventController = new JoinEventController();
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
                 BackOutController backOutController = new BackOutController();
 
                 EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
