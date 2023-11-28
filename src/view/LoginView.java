@@ -11,14 +11,17 @@ import interface_adapter.login.LoginViewModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
  * @author submergedduck
  */
-public class LoginView extends JFrame {
+public class LoginView extends JFrame implements ActionListener, PropertyChangeListener {
 
 
     /**
@@ -29,9 +32,9 @@ public class LoginView extends JFrame {
 
     private final LoginController loginController;
     public LoginView(LoginViewModel loginViewModel, LoginController controller) {
-
         this.loginController = controller;
         this.loginViewModel = loginViewModel;
+        this.loginViewModel.addPropertyChangeListener(this);
         }
 
     /**
@@ -369,29 +372,31 @@ public class LoginView extends JFrame {
                     currentState.getUsername(),
                     currentState.getPassword()
             );
-        // TODO add your handling code here:
     }//GEN-LAST:event_SignIn_BUTTONActionPerformed
 
    //GEN-FIRST:event_SignUp_BUTTONActionPerformed
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+    }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        LoginState state = (LoginState) evt.getNewValue();
+        if (state.getUsernameError() != null) {
+            JOptionPane.showMessageDialog(this, state.getUsernameError());
+        }
+        if (state.getPasswordError() != null){
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Create and display the form (for seeing how view looks purposes)*/
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new loginView().setVisible(true);
-//            }
-//        });
-//    }
+            JOptionPane.showMessageDialog(this,state.getPasswordError());
+        }
+        setFields(state);
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    }
 
-    // End of variables declaration//GEN-END:variables
+    private void setFields(LoginState state) {
+        Username_TEXTFIELD.setText(state.getUsername());
+    }
 }
