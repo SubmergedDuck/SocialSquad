@@ -12,10 +12,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
-import view.HomeView;
-import view.LoginView;
-import view.SignupView;
-import view.ViewManager;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,20 +50,25 @@ public class Main {
         userDataAccessObject = new InMemoryUsersDataAccessObject();
         userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
 
-
+        // Build Login view
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
                 signupViewModel, userDataAccessObject);
         views.add(loginView.getRootPane(), loginView.viewName);
 
+        // Build Signup view
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel,
                 userDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
 
+        // Build Home view
         HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,
                 userDataAccessObject);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
-        loggedInViewModel.addPropertyChangeListener(loggedInView);
+        loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model
 
+        // Build SearchNearby view
+        SearchNearbyView searchNearbyView = SearchNearbyUseCaseFactory.create(viewManagerModel, searchNearbyViewModel, eventDataAccessObject, getEventDetailsController, backOutController);
+        views.add(searchNearbyView.getRootPane(), searchNearbyView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
