@@ -54,11 +54,16 @@ public class Main {
         userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
 
 
-        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,signupViewModel, userDataAccessObject);
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
+                signupViewModel, userDataAccessObject);
         views.add(loginView.getRootPane(), loginView.viewName);
-        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
+
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel,
+                userDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
-        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,userDataAccessObject);
+
+        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,
+                userDataAccessObject);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView);
 
