@@ -35,9 +35,24 @@ import java.security.Key;
  */
 public class SignupView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     public final String viewName = "sign up";
-
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;
+    private ButtonGradient Back_BUTTON;
+    private javax.swing.JPanel Main_PANEL;
+    private javax.swing.JLabel PasswordSignupFailed_LABEL;
+    private javax.swing.JLabel Password_LABEL;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
+    private javax.swing.JLabel ReEnterPassword_LABEL;
+    private ButtonGradient SignUp_BUTTON;
+    private javax.swing.JLabel SocialSquadTitle_LABEL;
+    private javax.swing.JPanel TopSeperator_PANEL;
+    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private javax.swing.JLabel UsernameSignupFailed_LABEL;
+    private javax.swing.JLabel Username_LABEL;
+    private javax.swing.JTextField Username_TEXTFIELD;
+    // End of variables declaration//GEN-END:variables
+
 
     /**
      * Creates new form signupView
@@ -382,10 +397,10 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
         if (evt.getSource().equals(SignUp_BUTTON)) {
-
             signupController.execute(Username_TEXTFIELD.getText(),"",
                     String.valueOf(Password_PASSWORDFIELD.getPassword()),
                     String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","");
+            System.out.println("sign up");
         }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
@@ -460,22 +475,6 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private ButtonGradient Back_BUTTON;
-    private javax.swing.JPanel Main_PANEL;
-    private javax.swing.JLabel PasswordSignupFailed_LABEL;
-    private javax.swing.JLabel Password_LABEL;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
-    private javax.swing.JLabel ReEnterPassword_LABEL;
-    private ButtonGradient SignUp_BUTTON;
-    private javax.swing.JLabel SocialSquadTitle_LABEL;
-    private javax.swing.JPanel TopSeperator_PANEL;
-    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    private javax.swing.JLabel UsernameSignupFailed_LABEL;
-    private javax.swing.JLabel Username_LABEL;
-    private javax.swing.JTextField Username_TEXTFIELD;
-    // End of variables declaration//GEN-END:variables
-
 
 
 }
