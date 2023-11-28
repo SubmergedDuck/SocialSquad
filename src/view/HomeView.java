@@ -7,7 +7,9 @@ import entity.Location.*;
 import entity.Users.CommonUser;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
@@ -22,6 +24,7 @@ import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.back_out.BackOutInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
@@ -314,8 +317,13 @@ public class HomeView extends javax.swing.JFrame {
 
                 JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
 
-                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), new BackOutController());
+                ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
+                BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
+                BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInteractor);
+
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
