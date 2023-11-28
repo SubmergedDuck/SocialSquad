@@ -1,40 +1,76 @@
 package use_case.signup;
 
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupPresenter;
+import interface_adapter.signup.SignupViewModel;
+import view.SignupView;
 
-public class SignupInteractor implements SignupInputBoundary{
+public class SignupInteractor implements SignupInputBoundary {
     final SignupUserDataAccessInterface userDataAccessObject;
     final SignupOutputBoundary userPresenter;
     final UserFactory userFactory;
-    public SignupInteractor(SignupUserDataAccessInterface userDataAccessObject, SignupOutputBoundary userPresenter, UserFactory userFactory){
+
+    public SignupInteractor(SignupUserDataAccessInterface userDataAccessObject, SignupOutputBoundary userPresenter, UserFactory userFactory) {
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
         this.userFactory = userFactory;
     }
 
-    public void execute(SignupInputData signupInputData){
-        if (!signupInputData.getPassword().equals(signupInputData.getRepeatPassword())){
-            userPresenter.prepareFailView("Passwords do not match");
-        } else if (userDataAccessObject.existsByName(signupInputData.getUsername())) {
+    public void execute(SignupInputData signupInputData) {
+        if (userDataAccessObject.existsByName(signupInputData.getUsername())) {
             userPresenter.prepareFailView("Username already exists");
-        } else if (signupInputData.getAge() < 0){
+        } else if (!signupInputData.getPassword().equals(signupInputData.getRepeatPassword())) {
+            userPresenter.prepareFailView("Passwords do not match");
+        } else if (signupInputData.getAge() < 0) {
             //Maybe make it so that the user can only input numbers in the signup age textbox
             userPresenter.prepareFailView("Invalid age input");
-        } else if (signupInputData.inputsEmpty()){
+        } else if (signupInputData.inputsEmpty()) {
             userPresenter.prepareFailView("Fill out all the inputs");
-        } else if (signupInputData.getSex().toLowerCase() != "m" || signupInputData.getSex().toLowerCase() != "f"){
+        } else if (!((signupInputData.getSex().toLowerCase().equals("m"))|| (signupInputData.getSex().toLowerCase().equals("f")))) {
             //Checks if the input sex information is valid.
             userPresenter.prepareFailView("Invalid sex");
         } else {
             // All the inputs are good.
             // TODO commented out the below codes because userFactory.create() gives compilation errors
-//            User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
-//                    signupInputData.getSex(), signupInputData.getRealName(), signupInputData.getContact());
-//            userDataAccessObject.save(user);
+            User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
+                    signupInputData.getSex(), signupInputData.getContact());
+            userDataAccessObject.save(user);
             SignupOutputData signupOutputData = new SignupOutputData(signupInputData.getUsername());
 
             userPresenter.prepareSuccessView(signupOutputData);
         }
     }
+
+    public static void main(String[] args) {
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        SignupViewModel signupViewmodel = new SignupViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        CommonUserFactory factory = new CommonUserFactory();
+        SignupOutputBoundary presenter = new SignupOutputBoundary() {
+            @Override
+            public void prepareFailView(String error) {
+                System.out.println("sign up failed");
+            }
+
+            @Override
+            public void prepareSuccessView(SignupOutputData output) {
+                System.out.println("sign up succeed");
+
+            }
+        };
+        SignupUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
+        SignupInputBoundary interactor = new SignupInteractor(inMemoryUserDAO, presenter, factory);
+        SignupInputData inputData = new SignupInputData("user1", "", "123", "123", "1", "f", "contact");
+        interactor.execute(inputData);
+        SignupInputData inputData2 = new SignupInputData("user1", "", "123", "123", "1", "f", "contact");
+        interactor.execute(inputData2);
+        interactor.execute(inputData2);
+    }
 }
+

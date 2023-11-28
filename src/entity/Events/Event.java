@@ -18,5 +18,7 @@ public interface Event {
     String getDescription();
     Boolean getPrivacy();
     Integer getCapacity();
+    String getEventAddress();
+    String getEventDate();
 
 }
