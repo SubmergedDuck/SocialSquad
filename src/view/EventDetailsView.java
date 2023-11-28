@@ -8,13 +8,16 @@ import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
+import use_case.back_out.BackOutInteractor;
 import use_case.get_event_details.GetEventDetailsOutputData;
 import use_case.join_event.JoinEventInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
@@ -470,7 +473,11 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
                 JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
                 JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
-                BackOutController backOutController = new BackOutController();
+
+                ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
+                BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
+                BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInteractor);
 
                 EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
