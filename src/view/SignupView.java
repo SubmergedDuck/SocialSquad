@@ -44,6 +44,7 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
         initComponents();
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
+        this.signupViewModel.addPropertyChangeListener(this);
     }
 
     /**

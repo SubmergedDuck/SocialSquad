@@ -63,6 +63,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
         this.searchNearbyViewModel = searchNearbyViewModel;
         this.getEventDetailsController = getEventDetailsController;
         this.backOutController = backOutController;
+        this.searchNearbyViewModel.addPropertyChangeListener(this);
     }
 
 //    // this constructor is only for testing out
