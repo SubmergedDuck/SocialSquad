@@ -17,6 +17,7 @@ import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
+import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.search_event.SearchEventController;
 import interface_adapter.login.LoginViewModel;
@@ -49,7 +50,7 @@ import java.beans.PropertyChangeListener;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame {
+public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -395,5 +396,15 @@ public class HomeView extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        LoggedInState state = (LoggedInState) evt.getNewValue();
     }
 }
