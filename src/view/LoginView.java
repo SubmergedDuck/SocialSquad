@@ -5,20 +5,35 @@
 package view;
 
 
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Users.CommonUser;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.create_account.CreateAccountController;
+import interface_adapter.create_account.CreateAccountPresesnter;
+import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupViewModel;
+import use_case.create_account.CreateAccountInputBoundary;
+import use_case.create_account.CreateAccountInteractor;
+import use_case.create_account.CreateAccountOutputBoundary;
+import use_case.login.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
  * @author submergedduck
  */
-public class LoginView extends JFrame {
+public class LoginView extends JFrame implements ActionListener, PropertyChangeListener {
 
 
     /**
@@ -28,10 +43,16 @@ public class LoginView extends JFrame {
     private final LoginViewModel loginViewModel;
 
     private final LoginController loginController;
-    public LoginView(LoginViewModel loginViewModel, LoginController controller) {
+
+
+    private final CreateAccountController controller;
+    public LoginView(LoginViewModel loginViewModel, LoginController controller, CreateAccountController createAccountController) {
+        this.controller = createAccountController;
+        initComponents();
 
         this.loginController = controller;
         this.loginViewModel = loginViewModel;
+        this.loginViewModel.addPropertyChangeListener(this);
         }
 
     /**
@@ -118,16 +139,32 @@ public class LoginView extends JFrame {
 
         SignIn_BUTTON.setText("Sign In");
         SignIn_BUTTON.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SignIn_BUTTONActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(SignIn_BUTTON)) {
+                    LoginState currentState = loginViewModel.getState();
+
+                    loginController.execute(
+                            currentState.getUsername(),
+                            currentState.getPassword()
+                    );
+                }
             }
         });
 
         SignUp_BUTTON.setText("Create Account");
         SignUp_BUTTON.setHorizontalTextPosition(SwingConstants.CENTER);
         SignUp_BUTTON.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SignUp_BUTTONActionPerformed(evt);
+            public void actionPerformed(ActionEvent evt) {
+                if (evt.getSource().equals(SignUp_BUTTON)){
+//                    LoginState currentState = loginViewModel.getState();
+//
+//                    controller.execute();
+                    loginController.linkTo(new SignupViewModel().getViewName());
+
+
+                }
+
+
             }
         });
 
@@ -168,6 +205,26 @@ public class LoginView extends JFrame {
         Password_PASSWORDFIELD.setBorder(BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Password_PASSWORDFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Password_PASSWORDFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
+        Password_PASSWORDFIELD.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        LoginState currentState = loginViewModel.getState();
+                        currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
+                        loginViewModel.setState(currentState);
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );
 
         Username_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Username_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
@@ -175,21 +232,37 @@ public class LoginView extends JFrame {
         Username_TEXTFIELD.setBorder(BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Username_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Username_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Username_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Username_TEXTFIELDActionPerformed(evt);
-            }
-        });
+        Username_TEXTFIELD.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+
+                        LoginState currentState = loginViewModel.getState();
+                        currentState.setUsername(Username_TEXTFIELD.getText() + e.getKeyChar());
+                        loginViewModel.setState(currentState);
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );
 
         UsernameLoginFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         UsernameLoginFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         UsernameLoginFailed_LABEL.setHorizontalAlignment(SwingConstants.RIGHT);
-        UsernameLoginFailed_LABEL.setText("*Login Failed: username invalid");
+//        UsernameLoginFailed_LABEL.setText("*Login Failed: username invalid");
 
         PasswordLoginFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         PasswordLoginFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         PasswordLoginFailed_LABEL.setHorizontalAlignment(SwingConstants.RIGHT);
-        PasswordLoginFailed_LABEL.setText("*Login Failed: password invalid");
+//        PasswordLoginFailed_LABEL.setText("*Login Failed: password invalid");
 
         GroupLayout Main_PANELLayout = new GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -329,59 +402,73 @@ public class LoginView extends JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     */
-    private void Username_TEXTFIELDActionPerformed(ActionEvent evt) {
-        new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                LoginState currentState = loginViewModel.getState();
-                currentState.setUsername(Username_TEXTFIELD.getText() + e.getKeyChar());
-                loginViewModel.setState(currentState);
 
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        };
-    }
     private void SignUp_BUTTONActionPerformed(ActionEvent evt) {
         if(evt.getSource().equals(SignUp_BUTTON)){
             LoginState currentState = loginViewModel.getState();
 
-            LoginView.this.loginController.execute(currentState.getUsername(),
-                    currentState.getPassword());
-    }}
-
-
-
-    private void SignIn_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignIn_BUTTONActionPerformed
-        if (evt.getSource().equals(SignIn_BUTTON)) {
-            LoginState currentState = loginViewModel.getState();
-
-            loginController.execute(
+            LoginView.this.loginController.execute(
                     currentState.getUsername(),
-                    currentState.getPassword()
-            );
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SignIn_BUTTONActionPerformed
+                    currentState.getPassword());
+    }
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {System.out.println("Click " + e.getActionCommand());
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        LoginState state = (LoginState) evt.getNewValue();
+        if (state.getUsernameError() != null) {
+            JOptionPane.showMessageDialog(this, state.getUsernameError());
+        }
+        if (state.getPasswordError() != null){
+
+            JOptionPane.showMessageDialog(this,state.getPasswordError());
+        }
+        setFields(state);
+
+    }
+    private void setFields(LoginState state) {
+        Username_TEXTFIELD.setText(state.getUsername());
+    }
+
+
+
 
    //GEN-FIRST:event_SignUp_BUTTONActionPerformed
 
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SignUp_BUTTONActionPerformed
+    //GEN-LAST:event_SignUp_BUTTONActionPerformed
 
 
 
     /**
      * @param args the command line arguments
      */
+    public static void main(String[] args) {
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        SignupViewModel signupViewModel = new SignupViewModel();
+        LoginOutputBoundary presenter = new LoginPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        CreateAccountOutputBoundary createAccountOutputBoundary = new CreateAccountPresesnter(viewManagerModel,signupViewModel,loginViewModel);
+
+
+        LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
+        inMemoryUserDAO.save(new CommonUser("aa","aaa",1,"",""));
+
+        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter);
+        LoginController loginController  = new LoginController(interactor);
+        CreateAccountInputBoundary createAccountInputBoundary = new CreateAccountInteractor(createAccountOutputBoundary);
+        CreateAccountController createAccountController = new CreateAccountController(createAccountInputBoundary);
+        LoginView loginView = new LoginView(loginViewModel,loginController, createAccountController);
+        loginViewModel.addPropertyChangeListener(loginView);
+
+
+        loginView.setVisible(true);
+    }
+
+
 //    public static void main(String args[]) {
 //        /* Create and display the form (for seeing how view looks purposes)*/
 //        java.awt.EventQueue.invokeLater(new Runnable() {

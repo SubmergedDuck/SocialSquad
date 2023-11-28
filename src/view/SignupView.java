@@ -13,6 +13,7 @@ import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
+import use_case.signup.*;
 import org.json.Property;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
@@ -20,6 +21,7 @@ import use_case.signup.SignupOutputBoundary;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -31,11 +33,26 @@ import java.security.Key;
  *
  * @author submergedduck
  */
-public class SignupView extends javax.swing.JFrame implements PropertyChangeListener {
+public class SignupView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     public final String viewName = "sign up";
-
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;
+    private ButtonGradient Back_BUTTON;
+    private javax.swing.JPanel Main_PANEL;
+    private javax.swing.JLabel PasswordSignupFailed_LABEL;
+    private javax.swing.JLabel Password_LABEL;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
+    private javax.swing.JLabel ReEnterPassword_LABEL;
+    private ButtonGradient SignUp_BUTTON;
+    private javax.swing.JLabel SocialSquadTitle_LABEL;
+    private javax.swing.JPanel TopSeperator_PANEL;
+    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private javax.swing.JLabel UsernameSignupFailed_LABEL;
+    private javax.swing.JLabel Username_LABEL;
+    private javax.swing.JTextField Username_TEXTFIELD;
+    // End of variables declaration//GEN-END:variables
+
 
     /**
      * Creates new form signupView
@@ -44,6 +61,7 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
         initComponents();
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
+        this.signupViewModel.addPropertyChangeListener(this);
     }
 
     /**
@@ -132,17 +150,55 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
         Password_PASSWORDFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Password_PASSWORDFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
 
+        Password_PASSWORDFIELD.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        SignupState currentState = signupViewModel.getState();
+                        currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
+                        signupViewModel.setState(currentState);
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );//random comment
+
         Username_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Username_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
         Username_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
         Username_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Username_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Username_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Username_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Username_TEXTFIELDActionPerformed(evt);
-            }
-        });
+        Username_TEXTFIELD.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        SignupState currentState = signupViewModel.getState();
+                        String text = Username_TEXTFIELD.getText() + e.getKeyChar();
+                        currentState.setUsername(text);
+                        signupViewModel.setState(currentState);
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );
 
         UsernameSignupFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         UsernameSignupFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
@@ -156,6 +212,26 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
         Password_PASSWORDFIELD1.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Password_PASSWORDFIELD1.setCaretColor(new java.awt.Color(196, 182, 206));
         Password_PASSWORDFIELD1.setSelectionColor(new java.awt.Color(140, 100, 255));
+        Password_PASSWORDFIELD1.addKeyListener(
+                new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent e) {
+                        SignupState currentState = signupViewModel.getState();
+                        currentState.setRepeatPassword(Password_PASSWORDFIELD1.getText() + e.getKeyChar());
+                        signupViewModel.setState(currentState);
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+
+                    }
+                }
+        );
 
         ReEnterPassword_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         ReEnterPassword_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -321,11 +397,10 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
         if (evt.getSource().equals(SignUp_BUTTON)) {
-            SignupState currentState = signupViewModel.getState();
-            signupController.execute(
-                    currentState.getUsername(), "",
-                    currentState.getPassword(),
-                    currentState.getRepeatPassword(), "", "", "");
+            signupController.execute(Username_TEXTFIELD.getText(),"",
+                    String.valueOf(Password_PASSWORDFIELD.getPassword()),
+                    String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","");
+            System.out.println("sign up");
         }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
@@ -333,35 +408,10 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
         // TODO add your handling code here:
     }//GEN-LAST:event_Back_BUTTONActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Create and display the form (for seeing how view looks purposes)*/
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                SignupView signupView = new SignupView();
-//                signupView.setVisible(true);
-//            }
-//        });
-//    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private ButtonGradient Back_BUTTON;
-    private javax.swing.JPanel Main_PANEL;
-    private javax.swing.JLabel PasswordSignupFailed_LABEL;
-    private javax.swing.JLabel Password_LABEL;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
-    private javax.swing.JLabel ReEnterPassword_LABEL;
-    private ButtonGradient SignUp_BUTTON;
-    private javax.swing.JLabel SocialSquadTitle_LABEL;
-    private javax.swing.JPanel TopSeperator_PANEL;
-    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    private javax.swing.JLabel UsernameSignupFailed_LABEL;
-    private javax.swing.JLabel Username_LABEL;
-    private javax.swing.JTextField Username_TEXTFIELD;
-    // End of variables declaration//GEN-END:variables
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -369,8 +419,17 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
         if (state.getUsernameError() != null) {
             JOptionPane.showMessageDialog(this, state.getUsernameError());
         }
+        if (state.getPasswordError() != null) {
+            JOptionPane.showMessageDialog(this, state.getPasswordError());
+        }
+
     }
 
+
+
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -405,6 +464,17 @@ public class SignupView extends javax.swing.JFrame implements PropertyChangeList
 
         signupView.setVisible(true);
     }
+//    public static void main(String args[]) {
+//        /* Create and display the form (for seeing how view looks purposes)*/
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                SignupView signupView = new SignupView();
+//                signupView.setVisible(true);
+//            }
+//        });
+//    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
 
 
 }

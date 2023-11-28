@@ -17,7 +17,9 @@ import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
+import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.search_event.SearchEventController;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
@@ -37,6 +39,10 @@ import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -44,7 +50,7 @@ import java.util.ArrayList;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame {
+public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -329,7 +335,7 @@ public class HomeView extends javax.swing.JFrame {
                 getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
 
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
-                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel("log in"));
+                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
                 HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController);
@@ -390,5 +396,15 @@ public class HomeView extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        LoggedInState state = (LoggedInState) evt.getNewValue();
     }
 }

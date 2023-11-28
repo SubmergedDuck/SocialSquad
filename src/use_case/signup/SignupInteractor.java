@@ -6,6 +6,9 @@ import entity.Users.User;
 import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupViewModel;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
@@ -27,17 +30,17 @@ public class SignupInteractor implements SignupInputBoundary {
             userPresenter.prepareFailView("Username already exists");
         } else if (!signupInputData.getPassword().equals(signupInputData.getRepeatPassword())) {
             userPresenter.prepareFailView("Passwords do not match");
-        } else if (signupInputData.getAge() < 0) {
-            //Maybe make it so that the user can only input numbers in the signup age textbox
-            userPresenter.prepareFailView("Invalid age input");
-        } else if (signupInputData.inputsEmpty()) {
-            userPresenter.prepareFailView("Fill out all the inputs");
-        } else if (!((signupInputData.getSex().toLowerCase().equals("m"))|| (signupInputData.getSex().toLowerCase().equals("f")))) {
-            //Checks if the input sex information is valid.
-            userPresenter.prepareFailView("Invalid sex");
+//        } else if (signupInputData.getAge() < 0){
+//            //Maybe make it so that the user can only input numbers in the signup age textbox
+//            userPresenter.prepareFailView("Invalid age input");
+//        } else if (signupInputData.inputsEmpty()){
+//            userPresenter.prepareFailView("Fill out all the inputs");
+//        } else if (signupInputData.getSex().toLowerCase() != "m" || signupInputData.getSex().toLowerCase() != "f"){
+//            //Checks if the input sex information is valid.
+//            userPresenter.prepareFailView("Invalid sex");
         } else {
             // All the inputs are good.
-            // TODO commented out the below codes because userFactory.create() gives compilation errors
+
             User user = userFactory.create(signupInputData.getUsername(), signupInputData.getPassword(), signupInputData.getAge(),
                     signupInputData.getSex(), signupInputData.getContact());
             userDataAccessObject.save(user);

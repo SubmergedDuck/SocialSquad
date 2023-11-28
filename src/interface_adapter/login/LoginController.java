@@ -15,4 +15,7 @@ public class LoginController {
 
         loginUseCaseInteractor.execute(loginInputData);
     }
+    public void linkTo(String viewname){
+        loginUseCaseInteractor.linkTo(viewname);
+    }
 }
