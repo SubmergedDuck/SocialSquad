@@ -38,7 +38,8 @@ public class GetDirectionInteractor implements GetDirectionInputBoundary {
         String[] eventCoordinates = eventDataAccessObject.getEventCoordinates(inputData.getEventID());
         String coordinates1 = userCoordinates[0] + "," + userCoordinates[1];
         String coordinates2 = eventCoordinates[0] + "," + eventCoordinates[1];
-        BufferedImage directionImage = apiDataAccessObject.generateRouteImage(coordinates1, coordinates2);
+        String imageSize = inputData.getWidth() + "," + inputData.getHeight();
+        BufferedImage directionImage = apiDataAccessObject.generateRouteImage(coordinates1,coordinates2,imageSize);
         GetDirectionOutputData outputData = new GetDirectionOutputData(directionImage);
         getDirectionPresenter.prepareView(outputData);
     }

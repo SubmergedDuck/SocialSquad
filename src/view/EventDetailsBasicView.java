@@ -5,6 +5,7 @@ import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventState;
 import use_case.get_event_details.GetEventDetailsInteractor;
 
 import javax.swing.*;
@@ -52,7 +53,8 @@ public class EventDetailsBasicView extends JPanel implements ActionListener, Pro
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource().equals(join)) {
-                    joinEventController.execute(event);
+                   // TODO: need to figure out where to obtain user
+                    //  joinEventController.execute(event, user);
                 }
 
             }
@@ -110,9 +112,19 @@ public class EventDetailsBasicView extends JPanel implements ActionListener, Pro
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        GetEventDetailsState state = (GetEventDetailsState) evt.getNewValue();
-        JOptionPane.showMessageDialog(this, new String[] {state.getEventName(), state.getEventAddress(),
-                state.getEventDate(), state.getEventDescription(), state.getEventCapacity()});
+        if (evt.getPropertyName().equals("state")) {
+            GetEventDetailsState state = (GetEventDetailsState) evt.getNewValue();
+            JOptionPane.showMessageDialog(this, new String[] {state.getEventName(), state.getEventAddress(),
+                    state.getEventDate(), state.getEventDescription(), state.getEventCapacity()});
+        } else if (evt.getPropertyName().equals("join event")) { // The change is caused by a user made a JoinEvent action
+            JoinEventState state = (JoinEventState) evt.getNewValue();
+            if (state.isSuccess()) {
+                JOptionPane.showMessageDialog(this, "You have successfully joined this event!");
+            } else {
+                JOptionPane.showMessageDialog(this, state.getError());
+            }
+        }
+
     }
 //
 //    public static void main(String[] args) {
