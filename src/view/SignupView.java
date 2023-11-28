@@ -14,6 +14,11 @@ import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
 import use_case.signup.*;
+import org.json.Property;
+import use_case.signup.SignupInputBoundary;
+import use_case.signup.SignupInteractor;
+import use_case.signup.SignupOutputBoundary;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -43,20 +48,6 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
         this.signupViewModel = signupViewModel;
         this.signupViewModel.addPropertyChangeListener(this);
     }
-    private ButtonGradient Back_BUTTON;
-    private javax.swing.JPanel Main_PANEL;
-    private javax.swing.JLabel PasswordSignupFailed_LABEL;
-    private javax.swing.JLabel Password_LABEL;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD;
-    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
-    private javax.swing.JLabel ReEnterPassword_LABEL;
-    private ButtonGradient SignUp_BUTTON;
-    private javax.swing.JLabel SocialSquadTitle_LABEL;
-    private javax.swing.JPanel TopSeperator_PANEL;
-    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    private javax.swing.JLabel UsernameSignupFailed_LABEL;
-    private javax.swing.JLabel Username_LABEL;
-    private javax.swing.JTextField Username_TEXTFIELD;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -135,7 +126,6 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
         Password_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Password_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Password_LABEL.setText("Password");
-
 
         Password_PASSWORDFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Password_PASSWORDFIELD.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
@@ -320,7 +310,74 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void Password_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
 
+                SignupState currentState = signupViewModel.getState();
+                currentState.setPassword(Password_PASSWORDFIELD.getText() + e.getKeyChar());
+                signupViewModel.setState(currentState);
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
+    private void RepeatPassword_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
+        new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                SignupState currentState = signupViewModel.getState();
+                currentState.setRepeatPassword(Password_PASSWORDFIELD1.getText() + e.getKeyChar());
+                signupViewModel.setState(currentState);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
+    private void Username_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Username_TEXTFIELDActionPerformed
+
+        new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                SignupState currentState = signupViewModel.getState();
+                String text = Username_TEXTFIELD.getText() + e.getKeyChar();
+                currentState.setUsername(text);
+                signupViewModel.setState(currentState);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };// TODO add your handling code here:
+    }//GEN-LAST:event_Username_TEXTFIELDActionPerformed
 
 
     private void SignUp_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUp_BUTTONActionPerformed
@@ -330,10 +387,7 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
                     String.valueOf(Password_PASSWORDFIELD.getPassword()),
                     String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","");
         }
-
-        }
-
-    //GEN-LAST:event_SignUp_BUTTONActionPerformed
+    }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back_BUTTONActionPerformed
         // TODO add your handling code here:
@@ -362,6 +416,23 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("FlatLaf Light".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(SignupView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(SignupView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(SignupView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(SignupView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         SignupViewModel signupViewmodel = new SignupViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
@@ -389,6 +460,22 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-
+    private ButtonGradient Back_BUTTON;
+    private javax.swing.JPanel Main_PANEL;
+    private javax.swing.JLabel PasswordSignupFailed_LABEL;
+    private javax.swing.JLabel Password_LABEL;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD;
+    private javax.swing.JPasswordField Password_PASSWORDFIELD1;
+    private javax.swing.JLabel ReEnterPassword_LABEL;
+    private ButtonGradient SignUp_BUTTON;
+    private javax.swing.JLabel SocialSquadTitle_LABEL;
+    private javax.swing.JPanel TopSeperator_PANEL;
+    private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private javax.swing.JLabel UsernameSignupFailed_LABEL;
+    private javax.swing.JLabel Username_LABEL;
+    private javax.swing.JTextField Username_TEXTFIELD;
     // End of variables declaration//GEN-END:variables
+
+
+
 }

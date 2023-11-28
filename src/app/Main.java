@@ -1,7 +1,5 @@
 package app;
 
-import data_access.FileEventsDataAccessObject;
-import data_access.FileUserDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
 import entity.Events.Event;
@@ -22,8 +20,6 @@ import view.ViewManager;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -52,24 +48,6 @@ public class Main {
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
 
-//        FileUserDataAccessObject userDataAccessObject;
-//        try {
-//            userDataAccessObject = new FileUserDataAccessObject("./users.csv", new FileEventsDataAccessObject("./user.csv", new EventFactory() {
-//                @Override
-//                public Event create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity) {
-//                    return null;
-//                }
-//            }, new InviteOnlyEventFactory() {
-//                @Override
-//                public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, ArrayList<String> peopleInvited) {
-//                    return null;
-//                }
-//            },new CommonRestrictedEventFactory(), new CommonLocationFactory()), new CommonLocationFactory(),
-//            new CommonUserFactory());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-
         // TODO: change this to the real DAOs later
         InMemoryUsersDataAccessObject userDataAccessObject;
         userDataAccessObject = new InMemoryUsersDataAccessObject();
@@ -87,7 +65,6 @@ public class Main {
 
         viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
-
 
         application.pack();
         application.setVisible(true);

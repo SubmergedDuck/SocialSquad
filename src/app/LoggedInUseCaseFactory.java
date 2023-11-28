@@ -1,16 +1,23 @@
 package app;
 
+import data_access.InMemoryEventsDataAccessObject;
 import entity.Users.CommonUserFactory;
 import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.create_event.CreateEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.search_nearby.SearchNearbyController;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
+import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
+import use_case.search_nearby.SearchNearbyInteractor;
 import view.HomeView;
 
 
@@ -28,9 +35,11 @@ public class LoggedInUseCaseFactory {
             LoggedInUserDataAccessInterface userDataAccessInterface
 
     ){
-        try{
+        try{ // TODO add SearchNearbyInteractor and CreateEventInteractor to the constructor and replace them with the temporary interactors used here later.
             LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,userDataAccessInterface);
-            return new HomeView(loggedInViewModel,loggedInController);
+            SearchNearbyInteractor interactor = new SearchNearbyInteractor(new InMemoryEventsDataAccessObject(), new SearchNearbyPresenter(new SearchNearbyViewModel(), viewManagerModel));
+            SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
+            return new HomeView(loggedInViewModel,loggedInController, searchNearbyController, new CreateEventController());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }

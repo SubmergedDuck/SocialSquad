@@ -7,11 +7,18 @@ import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupPresenter;
+import interface_adapter.signup.SignupViewModel;
+import view.SignupView;
 
 public class SignupInteractor implements SignupInputBoundary {
     final SignupUserDataAccessInterface userDataAccessObject;
     final SignupOutputBoundary userPresenter;
     final UserFactory userFactory;
+
     public SignupInteractor(SignupUserDataAccessInterface userDataAccessObject, SignupOutputBoundary userPresenter, UserFactory userFactory) {
         this.userDataAccessObject = userDataAccessObject;
         this.userPresenter = userPresenter;
@@ -69,3 +76,4 @@ public class SignupInteractor implements SignupInputBoundary {
         interactor.execute(inputData2);
     }
 }
+
