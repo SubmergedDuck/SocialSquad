@@ -8,14 +8,18 @@ import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
+import use_case.back_out.BackOutInteractor;
 import use_case.get_event_details.GetEventDetailsOutputData;
+import use_case.join_event.JoinEventInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.text.View;
@@ -40,7 +44,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private final BackOutController backOutController;
     private final JoinEventController joinEventController;
 
-
+    private ButtonGradient GetDirection_BUTTON;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private javax.swing.JPanel BottomSeperator_PANEL1;
@@ -63,6 +67,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     private javax.swing.JLabel TypeByUser_LABEL;
+    private javax.swing.JLabel EventAlreadyJoinedWarning_LABEL;
 
     public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
                             BackOutController backOutController) {
@@ -102,6 +107,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         Location_SCROLLPANE = new javax.swing.JScrollPane();
         Location_TEXTAREA = new javax.swing.JTextArea();
         TimeDescription_LABEL = new javax.swing.JLabel();
+        GetDirection_BUTTON = new ButtonGradient();
+        EventAlreadyJoinedWarning_LABEL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -317,6 +324,18 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         TimeDescription_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 //        TimeDescription_LABEL.setText("10:00 AM to 01:00 PM"); //TODO here
 
+        GetDirection_BUTTON.setText("Get Direction");
+        GetDirection_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GetDirection_BUTTONActionPerformed(evt);
+            }
+        });
+
+        EventAlreadyJoinedWarning_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
+        EventAlreadyJoinedWarning_LABEL.setForeground(new java.awt.Color(255, 102, 197));
+        EventAlreadyJoinedWarning_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        EventAlreadyJoinedWarning_LABEL.setText("*Note: You have already joined the event!");
+
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
         Main_PANELLayout.setHorizontalGroup(
@@ -327,17 +346,6 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(EventName_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(TypeByUser_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(35, 35, 35)
@@ -355,11 +363,26 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                         .addComponent(Time_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(TimeDescription_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(83, 83, 83)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(EventAlreadyJoinedWarning_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(EventName_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(TypeByUser_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
                 Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(Main_PANELLayout.createSequentialGroup()                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(EventName_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -380,13 +403,17 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                                 .addComponent(Description_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Description_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48)
+                                .addGap(2, 2, 2)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(38, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(EventAlreadyJoinedWarning_LABEL)
+                                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -413,13 +440,17 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         System.out.println("Go back");
     }
 
+    private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("FlatLaf Light".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -440,8 +471,13 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
 
-                JoinEventController joinEventController = new JoinEventController();
-                BackOutController backOutController = new BackOutController();
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
+
+                ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
+                BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
+                BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInteractor);
 
                 EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
@@ -499,3 +535,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
     }
 }
+
+
+
+
+

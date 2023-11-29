@@ -7,6 +7,7 @@ import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionUserDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -17,7 +18,8 @@ import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
         SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
-        GetDirectionUserDataAccessInterface, CreateEventDataAccessInterface,GSMUserDataAccessInterface, LoggedInUserDataAccessInterface {
+        GetDirectionUserDataAccessInterface, CreateEventDataAccessInterface,GSMUserDataAccessInterface,
+        LoggedInUserDataAccessInterface, LoginUserDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
@@ -88,3 +90,4 @@ public class InMemoryUsersDataAccessObject implements
         hostedEvents.add(event);
     }
 }
+

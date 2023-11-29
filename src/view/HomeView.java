@@ -7,7 +7,9 @@ import entity.Location.*;
 import entity.Users.CommonUser;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
@@ -15,14 +17,17 @@ import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
+import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_event.SearchEventController;
+import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.back_out.BackOutInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
@@ -34,6 +39,10 @@ import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  *
@@ -41,7 +50,7 @@ import java.util.ArrayList;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame {
+public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -61,6 +70,7 @@ public class HomeView extends javax.swing.JFrame {
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private view.ButtonGradient MyEvents_BUTTON;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
                     SearchNearbyController searchNearbyController, CreateEventController createEventController) {
@@ -77,12 +87,13 @@ public class HomeView extends javax.swing.JFrame {
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
         Title_LABEL = new javax.swing.JLabel();
         TopSeperator_PANEL = new javax.swing.JPanel();
-        SearchEvent_BUTTON = new view.ButtonGradient();
+        SearchEvent_BUTTON = new ButtonGradient();
         BottomSeperator_PANEL = new javax.swing.JPanel();
-        CreateEvent_BUTTON = new view.ButtonGradient();
+        CreateEvent_BUTTON = new ButtonGradient();
         MapImage_LABEL = new javax.swing.JLabel();
         LogoutIcon_LABEL = new javax.swing.JLabel();
         Logout_BUTTON = new javax.swing.JButton();
+        MyEvents_BUTTON = new ButtonGradient();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -96,7 +107,7 @@ public class HomeView extends javax.swing.JFrame {
         Title_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 14)); // NOI18N
         Title_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Title_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Title_LABEL.setText("All events created by users");
+        Title_LABEL.setText("Click on the Map!");
         Title_LABEL.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 1, 1, 1));
 
         TopSeperator_PANEL.setBackground(new java.awt.Color(229, 222, 233));
@@ -138,7 +149,7 @@ public class HomeView extends javax.swing.JFrame {
                 try {
                     SearchEvent_BUTTONActionPerformed(evt);
                 } catch (IOException e) {
-                    System.out.println("IOException occured.");
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -170,18 +181,27 @@ public class HomeView extends javax.swing.JFrame {
         MapImage_LABEL.setBackground(new java.awt.Color(204, 204, 255));
         MapImage_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
-        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/GetDirectionsTester.png"));
-        MapImage_LABEL.setText("[Static map here]");
+        // TODO: MapImage_LABEL should be updated w/ get_direction use case
+        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("")); // NOI18N
+        MapImage_LABEL.setText("MapImage");
 
-        // TODO: Import logout image icon to src/view
-        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
-        LogoutIcon_LABEL.setText("jLabel2");
+        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("src/view/ImageIcons/LogoutIcon.png")); // NOI18N
+        LogoutIcon_LABEL.setText("LogoutIcon");
 
         Logout_BUTTON.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
         Logout_BUTTON.setForeground(new java.awt.Color(229, 222, 233));
         Logout_BUTTON.setText("Logout");
         Logout_BUTTON.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
+        MyEvents_BUTTON.setText("My Events");
+        MyEvents_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
+        MyEvents_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
+        MyEvents_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyEvents_BUTTONActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -193,17 +213,22 @@ public class HomeView extends javax.swing.JFrame {
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(Logout_BUTTON))
-                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(14, 14, 14)
+                                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(Logout_BUTTON))
+                                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(95, 95, 95)
+                                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
@@ -211,8 +236,10 @@ public class HomeView extends javax.swing.JFrame {
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 504, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -237,6 +264,7 @@ public class HomeView extends javax.swing.JFrame {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
 
         pack();
     }
@@ -269,6 +297,10 @@ public class HomeView extends javax.swing.JFrame {
         }
     }
 
+    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -276,7 +308,7 @@ public class HomeView extends javax.swing.JFrame {
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("FlatLaf Light".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -311,15 +343,22 @@ public class HomeView extends javax.swing.JFrame {
                 GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
-                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, new BackOutController());
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(), new BackOutController());
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+
+                ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
+                BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
+                BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInteractor);
+
+                SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
 
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
-                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel("log in"));
+                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
                 HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController);
@@ -380,5 +419,15 @@ public class HomeView extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        LoggedInState state = (LoggedInState) evt.getNewValue();
     }
 }
