@@ -65,11 +65,6 @@ public class InMemoryUsersDataAccessObject implements
         return selectedUser.getLocation().getCoordinates();
     }
 
-    @Override
-    public Integer generateEventID() {
-        return null;
-    }
-
     public User getUser(String username){
         return usernameToUser.get(username);
     }

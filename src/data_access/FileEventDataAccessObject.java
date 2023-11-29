@@ -97,18 +97,6 @@ public class FileEventDataAccessObject implements CreateEventDataAccessInterface
         }
     }
 
-    @Override
-    public Integer generateEventID() {
-        Integer currentID = 0;
-        for (Integer eventID : eventsToID.keySet()){
-            //The new eventID will be the highest event ID.
-            if (currentID < eventID){
-                currentID = eventID + 1;
-            }
-        }
-        return currentID;
-    }
-
     /**
      * Saves an event and stores it in the file.
      * @param event the event that is being saved

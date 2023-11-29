@@ -1,7 +1,19 @@
+package data_access;
+
+import entity.Events.Event;
 import entity.Users.User;
 import entity.Users.UserFactory;
+import use_case.common_interfaces.MapUserDataAccessInterface;
+import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.loggedIn.LoggedInUserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.remove_participant.RemoveParticipantDataAccessInterface;
+import use_case.search_event.SearchEventDataAccessInterface;
+import use_case.search_event.SearchEventInputData;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,7 +21,9 @@ import java.util.Map;
 /**
  * File data access object for users.
  */
-public class FileUserDataAccessObject {
+public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
+        CreateEventDataAccessInterface, MapUserDataAccessInterface,
+        LoggedInUserDataAccessInterface, LoginUserDataAccessInterface {
     private final File userDataBase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();
@@ -55,6 +69,11 @@ public class FileUserDataAccessObject {
         }
     }
 
+    @Override
+    public boolean existsByName(String identifier) {
+        return usernameToUser.containsKey(identifier);
+    }
+
     /**
      * Saves the user to the map and updates the file to store the user.
      * @param savedUser the user that is being saved.
@@ -62,6 +81,11 @@ public class FileUserDataAccessObject {
     public void save(User savedUser){
         usernameToUser.put(savedUser.getUsername(),savedUser);
         save();
+    }
+
+    @Override
+    public User get(String username) {
+        return usernameToUser.get(username);
     }
 
     private void save(){
@@ -80,5 +104,33 @@ public class FileUserDataAccessObject {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String[] getCoordinates(String user) {
+        User selectedUser = usernameToUser.get(user);
+        return selectedUser.getLocation().getCoordinates();
+    }
+
+    @Override
+    public void save(Event event) {
+        String ownerUser = event.getOwnerUser();
+        User eventOwner = this.usernameToUser.get(ownerUser);
+        ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
+        hostedEvents.add(event);
+    }
+
+    @Override
+    public void removeUser(String username, Integer eventID) {
+        User deletedUser = usernameToUser.get(username);
+        ArrayList<Event> joinedEvents = deletedUser.getJoinedEvents();
+
+        Event eventRemove = null;
+        for (Event event : joinedEvents) {
+            if (event.getEventID() == eventID) {
+                eventRemove = event;
+            }
+        }
+        joinedEvents.remove(eventRemove);
     }
 }
