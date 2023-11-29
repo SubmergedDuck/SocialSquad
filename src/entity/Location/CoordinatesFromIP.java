@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 
 
 /**
@@ -41,5 +42,13 @@ public class CoordinatesFromIP {
             return new String[]{}; //Empty list for now, might changing depending on how we decide to deal with exceptions.
         }
         return result;
+    }
+
+    public static void main(String[] args) throws IOException {
+        String[] coordinates = CoordinatesFromIP.getCoordinates();
+        System.out.println("IP Coordinates: " + Arrays.toString(coordinates));
+        CoordinatesToAddress coordinatesToAddress = new CoordinatesToAddress(coordinates);
+        String address = coordinatesToAddress.getAddress();
+        System.out.println("The equivalent address is: " + address); // TODO: the return address is not correct.
     }
 }

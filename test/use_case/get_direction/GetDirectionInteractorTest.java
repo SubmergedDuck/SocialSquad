@@ -59,9 +59,7 @@ public class GetDirectionInteractorTest {
         eventsDataAccessObject.save(event);
         getDirectionInteractor = new GetDirectionInteractor(mockPresenter, eventsDataAccessObject, usersDataAccessObject,
                 apiDataAccess);
-
-
-        GetDirectionInputData inputData = new GetDirectionInputData(eventID, username);
+        GetDirectionInputData inputData = new GetDirectionInputData(eventID, username, 250,250);
         getDirectionInteractor.execute(inputData);
     }
 }

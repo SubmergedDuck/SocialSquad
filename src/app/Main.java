@@ -1,10 +1,18 @@
 package app;
 
 import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.*;
+import entity.Events.Event;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Users.CommonUser;
+import entity.Users.CommonUserFactory;
+import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
+import view.HomeView;
 import view.LoginView;
 import view.SignupView;
 import view.ViewManager;
@@ -43,12 +51,24 @@ public class Main {
         // TODO: change this to the real DAOs later
         InMemoryUsersDataAccessObject userDataAccessObject;
         userDataAccessObject = new InMemoryUsersDataAccessObject();
+        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
 
-        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
+
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
+                signupViewModel, userDataAccessObject);
+        views.add(loginView.getRootPane(), loginView.viewName);
+
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel,
+                userDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
 
+        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,loginViewModel,
+                userDataAccessObject);
+        views.add(loggedInView.getRootPane(), loggedInView.viewName);
+        loggedInViewModel.addPropertyChangeListener(loggedInView);
 
-        viewManagerModel.setActiveView(signupView.viewName);
+
+        viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
 
         application.pack();

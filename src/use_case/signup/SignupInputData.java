@@ -43,6 +43,7 @@ public class SignupInputData {
             return -1;
         }
     }
+    String getAGE(){return age;}
 
     String getSex(){return sex;}
 
