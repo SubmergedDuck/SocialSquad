@@ -11,6 +11,7 @@ public class CreateEventState {
     private String eventType = "";
     private String description = "";
     private String capacity = "";
+    private boolean displayed = false;
 
     public void setUseCaseSuccessStatus(boolean status) {
         useCaseSuccessStatus = status;
@@ -58,5 +59,12 @@ public class CreateEventState {
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
+    }
+    public void setDisplayed(boolean setValue) {
+        this.displayed = setValue;
+    }
+
+    public boolean getDisplayed() {
+        return displayed;
     }
 }

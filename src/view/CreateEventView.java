@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -310,7 +311,11 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
         CreateEvent_BUTTON.setText("Create Event");
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateEvent_BUTTONActionPerformed(evt);
+                try {
+                    CreateEvent_BUTTONActionPerformed(evt);
+                } catch (IOException e) {
+                    System.out.println("run time exception occured.");
+                }
             }
         });
 
@@ -653,7 +658,7 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
         };
     }
 
-    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(CreateEvent_BUTTON)) {
             // TODO: how to keep track of users logged in
             createEventController.execute("user", EventName_TEXTFIELD.getText(), Location_TEXTFIELD.getText(), StartTime_TEXTFIELD.getText(), EventType_TEXTFIELD.getText(), Description_TEXTFIELD.getText(), Capacity_TEXTFIELD.getText());
@@ -689,8 +694,8 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CreateEventViewModel createEventViewModel = new CreateEventViewModel();
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
+                CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
                 InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
                 CreateEventOutputBoundary presenter = new CreateEventPresenter(createEventViewModel);

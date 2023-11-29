@@ -12,7 +12,7 @@ public class CreateEventController {
     public CreateEventController(CreateEventInputBoundary interactor) {
         this.interactor = interactor;
     }
-    public void execute(String user, String eventName, String location, String startTime, String type, String description, String capacity,) throws IOException {
+    public void execute(String user, String eventName, String location, String startTime, String type, String description, String capacity) throws IOException {
         CreateEventInputData createEventInputData = new CreateEventInputData(user, eventName, location, startTime, type, description, false, capacity);
         interactor.execute(createEventInputData);
     }

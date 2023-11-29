@@ -9,11 +9,13 @@ import java.beans.PropertyChangeSupport;
 
 public class CreateEventViewModel extends ViewModel {
     public final String TITLE_LABEL = "Create Event View";
+    private final ViewManagerModel viewManagerModel;
     private CreateEventState state = new CreateEventState();
     private final PropertyChangeSupport observable = new PropertyChangeSupport(this);
 
-    public CreateEventViewModel() {
+    public CreateEventViewModel(ViewManagerModel viewManagerModel) {
         super("create event");
+        this.viewManagerModel = viewManagerModel;
     }
 
     public void setState(CreateEventState state) {
@@ -26,7 +28,11 @@ public class CreateEventViewModel extends ViewModel {
 
     @Override
     public void firePropertyChanged() {
-        observable.firePropertyChange("create event", null, this.state);
+        if (state.getDisplayed()) { // Means Create Event button is clicked
+            viewManagerModel.setActiveView("create event");
+        } else {
+            observable.firePropertyChange("create event", null, this.state);
+        }
 
     }
 

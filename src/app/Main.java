@@ -13,6 +13,8 @@ import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
@@ -22,6 +24,9 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInputBoundary;
 import use_case.join_event.JoinEventInteractor;
@@ -64,11 +69,30 @@ public class Main {
         SignupViewModel signupViewModel = new SignupViewModel();
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+        CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
         InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
+
+        // Instantiate all factories
+        EventFactory eventFactory = new CommonEventFactory();
+        RestrictedEventFactory restrictedEventFactory = new RestrictedEventFactory() {
+            @Override
+            public RestrictedEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, Integer ageRestriction, String sexRestriction) {
+                return null;
+            }
+        };
+
+        InviteOnlyEventFactory inviteEventFactory = new InviteOnlyEventFactory() {
+            @Override
+            public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, ArrayList<String> peopleInvited) {
+                return null;
+            }
+        };
+
+        LocationFactory locationFactory = new CommonLocationFactory();
 
         // Create sample entities
         userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
@@ -111,7 +135,9 @@ public class Main {
 
         // Instantiate CreateEvent use case
         // TODO replace with factory later
-        CreateEventController createEventController = new CreateEventController();
+        CreateEventOutputBoundary createEventPresenter = new CreateEventPresenter(createEventViewModel);
+        CreateEventInputBoundary createEventInteractor = new CreateEventInteractor(eventDataAccessObject, userDataAccessObject, createEventPresenter, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
+        CreateEventController createEventController = new CreateEventController(createEventInteractor);
 
         // Instantiate JoinEvent use case
         // TODO replace with factory later
@@ -130,7 +156,7 @@ public class Main {
 
         // Build Home view
         HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,searchNearbyViewModel,
-                loginViewModel, userDataAccessObject, eventDataAccessObject, createEventController);
+                loginViewModel, userDataAccessObject, eventDataAccessObject, createEventController, createEventViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
