@@ -2,8 +2,19 @@ package data_access;
 
 import entity.Events.Event;
 import entity.Events.EventFactory;
+import entity.Location.DistanceCalculator;
+import entity.Location.DistanceCalculatorInterface;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
+import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.generate_static_map.GSMEventDataAccessInterface;
+import use_case.get_direction.GetDirectionEventDataAccessInterface;
+import use_case.get_event_details.GetEventDetailsDataAccessInterface;
+import use_case.remove_participant.RemoveParticipantDataAccessInterface;
+import use_case.search_event.SearchEventDataAccessInterface;
+import use_case.search_event.SearchEventInputData;
+import use_case.search_nearby.SearchNearbyDataAccessInterface;
+import use_case.search_nearby.SearchNearbyInputData;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -13,7 +24,9 @@ import java.util.*;
 /**
  * File data access object for events.
  */
-public class FileEventDataAccessObject {
+public class FileEventDataAccessObject implements CreateEventDataAccessInterface, GSMEventDataAccessInterface,
+        GetDirectionEventDataAccessInterface, GetEventDetailsDataAccessInterface, RemoveParticipantDataAccessInterface,
+        SearchNearbyDataAccessInterface, SearchEventDataAccessInterface {
     private final File eventDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<Integer, Event> eventsToID = new HashMap<>();
@@ -84,6 +97,18 @@ public class FileEventDataAccessObject {
         }
     }
 
+    @Override
+    public Integer generateEventID() {
+        Integer currentID = 0;
+        for (Integer eventID : eventsToID.keySet()){
+            //The new eventID will be the highest event ID.
+            if (currentID < eventID){
+                currentID = eventID + 1;
+            }
+        }
+        return currentID;
+    }
+
     /**
      * Saves an event and stores it in the file.
      * @param event the event that is being saved
@@ -144,5 +169,81 @@ public class FileEventDataAccessObject {
             }
         }
         return currentString;
+    }
+
+    @Override
+    public HashMap<Integer, Event> getEvents(int amount) {
+        HashMap<Integer, Event> outputMap = new HashMap<>();
+        for (Integer key : eventsToID.keySet()){
+            if (outputMap.size() < amount){
+                outputMap.put(key, eventsToID.get(key));
+            }
+        }
+        return outputMap;
+    }
+
+    @Override
+    public String[] getEventCoordinates(int eventID) {
+        Event event = eventsToID.get(eventID);
+        return event.getLocation().getCoordinates();
+    }
+
+    @Override
+    public void removeUser(String username, Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        ArrayList<String> joinedUsernames = event.getPeopleJoined();
+        joinedUsernames.remove(username);
+    }
+
+    @Override
+    public ArrayList<Event> getNearbyEvent(SearchNearbyInputData inputData) throws IOException {
+        ArrayList<Event> returnEvents = new ArrayList<>();
+        ArrayList<Event> events = new ArrayList(eventsToID.values());
+        String[] strCoord = inputData.getCoordinates();
+
+        DistanceCalculatorInterface distanceCalculator = new DistanceCalculator();
+        for (Event event: events) {
+            if (distanceCalculator.within2KM(strCoord, event)) {
+                returnEvents.add(event);
+            }
+        }
+        return returnEvents;
+    }
+
+    @Override
+    public ArrayList<Event> getFullMatchEvents(SearchEventInputData inputData) {
+        ArrayList<Event> returnList = new ArrayList<>();
+        for (Event event : eventsToID.values()){
+            if (event.getEventName().equals(inputData.getSearchRequest())){
+                returnList.add(event);
+            }
+        }
+        return returnList;
+    }
+
+    @Override
+    public ArrayList<Event> getPartialMatchEvents(SearchEventInputData inputData) {
+        ArrayList<Event> returnList = new ArrayList<>();
+        String[] keywords = inputData.getSearchRequest().split(" "); // Break down the search request into keywords to compare
+        for (Event event : eventsToID.values()){
+            String name = event.getEventName();
+            for (String keyword : keywords){
+                if (name.equals(keyword) || event.getType().equals(keyword)){
+                    returnList.add(event);
+                }
+                if (event.getType().equals(keyword)){
+                    returnList.add(event);
+                }
+            }
+        }
+
+        // remove full match event from the list
+        ArrayList<Event> fullMatchEvents = getFullMatchEvents(inputData);
+        for (Event event: fullMatchEvents) {
+            if (returnList.contains(event)) {
+                returnList.remove(event);
+            }
+        }
+        return returnList;
     }
 }
