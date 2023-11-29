@@ -332,6 +332,33 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
 
+                ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
+                try {
+                    User user = new CommonUser("owner", "password", 20, "f", "contact");
+
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
+                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
+
+                    eventArrayList.add(event);
+                    eventArrayList.add(event2);
+
+                    user.setCreatedEvents(eventArrayList); // Let the user create these events
+
+                    // Save the objects to inMemoryDAOs for use
+                    inMemoryUsersDataAccessObject.save(user);
+                    for (Event event1: eventArrayList) {
+                        inMemoryEventsDataAccessObject.save(event1);
+                    }
+                } catch (Exception e) {
+                    System.out.println("run time exceptions occured.");;
+                }
+
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
 
@@ -355,8 +382,8 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
                 GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
                 GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(gsmViewModel);
-                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), new InMemoryUsersDataAccessObject(),
-                        new InMemoryEventsDataAccessObject(), generateStaticMapPresenter);
+                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject, generateStaticMapPresenter);
                 GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
                 HomeView homeView = null;
                 try {
@@ -381,45 +408,18 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);
                 viewManagerModel.addPropertyChangeListener(viewManager);
 
-                try {
-                    User user = new CommonUser("owner", "password", 20, "f", "contact");
+                state.setEventsSearched(eventArrayList);
+                searchNearbyViewModel.setState(state);
+                SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
+                presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
 
-                    LocationFactory factory = new CommonLocationFactory();
-                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
-                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
-                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
-                            10); // This event should be returned
-                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
-
-                    ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
-                    eventArrayList.add(event);
-                    eventArrayList.add(event2);
-
-                    user.setCreatedEvents(eventArrayList); // Let the user create these events
-
-                    // Save the objects to inMemoryDAOs for use
-                    inMemoryUsersDataAccessObject.save(user);
-                    for (Event event1: eventArrayList) {
-                        inMemoryEventsDataAccessObject.save(event1);
-                    }
-
-                    state.setEventsSearched(eventArrayList);
-                    searchNearbyViewModel.setState(state);
-                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
-                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
-
-                    viewManagerModel.setActiveView(homeView.viewName);
-                    viewManagerModel.firePropertyChanged();
-                    homeView.setVisible(true);
+                viewManagerModel.setActiveView(homeView.viewName);
+                viewManagerModel.firePropertyChanged();
+                homeView.setVisible(true);
 
 
-                    application.pack();
-                    application.setVisible(true);
-                } catch (Exception e) {
-                    System.out.println("run time exceptions occured.");;
-                }
+                application.pack();
+                application.setVisible(true);
             }
         });
     }
