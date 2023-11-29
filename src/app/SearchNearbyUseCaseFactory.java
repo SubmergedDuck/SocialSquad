@@ -25,7 +25,7 @@ public class SearchNearbyUseCaseFactory {
         return new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
     }
 
-    private static SearchNearbyController createSearchNearbyUseCase(ViewManagerModel viewManagerModel,
+    public static SearchNearbyController createSearchNearbyUseCase(ViewManagerModel viewManagerModel,
                                                                     SearchNearbyViewModel searchNearbyViewModel,
                                                                     SearchNearbyDataAccessInterface searchNearbyDataAccessobject) {
         SearchNearbyOutputBoundary searchNearbyPresenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
