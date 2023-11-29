@@ -1,13 +1,15 @@
 package use_case.generate_static_map;
 
 import entity.Events.Event;
+import use_case.common_interfaces.MapUserDataAccessInterface;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 
 public class GSMInteractor implements GSMInputBoundary{
     private final GSMApiDataAccessInterface APIDataAccessObject;
-    private final GSMUserDataAccessInterface userDataAccessObject;
+    private final MapUserDataAccessInterface userDataAccessObject;
     private final GSMEventDataAccessInterface eventDataAccessObject;
     private final GSMOutputBoundary presenter;
 
@@ -19,7 +21,7 @@ public class GSMInteractor implements GSMInputBoundary{
      * @param presenter presenter for the GSM use case.
      */
     public GSMInteractor(GSMApiDataAccessInterface APIDataAccessObject,
-                         GSMUserDataAccessInterface userDataAccessObject, GSMEventDataAccessInterface eventDataAccessObject,
+                         MapUserDataAccessInterface userDataAccessObject, GSMEventDataAccessInterface eventDataAccessObject,
                          GSMOutputBoundary presenter){
         this.APIDataAccessObject = APIDataAccessObject;
         this.userDataAccessObject = userDataAccessObject;
@@ -34,7 +36,7 @@ public class GSMInteractor implements GSMInputBoundary{
      */
     @Override
     public void execute(GSMInputData inputData) throws IOException {
-        String[] userCoordinates = userDataAccessObject.getUserCoordinates(inputData.getUsername());
+        String[] userCoordinates = userDataAccessObject.getCoordinates(inputData.getUsername());
         String formattedCoordinates = userCoordinates[0] + "," + userCoordinates[1];
         HashMap<Integer, Event> numToEvent = eventDataAccessObject.getEvents(inputData.getTotalPins());
         HashMap<Integer, String> numToCoordinates = numToCoordinates(numToEvent);
