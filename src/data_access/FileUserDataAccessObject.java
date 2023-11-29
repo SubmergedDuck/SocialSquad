@@ -8,8 +8,6 @@ import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
-import use_case.search_event.SearchEventDataAccessInterface;
-import use_case.search_event.SearchEventInputData;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
@@ -22,8 +20,7 @@ import java.util.Map;
  * File data access object for users.
  */
 public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
-        CreateEventDataAccessInterface, MapUserDataAccessInterface,
-        LoggedInUserDataAccessInterface, LoginUserDataAccessInterface {
+        CreateEventDataAccessInterface, MapUserDataAccessInterface, LoggedInUserDataAccessInterface, LoginUserDataAccessInterface{
     private final File userDataBase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();

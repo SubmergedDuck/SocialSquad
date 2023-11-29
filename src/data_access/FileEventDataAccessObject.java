@@ -7,6 +7,7 @@ import entity.Location.DistanceCalculatorInterface;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.create_event.CreateEventEventDataAccessInterface;
 import use_case.generate_static_map.GSMEventDataAccessInterface;
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
 import use_case.get_event_details.GetEventDetailsDataAccessInterface;
@@ -24,9 +25,9 @@ import java.util.*;
 /**
  * File data access object for events.
  */
-public class FileEventDataAccessObject implements CreateEventDataAccessInterface, GSMEventDataAccessInterface,
+public class FileEventDataAccessObject implements GSMEventDataAccessInterface,
         GetDirectionEventDataAccessInterface, GetEventDetailsDataAccessInterface, RemoveParticipantDataAccessInterface,
-        SearchNearbyDataAccessInterface, SearchEventDataAccessInterface {
+        SearchNearbyDataAccessInterface, SearchEventDataAccessInterface, CreateEventEventDataAccessInterface {
     private final File eventDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<Integer, Event> eventsToID = new HashMap<>();
@@ -233,5 +234,17 @@ public class FileEventDataAccessObject implements CreateEventDataAccessInterface
             }
         }
         return returnList;
+    }
+
+    @Override
+    public Integer generateEventID() {
+        Integer currentID = 0;
+        for (Integer eventID : eventsToID.keySet()){
+            //The new eventID will be the highest event ID.
+            if (currentID < eventID){
+                currentID = eventID + 1;
+            }
+        }
+        return currentID;
     }
 }
