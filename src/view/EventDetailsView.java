@@ -75,6 +75,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         this.getEventDetailsViewModel = getEventDetailsViewModel;
         this.joinEventController = joinEventController;
         this.backOutController = backOutController;
+        this.getEventDetailsViewModel.addPropertyChangeListener(this);
     }
 
 //    // A constructor just for testing

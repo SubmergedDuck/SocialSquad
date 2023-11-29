@@ -12,7 +12,7 @@ public class GetEventDetailsViewModel extends ViewModel {
     private final PropertyChangeSupport observable = new PropertyChangeSupport(this);
 
     public GetEventDetailsViewModel() {
-        super("get event details");
+        super("event details");
     }
 
     public void setState(GetEventDetailsState state) {
