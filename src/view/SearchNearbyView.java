@@ -240,7 +240,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 Event eventSelected = eventArrayList.get(Events_LIST.getSelectedIndex());
                 System.out.println(eventSelected.getEventName() + " is selected to view details.");// someething is selected
 
-                getEventDetailsController.execute(eventSelected);
+                getEventDetailsController.execute(eventSelected.getEventID());
             } else {
                 JOptionPane.showMessageDialog(this, "Please select an event first.");
             }
@@ -353,7 +353,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                     SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
                     presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
 
-                    getEventDetailsController.execute(event);
+                    getEventDetailsController.execute(event.getEventID());
                     viewManagerModel.setActiveView(view.viewName);
                     viewManagerModel.firePropertyChanged();
 

@@ -70,6 +70,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private view.ButtonGradient MyEvents_BUTTON;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
                     SearchNearbyController searchNearbyController, CreateEventController createEventController) {
@@ -86,12 +87,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
         Title_LABEL = new javax.swing.JLabel();
         TopSeperator_PANEL = new javax.swing.JPanel();
-        SearchEvent_BUTTON = new view.ButtonGradient();
+        SearchEvent_BUTTON = new ButtonGradient();
         BottomSeperator_PANEL = new javax.swing.JPanel();
-        CreateEvent_BUTTON = new view.ButtonGradient();
+        CreateEvent_BUTTON = new ButtonGradient();
         MapImage_LABEL = new javax.swing.JLabel();
         LogoutIcon_LABEL = new javax.swing.JLabel();
         Logout_BUTTON = new javax.swing.JButton();
+        MyEvents_BUTTON = new ButtonGradient();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,7 +107,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         Title_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 14)); // NOI18N
         Title_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Title_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Title_LABEL.setText("All events created by users");
+        Title_LABEL.setText("Click on the Map!");
         Title_LABEL.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 1, 1, 1));
 
         TopSeperator_PANEL.setBackground(new java.awt.Color(229, 222, 233));
@@ -147,7 +149,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 try {
                     SearchEvent_BUTTONActionPerformed(evt);
                 } catch (IOException e) {
-                    System.out.println("IOException occured.");
+                    throw new RuntimeException(e);
                 }
             }
         });
@@ -179,18 +181,27 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         MapImage_LABEL.setBackground(new java.awt.Color(204, 204, 255));
         MapImage_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
-        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/GetDirectionsTester.png"));
-        MapImage_LABEL.setText("[Static map here]");
+        // TODO: MapImage_LABEL should be updated w/ get_direction use case
+        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("")); // NOI18N
+        MapImage_LABEL.setText("MapImage");
 
-        // TODO: Import logout image icon to src/view
-        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
-        LogoutIcon_LABEL.setText("jLabel2");
+        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("src/view/ImageIcons/LogoutIcon.png")); // NOI18N
+        LogoutIcon_LABEL.setText("LogoutIcon");
 
         Logout_BUTTON.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
         Logout_BUTTON.setForeground(new java.awt.Color(229, 222, 233));
         Logout_BUTTON.setText("Logout");
         Logout_BUTTON.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
+        MyEvents_BUTTON.setText("My Events");
+        MyEvents_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
+        MyEvents_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
+        MyEvents_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyEvents_BUTTONActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -202,17 +213,22 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(Logout_BUTTON))
-                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(14, 14, 14)
+                                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(Logout_BUTTON))
+                                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(95, 95, 95)
+                                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
@@ -220,8 +236,10 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 504, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -246,6 +264,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
 
         pack();
     }
@@ -276,6 +295,10 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
             }
 
         }
+    }
+
+    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
     }
 
     /**

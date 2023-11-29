@@ -11,8 +11,8 @@ public class GetEventDetailsController {
         this.interactor = interactor;
     }
 
-    public void execute(Event event) {
-        GetEventDetailsInputData inputData = new GetEventDetailsInputData(event.getEventID());
+    public void execute(Integer eventID) {
+        GetEventDetailsInputData inputData = new GetEventDetailsInputData(eventID);
         interactor.execute(inputData);
     }
 }
