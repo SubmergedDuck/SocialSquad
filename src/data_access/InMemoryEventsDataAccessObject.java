@@ -116,8 +116,6 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
                 returnList.remove(event);
             }
         }
-
-
         return returnList;
     }
 
