@@ -13,8 +13,8 @@ public class GenerateStaticMapController {
         this.interactor = interactor;
     }
 
-    public void execute(User currentUser, int maxPins, int width, int height) throws IOException {
-        GSMInputData inputData = new GSMInputData(currentUser.getUsername(),maxPins,width,height);
+    public void execute(String[] coordinates, int maxPins, int width, int height) throws IOException {
+        GSMInputData inputData = new GSMInputData(coordinates,maxPins,width,height);
         interactor.execute(inputData);
     }
 }

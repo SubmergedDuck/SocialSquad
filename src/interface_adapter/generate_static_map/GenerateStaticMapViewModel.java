@@ -19,13 +19,14 @@ public class GenerateStaticMapViewModel extends ViewModel {
     }
 
     public GenerateStaticMapState getState(){return state;}
+
     @Override
     public void firePropertyChanged() {
-        observable.firePropertyChange("generate static map",null,this.state);
+        observable.firePropertyChange("state",null,this.state);
     }
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-
+        observable.addPropertyChangeListener(listener);
     }
 }

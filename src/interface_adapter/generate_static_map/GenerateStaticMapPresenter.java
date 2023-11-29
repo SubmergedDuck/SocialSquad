@@ -13,6 +13,8 @@ public class GenerateStaticMapPresenter implements GSMOutputBoundary {
 
     @Override
     public void prepareView(GSMOutputData outputData) {
-
+        GenerateStaticMapState state = generateStaticMapViewModel.getState();
+        state.setGeneratedMap(outputData.getGeneratedMap());
+        generateStaticMapViewModel.firePropertyChanged();
     }
 }

@@ -1,4 +1,5 @@
 package view;
+import data_access.GenerateStaticMapBody;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEvent;
@@ -9,6 +10,10 @@ import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
+import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
+import interface_adapter.generate_static_map.GenerateStaticMapState;
+import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
@@ -22,6 +27,7 @@ import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
+import use_case.generate_static_map.GSMInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
@@ -31,9 +37,14 @@ import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -41,7 +52,7 @@ import java.util.ArrayList;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame {
+public class HomeView extends javax.swing.JFrame implements PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -50,7 +61,8 @@ public class HomeView extends javax.swing.JFrame {
     private final LoggedInController loggedInController;
     private final SearchNearbyController searchNearbyController;
     private final CreateEventController createEventController;
-
+    private final GenerateStaticMapController generateStaticMapController;
+    private final GenerateStaticMapViewModel generateStaticMapViewModel;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
     private javax.swing.JLabel LogoutIcon_LABEL;
@@ -63,15 +75,19 @@ public class HomeView extends javax.swing.JFrame {
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController) {
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
+                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
+        this.generateStaticMapController = generateStaticMapController;
+        this.generateStaticMapViewModel = generateStaticMapViewModel;
+        this.generateStaticMapViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws IOException {
 
         Main_PANEL = new javax.swing.JPanel();
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
@@ -171,14 +187,9 @@ public class HomeView extends javax.swing.JFrame {
         MapImage_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
-        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/GetDirectionsTester.png"));
-        MapImage_LABEL.setText("[Static map here]");
 
-
-
-
-
-
+        String[] currentCoordinates = CoordinatesFromIP.getCoordinates();
+        generateStaticMapController.execute(currentCoordinates, 100,350, 504);
 
 
 
@@ -280,6 +291,15 @@ public class HomeView extends javax.swing.JFrame {
         }
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue() instanceof GenerateStaticMapState){
+            GenerateStaticMapState state = (GenerateStaticMapState)evt.getNewValue();
+            BufferedImage generatedMap = state.getGeneratedMap();
+            MapImage_LABEL.setIcon(new javax.swing.ImageIcon(generatedMap));
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -333,8 +353,19 @@ public class HomeView extends javax.swing.JFrame {
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel("log in"));
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController);
-                //homeView.setVisible(true);
+                GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
+                GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(gsmViewModel);
+                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), new InMemoryUsersDataAccessObject(),
+                        new InMemoryEventsDataAccessObject(), generateStaticMapPresenter);
+                GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
+                HomeView homeView = null;
+                try {
+                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,
+                            generateStaticMapController, gsmViewModel);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                homeView.setVisible(true);
 
                 homeView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 view.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
