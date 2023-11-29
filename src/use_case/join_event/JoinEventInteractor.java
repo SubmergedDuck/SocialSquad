@@ -1,5 +1,6 @@
 package use_case.join_event;
 
+import entity.Events.Event;
 import use_case.join_event.JoinEventUserDataAccessInterface;
 import use_case.join_event.JoinEventEventDataAccessInterface;
 import use_case.join_event.JoinEventOutputBoundary;
@@ -15,6 +16,7 @@ public class JoinEventInteractor {
     private final JoinEventOutputBoundary joinEventPresenter;
     private final JoinEventUserDataAccessInterface userDataAccessObject;
     private final JoinEventEventDataAccessInterface eventsDataAccessObject;
+    private final JoinEventCurrentUserDataAccessInterface currentUserDataAccessObject;
 
     /**
      * Constructor for JoinEventInteractor.
@@ -25,10 +27,12 @@ public class JoinEventInteractor {
 
     public JoinEventInteractor(JoinEventOutputBoundary joinEventPresenter,
                                JoinEventUserDataAccessInterface userDataAccessObject,
-                               JoinEventEventDataAccessInterface eventsDataAccessObject) {
+                               JoinEventEventDataAccessInterface eventsDataAccessObject,
+                               JoinEventCurrentUserDataAccessInterface inMemoryCurrentUserDAO) {
         this.joinEventPresenter = joinEventPresenter;
         this.userDataAccessObject = userDataAccessObject;
         this.eventsDataAccessObject = eventsDataAccessObject;
+        this.currentUserDataAccessObject = inMemoryCurrentUserDAO;
     }
 
     /**
@@ -40,10 +44,10 @@ public class JoinEventInteractor {
 
     public void execute(JoinEventInputData joinEventInputData) {
         String username = joinEventInputData.getUsername();
-        Integer eventID = joinEventInputData.getEventID();
-        String capacity = eventsDataAccessObject.getCapacity(eventID);
+        Event event = joinEventInputData.getEvent();
+        String capacity = eventsDataAccessObject.getCapacity(event.getEventID());
 
-        ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(eventID);
+        ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
 
         // Count number of people already joined
         int current_number_joined = 0;
@@ -51,16 +55,20 @@ public class JoinEventInteractor {
             current_number_joined++;
         }
 
+
         // If current_number_joined is equal to capacity then prepareFailView else join event and prepareSuccessView
         if (current_number_joined == Integer.parseInt(capacity)) {
             joinEventPresenter.prepareFailView();
         } else {
-            userDataAccessObject.userJoinEvent(username, eventID);
-            eventsDataAccessObject.userJoinEvent(username, eventID);
+            // Updates DAOs
+            userDataAccessObject.userJoinEvent(username, event);
+            eventsDataAccessObject.userJoinEvent(username, event.getEventID());
+            currentUserDataAccessObject.currentUserJoinEvent(event.getEventID());
 
             // Update getPeopleJoined from eventsDataAccessObject
-            getPeopleJoined = eventsDataAccessObject.getPeopleJoined(eventID);
+            getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
 
+            // Output data will be used for getting the # of people joined to update #/capacity text
             JoinEventOutputData joinEventOutputData = new JoinEventOutputData(getPeopleJoined);
             joinEventPresenter.prepareSuccessView(joinEventOutputData);
         }

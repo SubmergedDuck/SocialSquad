@@ -1,5 +1,7 @@
 package use_case.join_event;
 
+import entity.Events.Event;
+
 import java.util.ArrayList;
 
 /**
@@ -20,4 +22,5 @@ public interface JoinEventEventDataAccessInterface {
      * This method will use the event DAO to look up the event and return getPeopleJoined.
      */
     ArrayList<String> getPeopleJoined(Integer eventID);
+
 }
