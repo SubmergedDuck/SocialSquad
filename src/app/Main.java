@@ -6,6 +6,7 @@ import entity.Events.*;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
+import entity.Location.LocationFactory;
 import entity.Users.CommonUser;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
@@ -18,16 +19,20 @@ import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInputBoundary;
 import use_case.join_event.JoinEventInteractor;
+import use_case.search_nearby.SearchNearbyOutputData;
 import view.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -57,21 +62,52 @@ public class Main {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
-        SearchNearbyViewModel searchNearbyViewModel =  new SearchNearbyViewModel();
+        SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
-        InMemoryUsersDataAccessObject userDataAccessObject;
-        userDataAccessObject = new InMemoryUsersDataAccessObject();
-        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
+        InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
+
+        // Create sample entities
+        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
+
+        try {
+            User user = new CommonUser("owner", "password", 20, "f", "contact");
+
+            LocationFactory factory = new CommonLocationFactory();
+            Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+            Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
+            entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                    new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                    10); // This event should be returned
+            entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
+                    new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
+
+            ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
+            eventArrayList.add(event);
+            eventArrayList.add(event2);
+
+            user.setCreatedEvents(eventArrayList); // Let the user create these events
+
+            // Save the objects to inMemoryDAOs for use
+            userDataAccessObject.save(user);
+            for (Event event1 : eventArrayList) {
+                eventDataAccessObject.save(event1);
+            }
+
+        } catch (Exception e) {
+            System.out.println("run time exceptions occured.");
+        }
+
 
         // Instantiate BackOut use case
         BackOutController backOutController = BackOutUseCaseFactory.createBackOutUseCase(viewManagerModel);
 
         // Instantiate EventDetails use case
-        GetEventDetailsController getEventDetailsController = GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel, viewManagerModel, eventDataAccessObject);
+        GetEventDetailsController getEventDetailsController =
+                GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel, viewManagerModel, eventDataAccessObject);
 
         // Instantiate CreateEvent use case
         // TODO replace with factory later
@@ -98,16 +134,15 @@ public class Main {
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
-        // Build GetEventDetails view
-        // TODO: replace with the factory later
-        EventDetailsView eventDetailsView = GetEventDetailsUseCaseFactory.create(getEventDetailsViewModel, joinEventController, backOutController);
-        views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         // Build SearchNearby view
-        // Instantiate GetEventDetails Controller and BackOutController here because their building method in their factory have not been written.
         SearchNearbyView searchNearbyView = SearchNearbyUseCaseFactory.create(viewManagerModel, searchNearbyViewModel,
                 eventDataAccessObject, getEventDetailsController, backOutController);
         views.add(searchNearbyView.getRootPane(), searchNearbyView.viewName);
+
+        // Build GetEventDetails view
+        EventDetailsView eventDetailsView = GetEventDetailsUseCaseFactory.create(getEventDetailsViewModel, searchNearbyView, joinEventController, backOutController);
+        views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
