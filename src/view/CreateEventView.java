@@ -1,16 +1,51 @@
 package view;
 // TODO: add imports
 
+import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.*;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Location.LocationFactory;
+import entity.Users.CommonUser;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
+import interface_adapter.create_event.CreateEventController;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventState;
+import interface_adapter.create_event.CreateEventViewModel;
+import use_case.back_out.BackOutInteractor;
+import use_case.back_out.BackOutOutputBoundary;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
+
+import javax.swing.*;
+import javax.swing.text.View;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 /**
  *
  * @author submergedduck
  */
-public class CreateEventView extends javax.swing.JFrame {
+public class CreateEventView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
 
     /**
      * Creates new form loginView
      */
-
+    public final String viewName = "create event";
+    private final CreateEventViewModel createEventViewModel;
+    private final CreateEventController createEventController;
+    private final BackOutController backOutController;
     private view.ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private javax.swing.JLabel Capacity_LABEL;
@@ -21,6 +56,7 @@ public class CreateEventView extends javax.swing.JFrame {
     private javax.swing.JTextField Date_TEXTFIELD;
     private javax.swing.JLabel Description_LABEL;
     private javax.swing.JTextArea Description_TEXTAREA;
+    private javax.swing.JTextField Description_TEXTFIELD;
     private javax.swing.JTextField EndTime_TEXTFIELD;
     private javax.swing.JLabel EventNameCreateFailed_LABEL;
     private javax.swing.JLabel EventName_LABEL;
@@ -39,7 +75,11 @@ public class CreateEventView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-    public CreateEventView() {
+    public CreateEventView(CreateEventViewModel createEventViewModel, CreateEventController createEventController, BackOutController backOutController) {
+        this.createEventViewModel = createEventViewModel;
+        this.createEventController = createEventController;
+        this.backOutController = backOutController;
+        createEventViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
@@ -66,6 +106,7 @@ public class CreateEventView extends javax.swing.JFrame {
         Date_LABEL = new javax.swing.JLabel();
         Capacity_LABEL = new javax.swing.JLabel();
         Description_LABEL = new javax.swing.JLabel();
+        Description_TEXTFIELD = new javax.swing.JTextField();
         CreateEvent_BUTTON = new view.ButtonGradient();
         Back_BUTTON = new view.ButtonGradient();
         EventType_TEXTFIELD = new javax.swing.JTextField();
@@ -249,6 +290,18 @@ public class CreateEventView extends javax.swing.JFrame {
         Capacity_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Capacity_LABEL.setText("Capacity");
 
+        Description_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
+        Description_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
+        Description_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
+        Description_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
+        Description_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
+        Description_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
+        Description_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Description_TEXTFIELDActionPerformed(evt);
+            }
+        });
+
         Description_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Description_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Description_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -417,40 +470,199 @@ public class CreateEventView extends javax.swing.JFrame {
         pack();
     }
 
+
     private void EventName_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String eventName = EventName_TEXTFIELD.getText() + e.getKeyChar();
+                state.setEventName(eventName);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
     }
 
     private void StartTime_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String startTime = StartTime_TEXTFIELD.getText() + e.getKeyChar();
+                state.setStartTime(startTime);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
     }
 
     private void EndTime_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String endTime = EndTime_TEXTFIELD.getText() + e.getKeyChar();
+                state.setEndTime(endTime);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
     }
 
     private void Location_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String coord = Location_TEXTFIELD.getText() + e.getKeyChar();
+                state.setLocation(coord);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
     }
 
     private void Capacity_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String capacity = Capacity_LABEL.getText() + e.getKeyChar();
+                state.setCapacity(capacity);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
     }
 
     private void Date_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String date = Date_TEXTFIELD.getText() + e.getKeyChar();
+                state.setDate(date);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
+    }
+    private void Description_TEXTFIELDActionPerformed(ActionEvent evt) {
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String description = Description_TEXTFIELD.getText() + e.getKeyChar();
+                state.setDescription(description);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
+    }
+    private void EventType_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
+        new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String eventType = EventType_TEXTFIELD.getText() + e.getKeyChar();
+                state.setEventType(eventType);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+        };
     }
 
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (evt.getSource().equals(CreateEvent_BUTTON)) {
+            // TODO: how to keep track of users logged in
+            createEventController.execute("user", EventName_TEXTFIELD.getText(), Location_TEXTFIELD.getText(), StartTime_TEXTFIELD.getText(), EventType_TEXTFIELD.getText(), Description_TEXTFIELD.getText(), Capacity_TEXTFIELD.getText());
+            System.out.println("creat event");
+        }
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void EventType_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        backOutController.execute();
     }
 
     /**
@@ -477,8 +689,52 @@ public class CreateEventView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CreateEventView().setVisible(true);
+                CreateEventViewModel createEventViewModel = new CreateEventViewModel();
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
+                InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
+                InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
+                CreateEventOutputBoundary presenter = new CreateEventPresenter(createEventViewModel);
+                EventFactory eventFactory = new CommonEventFactory();
+                InviteOnlyEventFactory inviteEventFactory = new InviteOnlyEventFactory() {
+                    @Override
+                    public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, ArrayList<String> peopleInvited) {
+                        return null;
+                    }
+                };
+                RestrictedEventFactory restrictedEventFactory = new RestrictedEventFactory() {
+                    @Override
+                    public RestrictedEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, Integer ageRestriction, String sexRestriction) {
+                        return null;
+                    }
+                };
+
+                LocationFactory locationFactory = new CommonLocationFactory();
+
+                BackOutController backOutController = new BackOutController(new BackOutInteractor(new BackOutPresenter(new ViewManagerModelAdapter(viewManagerModel))));
+
+                CreateEventInputBoundary createEventInteractor = new CreateEventInteractor(eventDataAccessObject, userDataAccessObject, presenter, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
+                CreateEventController createEventController = new CreateEventController(createEventInteractor);
+                new CreateEventView(createEventViewModel, createEventController, backOutController).setVisible(true);
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        ;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("create event")) {
+            CreateEventState state = (CreateEventState) evt.getNewValue();
+            if (!state.getUseCaseSuccessStatus()) {
+                String errors = state.getError();
+                JOptionPane.showMessageDialog(this, errors);
+            } else {
+                JOptionPane.showMessageDialog(this, "You successfully created this event!");
+            }
+        }
+
     }
 }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * and update the created events of users. Furthermore, the interactor will tell the presenter if an event was successfully
  * created or not.
  */
-public class CreateEventInteractor {
+public class CreateEventInteractor implements CreateEventInputBoundary {
     final CreateEventDataAccessInterface eventDataAccessObject;
     final CreateEventDataAccessInterface userDataAccessObject;
     final CreateEventOutputBoundary createEventPresenter;

@@ -6,11 +6,9 @@ import use_case.create_event.CreateEventOutputData;
 
 public class CreateEventPresenter implements CreateEventOutputBoundary {
     private final CreateEventViewModel createEventViewModel;
-    private ViewManagerModel viewManagerModel;
 
-    public CreateEventPresenter(CreateEventViewModel createEventViewModel, ViewManagerModel viewManagerModel) {
+    public CreateEventPresenter(CreateEventViewModel createEventViewModel) {
         this.createEventViewModel = createEventViewModel;
-        this.viewManagerModel = viewManagerModel;
     }
     @Override
     public void prepareFailView(String error) {
