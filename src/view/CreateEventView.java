@@ -313,7 +313,7 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     CreateEvent_BUTTONActionPerformed(evt);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     System.out.println("run time exception occured.");
                 }
             }
