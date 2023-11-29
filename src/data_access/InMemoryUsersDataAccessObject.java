@@ -4,7 +4,6 @@ import entity.Events.Event;
 import entity.Users.User;
 import use_case.common_interfaces.MapUserDataAccessInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
-import use_case.get_direction.GetDirectionUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
