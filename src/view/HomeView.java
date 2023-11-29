@@ -384,6 +384,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
                 EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
+                CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
@@ -406,6 +407,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 views.add(view.getRootPane(), "search nearby");
                 views.add(eventDetailsView.getRootPane(), "get event details");
                 views.add(homeView.getRootPane(), "home");
+                views.add(createEventView.getRootPane(), "create event");
 
                 ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);
                 viewManagerModel.addPropertyChangeListener(viewManager);
