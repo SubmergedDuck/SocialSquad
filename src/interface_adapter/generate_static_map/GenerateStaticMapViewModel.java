@@ -14,6 +14,11 @@ public class GenerateStaticMapViewModel extends ViewModel {
         super("generate static map");
     }
 
+    public void setState(GenerateStaticMapState state){
+        this.state = state;
+    }
+
+    public GenerateStaticMapState getState(){return state;}
     @Override
     public void firePropertyChanged() {
         observable.firePropertyChange("generate static map",null,this.state);
