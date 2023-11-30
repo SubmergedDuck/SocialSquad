@@ -7,7 +7,6 @@ import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEventFactory;
 import entity.Events.Event;
-import entity.Events.EventFactory;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
@@ -321,6 +320,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                //Test
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
                 InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
@@ -347,6 +347,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
                 GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
 
+                //Creating the controllers,presenters, and interactors for each use case in this view.
                 GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel);
                 GetIDsPresenter getIDsPresenter = new GetIDsPresenter(getIDsViewModel);
                 OnlyGetEventDetailsPresenter getEventDetailsPresenter = new OnlyGetEventDetailsPresenter(getEventDetailsViewModel);
