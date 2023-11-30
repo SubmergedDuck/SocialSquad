@@ -22,5 +22,6 @@ public class OnlyGetEventDetailsPresenter implements GetEventDetailsOutputBounda
         state.setEventCapacity(outputData.getCapacity());
         this.getEventDetailsViewModel.setState(state);
         getEventDetailsViewModel.firePropertyChanged();
+
     }
 }
