@@ -26,7 +26,9 @@ public class SignupInteractor implements SignupInputBoundary {
     }
 
     public void execute(SignupInputData signupInputData) {
-        if (userDataAccessObject.existsByName(signupInputData.getUsername())) {
+        if (signupInputData.isClickBack()) {
+            userPresenter.preparePreviousView();
+        } else if (userDataAccessObject.existsByName(signupInputData.getUsername())) {
             userPresenter.prepareFailView("Username already exists");
         } else if (!signupInputData.getPassword().equals(signupInputData.getRepeatPassword())) {
             userPresenter.prepareFailView("Passwords do not match");
@@ -66,12 +68,17 @@ public class SignupInteractor implements SignupInputBoundary {
                 System.out.println("sign up succeed");
 
             }
+
+            @Override
+            public void preparePreviousView() {
+                System.out.println("back succeed");
+            }
         };
         SignupUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         SignupInputBoundary interactor = new SignupInteractor(inMemoryUserDAO, presenter, factory);
-        SignupInputData inputData = new SignupInputData("user1", "", "123", "123", "1", "f", "contact");
+        SignupInputData inputData = new SignupInputData("user1", "", "123", "123", "1", "f", "contact",true);
         interactor.execute(inputData);
-        SignupInputData inputData2 = new SignupInputData("user1", "", "123", "123", "1", "f", "contact");
+        SignupInputData inputData2 = new SignupInputData("user1", "", "123", "123", "1", "f", "contact",true);
         interactor.execute(inputData2);
         interactor.execute(inputData2);
     }
