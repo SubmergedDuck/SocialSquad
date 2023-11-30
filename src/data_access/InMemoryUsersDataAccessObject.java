@@ -5,6 +5,7 @@ import entity.Users.User;
 import use_case.generate_static_map.GSMUserDataAccessInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_direction.GetDirectionUserDataAccessInterface;
+import use_case.get_ids.GetIDsDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 public class InMemoryUsersDataAccessObject implements
         SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
         GetDirectionUserDataAccessInterface, CreateEventDataAccessInterface,GSMUserDataAccessInterface,
-        LoggedInUserDataAccessInterface, LoginUserDataAccessInterface {
+        LoggedInUserDataAccessInterface, LoginUserDataAccessInterface, GetIDsDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
@@ -88,6 +89,22 @@ public class InMemoryUsersDataAccessObject implements
         User eventOwner = this.usernameToUser.get(ownerUser);
         ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
         hostedEvents.add(event);
+    }
+
+    @Override
+    public ArrayList<Integer> getIds(String username, boolean isCreatedEvent) {
+        ArrayList<Integer> currentIDs = new ArrayList<>();
+        User user = usernameToUser.get(username);
+        if (isCreatedEvent){
+            for (Event event : user.getCreatedEvents()){
+                currentIDs.add(event.getEventID());
+            }
+        } else {
+            for (Event event : user.getJoinedEvents()){
+                currentIDs.add(event.getEventID());
+            }
+        }
+        return currentIDs;
     }
 }
 

@@ -2,16 +2,51 @@ package view;
 
 //TODO: (note): Remember to change button and text colors when going from Joined to Owned events and vice versa
 
+import data_access.InMemoryCurrentUserDAO;
+import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.CommonEventFactory;
+import entity.Events.Event;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Location.LocationFactory;
+import entity.Users.CommonUserFactory;
+import entity.Users.User;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserState;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_event_details.*;
+import interface_adapter.get_ids.GetIDsController;
+import interface_adapter.get_ids.GetIDsPresenter;
+import interface_adapter.get_ids.GetIDsState;
+import interface_adapter.get_ids.GetIDsViewModel;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.get_ids.GetIDsInteractor;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 /**
  *
  * @author submergedduck
  */
-public class MyEventsView extends javax.swing.JFrame {
+public class MyEventsView extends javax.swing.JFrame implements PropertyChangeListener {
 
     /**
      * Creates new form MyEventsView
      */
 
+    private final GetIDsController getIDsController;
+    private final GetCurrentUserController getCurrentUserController;
+    private final GetEventDetailsController getEventDetailsController;
+    private String currentUser;
+    private ArrayList<Integer> joinedEvents;
+    private ArrayList<String> eventDescriptions = new ArrayList<>();
     private view.ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient EventDetails_BUTTON;
@@ -24,7 +59,15 @@ public class MyEventsView extends javax.swing.JFrame {
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    public MyEventsView() {
+    public MyEventsView(GetIDsController getIDsController, GetIDsViewModel getIDsViewModel,
+                        GetCurrentUserController getCurrentUserController, GetCurrentUserViewModel getCurrentUserViewModel,
+                        GetEventDetailsController getEventDetailsController, GetEventDetailsViewModel getEventDetailsViewModel) {
+        this.getIDsController = getIDsController;
+        this.getCurrentUserController = getCurrentUserController;
+        this.getEventDetailsController = getEventDetailsController;
+        getIDsViewModel.addPropertyChangeListener(this);
+        getCurrentUserViewModel.addPropertyChangeListener(this);
+        getEventDetailsViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
@@ -115,8 +158,20 @@ public class MyEventsView extends javax.swing.JFrame {
 
         Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
         Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
+
+
+
+
+
+        getCurrentUserController.execute();
+        getIDsController.execute(currentUser, false);
+
+        for (Integer eventID: joinedEvents){
+            getEventDetailsController.execute(eventID);
+        }
+
         Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Bob's Building Workshop (Jun 19 '23) [Cap: 7/10]", "Outdoor Frisbee (Jun 10 '23) [Cap: 4/10]", "LoL 5 v 5 Tourney (Sep 10 '23) [Cap: 25/50]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]", "Other (Dec 30 '23) [Cap: 1/5]" };
+            String[] strings = eventDescriptions.toArray(new String[eventDescriptions.size()]);
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
@@ -265,10 +320,67 @@ public class MyEventsView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MyEventsView().setVisible(true);
+                //Test
+                InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+                InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+                InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
+                CommonUserFactory userFactory = new CommonUserFactory();
+                LocationFactory locationFactory = new CommonLocationFactory();
+                CommonEventFactory eventFactory = new CommonEventFactory();
+                Location location = null;
+                try {
+                    location = locationFactory.makeLocation("(43.665510,-79.387280)");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                User newUser = userFactory.create("username","123",20,"m","test contact");
+                inMemoryCurrentUserDAO.changeUser(newUser);
+                inMemoryUsersDataAccessObject.save(newUser);
+                ArrayList<String> peopledJoined = new ArrayList<>();
+                peopledJoined.add(newUser.getUsername());
+                Event newEvent = eventFactory.create(0,"test event","another user",location,peopledJoined,
+                        new ArrayList<String>(), LocalDateTime.now(),"test event", "test", false, 10);
+                inMemoryEventsDataAccessObject.save(newEvent);
+                ArrayList<Event> userJoinedEvents = newUser.getJoinedEvents();
+                userJoinedEvents.add(newEvent);
+                GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+                GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+                GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
+
+                //Creating the controllers,presenters, and interactors for each use case in this view.
+                GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel);
+                GetIDsPresenter getIDsPresenter = new GetIDsPresenter(getIDsViewModel);
+                OnlyGetEventDetailsPresenter getEventDetailsPresenter = new OnlyGetEventDetailsPresenter(getEventDetailsViewModel);
+
+                GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter, inMemoryCurrentUserDAO);
+                GetIDsInteractor getIDsInteractor = new GetIDsInteractor(inMemoryUsersDataAccessObject, getIDsPresenter);
+                GetEventDetailsInteractor getEventDetailsInteractor = new GetEventDetailsInteractor(getEventDetailsPresenter,inMemoryEventsDataAccessObject);
+
+                GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+                GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
+                GetEventDetailsController getEventDetailsController1 = new GetEventDetailsController(getEventDetailsInteractor);
+
+                new MyEventsView(getIDsController1, getIDsViewModel, getCurrentUserController1,getCurrentUserViewModel,
+                        getEventDetailsController1,getEventDetailsViewModel).setVisible(true);
             }
         });
     }
 
-
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue() instanceof GetCurrentUserState){
+            GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
+            currentUser = state.getUsername();
+        } else if (evt.getNewValue() instanceof GetIDsState){
+            GetIDsState state = (GetIDsState)evt.getNewValue();
+            if (!state.getIsCreated()){
+                joinedEvents = state.getAllIDs();
+            }
+        } else if (evt.getNewValue() instanceof GetEventDetailsState){
+            GetEventDetailsState state = (GetEventDetailsState)evt.getNewValue();
+            String formattedString = String.format("%s (%s). Address: %s. Owner: %s",
+                    state.getEventName(), state.getEventDate(), state.getEventAddress(), state.getOwnerUser());
+            eventDescriptions.add(formattedString);
+        }
+    }
 }
