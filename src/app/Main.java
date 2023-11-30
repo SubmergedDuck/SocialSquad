@@ -1,5 +1,7 @@
 package app;
 
+import data_access.GenerateRoute;
+import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
@@ -13,6 +15,12 @@ import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
@@ -22,6 +30,8 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInputBoundary;
 import use_case.join_event.JoinEventInteractor;
@@ -69,6 +79,7 @@ public class Main {
         // TODO: change this to the real DAOs later
         InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
+        InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
 
         // Create sample entities
         userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
@@ -141,7 +152,19 @@ public class Main {
         views.add(searchNearbyView.getRootPane(), searchNearbyView.viewName);
 
         // Build GetEventDetails view
-        EventDetailsView eventDetailsView = GetEventDetailsUseCaseFactory.create(getEventDetailsViewModel, searchNearbyView, joinEventController, backOutController);
+        GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
+        GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
+        GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,eventDataAccessObject,userDataAccessObject,
+                new GenerateRoute());
+        GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
+
+        GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
+        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
+        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,currentUserDAO);
+        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+
+        EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
+                getDirectionController1, getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);

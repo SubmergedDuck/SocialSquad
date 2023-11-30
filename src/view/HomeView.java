@@ -1,4 +1,6 @@
 package view;
+import data_access.GenerateRoute;
+import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEvent;
@@ -11,6 +13,12 @@ import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
@@ -26,6 +34,8 @@ import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.back_out.BackOutInteractor;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
@@ -332,6 +342,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+                InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
 
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
@@ -350,8 +361,21 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
                 BackOutController backOutController = new BackOutController(backOutInteractor);
 
+
+                GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
+                GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
+                GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,inMemoryEventsDataAccessObject,inMemoryUsersDataAccessObject,
+                        new GenerateRoute());
+                GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
+
+                GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
+                GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
+                GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,inMemoryCurrentUserDAO);
+                GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController,
+                        getDirectionController1, getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
