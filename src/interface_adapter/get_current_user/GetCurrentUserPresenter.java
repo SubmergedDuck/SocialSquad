@@ -3,6 +3,9 @@ package interface_adapter.get_current_user;
 import use_case.get_current_user.GetCurrentUserOutputBoundary;
 import use_case.get_current_user.GetCurrentUserOutputData;
 
+/**
+ * Presenter for the GetCurrentUser use case.
+ */
 public class GetCurrentUserPresenter implements GetCurrentUserOutputBoundary {
 
     private final GetCurrentUserViewModel getCurrentUserViewModel;

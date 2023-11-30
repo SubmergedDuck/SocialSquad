@@ -5,6 +5,9 @@ import interface_adapter.ViewModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+/**
+ * View model for the GetIDs use case.
+ */
 public class GetIDsViewModel extends ViewModel {
 
     private GetIDsState state = new GetIDsState();
@@ -16,6 +19,7 @@ public class GetIDsViewModel extends ViewModel {
     public GetIDsState getState(){return this.state;}
 
     public void setState(GetIDsState state){this.state = state;}
+
     @Override
     public void firePropertyChanged() {
         observable.firePropertyChange("state", null, this.state);
