@@ -10,6 +10,7 @@ import entity.Location.LocationFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 /**
@@ -17,14 +18,13 @@ import java.util.ArrayList;
  * and update the created events of users. Furthermore, the interactor will tell the presenter if an event was successfully
  * created or not.
  */
-public class CreateEventInteractor {
+public class CreateEventInteractor implements CreateEventInputBoundary{
     final CreateEventDataAccessInterface eventDataAccessObject;
     final CreateEventDataAccessInterface userDataAccessObject;
     final CreateEventOutputBoundary createEventPresenter;
     final EventFactory eventFactory;
-    final InviteOnlyEventFactory inviteEventFactory;
-    final RestrictedEventFactory restrictedEventFactory;
     final LocationFactory locationFactory;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Constructor for CreateEventInteractor
@@ -32,57 +32,40 @@ public class CreateEventInteractor {
      * @param userDataAccessObject user DAO
      * @param createEventPresenter the create event presenter
      * @param eventFactory an event factory
-     * @param inviteEventFactory an invite event factory
-     * @param restrictedEventFactory a restricted event factory
      * @param locationFactory a location factory
      */
     public CreateEventInteractor(CreateEventDataAccessInterface eventDataAccessObject,
                                  CreateEventDataAccessInterface userDataAccessObject,CreateEventOutputBoundary createEventPresenter,
-                                 EventFactory eventFactory, InviteOnlyEventFactory inviteEventFactory,
-                                 RestrictedEventFactory restrictedEventFactory, LocationFactory locationFactory){
+                                 EventFactory eventFactory, LocationFactory locationFactory){
         this.eventDataAccessObject = eventDataAccessObject;
         this.userDataAccessObject = userDataAccessObject;
         this.createEventPresenter = createEventPresenter;
         this.eventFactory = eventFactory;
         this.locationFactory = locationFactory;
-        this.inviteEventFactory = inviteEventFactory;
-        this.restrictedEventFactory = restrictedEventFactory;
     }
+
 
     /**
      * Given the created event's information, this method calls the event DAO and adds the event. Furthermore,
      * the user DAO is accessed to change the event creator's created events instance to include the created event.
      * @param input the user inputs for the created event
      */
+    @Override
     public void execute(CreateEventInputData input) throws IOException {
         //Makes the location given the location input
-        Location eventLocation = locationFactory.makeLocation(input.getLocation());
-        Event currentEvent = null; //temp value, will be reassigned once the event type is figured out
-        Integer eventID = eventDataAccessObject.generateEventID();
-        Boolean invalidInput = errorHelper(input);
-        if (invalidInput){
-            presentErrorHelper(input, eventLocation);
+
+        ArrayList<String> allErrors = errorHelper(input);
+        Event currentEvent; //temp value, will be reassigned once the event type is figured out
+        if (!allErrors.isEmpty()){
+            presentErrorHelper(input);
         } else {
             //No errors with input.
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            Location eventLocation = locationFactory.makeLocation(input.getLocation());
+            Integer eventID = eventDataAccessObject.generateEventID();
             LocalDateTime date = LocalDateTime.parse(input.getTime(), formatter);
-            if (!input.getAgeRestriction().equals(0) || !input.getSexRestriction().equals("")) {
-                //Restricted event.
-                currentEvent = (Event) restrictedEventFactory.create(eventID, input.getEventName(), input.getOwner(),
-                        eventLocation, new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
-                        input.getDescription(), input.getPrivacy(), input.getCapacity(), input.getAgeRestriction(),
-                        input.getSexRestriction());
-            } else if (input.getInviteStatus()) {
-                //Invite only event
-                currentEvent = (Event) inviteEventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
-                        new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
-                        input.getDescription(), input.getPrivacy(), input.getCapacity(), input.getInvitedPeople());
-            } else {
-                //Normal event
-                currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
-                        new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
-                        input.getDescription(), input.getPrivacy(), input.getCapacity());
-            }
+            currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
+                    new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
+                    input.getDescription(), false, Integer.valueOf(input.getCapacity()));
             eventDataAccessObject.save(currentEvent);
             userDataAccessObject.save(currentEvent);
 
@@ -90,18 +73,35 @@ public class CreateEventInteractor {
             createEventPresenter.prepareSuccessView(output);
         }
     }
-    private boolean errorHelper(CreateEventInputData input){
+
+    private ArrayList<String> errorHelper(CreateEventInputData input){
         //Helps to detect if there are any invalid inputs
+        ArrayList<String> allErrors = new ArrayList<>();
         Boolean emptyInput = (input.getEventName().isEmpty()) || (input.getTime().isEmpty()) ||
                 (input.getType().isEmpty());
-        //Event name, time, and type are the only inputs that cannot be empty. Owner should be automatically filled out when the organizer creates the event.
-        Boolean invalidGender = false;
-        if (!input.getSexRestriction().isEmpty()){
-            invalidGender = !(input.getSexRestriction().equalsIgnoreCase("m") || input.getSexRestriction().equalsIgnoreCase("f"));
+        if (input.getEventName().isEmpty()){
+            allErrors.add("no event name");
         }
-        return emptyInput || invalidGender;
+        if (input.getType().isEmpty()){
+            allErrors.add("no event type");
+        }
+        try {
+            int test = Integer.parseInt(input.getCapacity());
+            if (test < 0){
+                allErrors.add("cannot have negative capacity");
+            }
+        } catch (NumberFormatException e){
+            allErrors.add("invalid capacity");
+        }
+        try {
+            LocalDateTime testTime = LocalDateTime.parse(input.getTime(),formatter);
+        } catch (DateTimeParseException e){
+            allErrors.add("invalid time");
+        }
+
+        return allErrors;
     }
-    private void presentErrorHelper(CreateEventInputData input, Location eventLocation){
+    private void presentErrorHelper(CreateEventInputData input){
         //Presents error
         ArrayList<String> errors = new ArrayList<>();
         String allErrors = "Errors: ";
@@ -111,11 +111,6 @@ public class CreateEventInteractor {
             errors.add("No date was inputted");
         } else if (input.getType().isEmpty()){
             errors.add("No event type was inputted");
-        } else if (!(input.getSexRestriction().equalsIgnoreCase("m") || input.getSexRestriction().equalsIgnoreCase("f"))){
-            errors.add("Invalid gender inputted");
-        } else if (eventLocation.getCoordinates().equals(null)){
-            //May change depending on how the instance attributes for invalid locations are assigned.
-            errors.add("Invalid location inputted");
         }
 
         //Generates the error message that points out all the errors with the inputs.
