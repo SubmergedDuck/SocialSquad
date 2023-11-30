@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.Users.User;
+import use_case.get_current_user.CurrentUserDataAccessInterface;
 import use_case.logout.LogoutCurrentUserDataAccessInterface;
 
 // TODO: Class should implement interfaces in:
@@ -34,4 +35,9 @@ public class InMemoryCurrentUserDAO implements CurrentUserDataAccessInterface, L
         return this.currentUser;
     }
 
+    /**
+     * A public method that changes the current logged in user saved in the DAO.
+     * @param user the new logged in user.
+     */
+    public void changeUser(User user){currentUser = user;}
 }
