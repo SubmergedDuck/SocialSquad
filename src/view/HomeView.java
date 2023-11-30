@@ -19,6 +19,8 @@ import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.my_event.MyEventController;
+import interface_adapter.my_event.MyEventState;
 import interface_adapter.search_event.SearchEventController;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
@@ -54,11 +56,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     /**
      * Creates new form HomeView
      */
-    public final String viewName = "home";
+    public final String viewName = "Home";
     private final LoggedInViewModel loggedInViewModel;
     private final LoggedInController loggedInController;
     private final SearchNearbyController searchNearbyController;
     private final CreateEventController createEventController;
+
+//    private final MyEventController myEventController;
 
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
@@ -192,6 +196,22 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         Logout_BUTTON.setForeground(new java.awt.Color(229, 222, 233));
         Logout_BUTTON.setText("Logout");
         Logout_BUTTON.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Logout_BUTTON.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(e.getSource().equals(Logout_BUTTON)){
+                            LoggedInState currentState = loggedInViewModel.getState();
+
+                            HomeView.this.loggedInController.execute(
+                                    currentState.getUsername()
+                            );
+
+                        }
+                    }
+                }
+        );
+
 
         MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
         MyEvents_BUTTON.setText("My Events");
@@ -298,6 +318,10 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     }
 
     private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+//        if (evt.getSource().equals(MyEvents_BUTTON)){
+//            MyEventState currentState = new MyEventState();
+//            myEventController.execute(currentState.);
+//        }
         // TODO add your handling code here:
     }
 

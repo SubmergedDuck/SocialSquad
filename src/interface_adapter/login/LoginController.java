@@ -6,17 +6,15 @@ import use_case.login.LoginInputData;
 
 public class LoginController {
     final LoginInputBoundary loginUseCaseInteractor;
+
     public LoginController(LoginInputBoundary loginUseCaseInteractor) {
         this.loginUseCaseInteractor = loginUseCaseInteractor;
     }
 
 
     public void execute(String username, String password, ViewModel viewModel) {
-        LoginInputData loginInputData = new LoginInputData(username, password,viewModel);
+        LoginInputData loginInputData = new LoginInputData(username, password, viewModel);
 
         loginUseCaseInteractor.execute(loginInputData);
-    }
-    public void linkTo(String viewname){
-        loginUseCaseInteractor.linkTo(viewname);
     }
 }
