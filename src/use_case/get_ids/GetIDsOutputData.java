@@ -6,14 +6,17 @@ import java.util.ArrayList;
  * Output data for the GetIDs use case.
  */
 public class GetIDsOutputData {
-    ArrayList<Integer> eventIDs;
+    private final ArrayList<Integer> eventIDs;
+
+    private final boolean isCreated;
 
     /**
      * Constructor for GetIDsOutputData
      * @param eventIDs the selected ids
      */
-    public GetIDsOutputData(ArrayList<Integer> eventIDs){
+    public GetIDsOutputData(ArrayList<Integer> eventIDs, boolean isCreated){
         this.eventIDs = eventIDs;
+        this.isCreated = isCreated;
     }
 
     /**
@@ -21,4 +24,6 @@ public class GetIDsOutputData {
      * @return a list of specific ids needed.
      */
     public ArrayList<Integer> getEventIDs(){return this.eventIDs;}
+
+    public boolean isCreated(){return this.isCreated;}
 }

@@ -22,7 +22,7 @@ public class GetIDsInteractor implements  GetIDsInputBoundary{
     @Override
     public void execute(GetIDsInputData inputData) {
         ArrayList<Integer> allIDs = userDataAccessObject.getIds(inputData.getUsername(), inputData.isCreatedEvents());
-        GetIDsOutputData outputData = new GetIDsOutputData(allIDs);
+        GetIDsOutputData outputData = new GetIDsOutputData(allIDs, inputData.isCreatedEvents());
         presenter.prepareView(outputData);
     }
 }
