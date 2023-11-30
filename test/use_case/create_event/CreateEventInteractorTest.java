@@ -26,7 +26,7 @@ import java.io.PrintStream;
 public class CreateEventInteractorTest {
     private CreateEventInteractor createEventInteractor;
     private CreateEventDataAccessInterface inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
-    private CreateEventDataAccessInterface inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+    private CreateEventEventDataAccessInterface inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
 
