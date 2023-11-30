@@ -67,15 +67,8 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
         this.searchNearbyViewModel = searchNearbyViewModel;
         this.getEventDetailsController = getEventDetailsController;
         this.backOutController = backOutController;
+        this.searchNearbyViewModel.addPropertyChangeListener(this);
     }
-
-//    // this constructor is only for testing out
-//    public SearchNearbyView(SearchNearbyViewModel searchNearbyViewModel) {
-//        initComponents();
-//        this.searchNearbyViewModel = searchNearbyViewModel;
-////        this.getEventDetailsController = getEventDetailsController;
-////        this.backOutController = backOutController;
-//    }
 
     private void initComponents() {
 
@@ -247,7 +240,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 Event eventSelected = eventArrayList.get(Events_LIST.getSelectedIndex());
                 System.out.println(eventSelected.getEventName() + " is selected to view details.");// someething is selected
 
-                getEventDetailsController.execute(eventSelected);
+                getEventDetailsController.execute(eventSelected.getEventID());
             } else {
                 JOptionPane.showMessageDialog(this, "Please select an event first.");
             }
@@ -316,8 +309,8 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                         new JoinEventController(joinEventInteractor), backOutController);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
-                getEventDetailsViewModel.addPropertyChangeListener(view);
-                getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
+                getEventDetailsViewModel.addPropertyChangeListener(view); //TODO here
+                getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView); //TODO here
 
                 view.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -360,7 +353,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                     SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
                     presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
 
-                    getEventDetailsController.execute(event);
+                    getEventDetailsController.execute(event.getEventID());
                     viewManagerModel.setActiveView(view.viewName);
                     viewManagerModel.firePropertyChanged();
 
@@ -395,7 +388,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                     String result = "";
 
                     Event event = eventsFound.get(i);
-                    String name = event.getEventName() + " ";
+                    String name = event.getEventName().toUpperCase() + " ";
 
                     LocalDateTime time = event.getTime();
                     String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
