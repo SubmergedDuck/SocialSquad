@@ -11,7 +11,7 @@ public class GetDirectionViewModel extends ViewModel {
 
     private final PropertyChangeSupport observable = new PropertyChangeSupport(this);
 
-    public GetDirectionViewModel(String viewName) {
+    public GetDirectionViewModel() {
         super("get direction");
     }
 

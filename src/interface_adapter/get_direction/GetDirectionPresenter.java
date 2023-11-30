@@ -7,11 +7,9 @@ import use_case.get_direction.GetDirectionOutputData;
 public class GetDirectionPresenter implements GetDirectionOutputBoundary {
 
     private final GetDirectionViewModel getDirectionViewModel;
-    private final ViewManagerModel viewManagerModel;
 
-    public GetDirectionPresenter(GetDirectionViewModel getDirectionViewModel, ViewManagerModel viewManagerModel){
+    public GetDirectionPresenter(GetDirectionViewModel getDirectionViewModel){
         this.getDirectionViewModel = getDirectionViewModel;
-        this.viewManagerModel = viewManagerModel;
     }
     @Override
     public void prepareView(GetDirectionOutputData outputData) {
@@ -19,8 +17,5 @@ public class GetDirectionPresenter implements GetDirectionOutputBoundary {
         state.setGeneratedImage(outputData.getDirectionImage());
         this.getDirectionViewModel.setState(state);
         getDirectionViewModel.firePropertyChanged();
-
-        viewManagerModel.setActiveView(getDirectionViewModel.getViewName());
-        viewManagerModel.firePropertyChanged();
     }
 }
