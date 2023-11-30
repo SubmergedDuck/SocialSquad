@@ -67,6 +67,9 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 
     private String currentUser;
 
+    private JFrame getDirectionFrame = new JFrame();
+
+    private JLabel getDirectionLabel;
     private ButtonGradient GetDirection_BUTTON;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -599,11 +602,12 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         } else if (evt.getNewValue() instanceof GetDirectionState){
             GetDirectionState state = (GetDirectionState)evt.getNewValue();
             BufferedImage generatedMap = state.getGeneratedImage();
-            JFrame frame = new JFrame();
-            JLabel label = new JLabel(new ImageIcon(generatedMap));
-            frame.getContentPane().add(label);
-            frame.pack();
-            frame.setVisible(true);
+            getDirectionLabel = new JLabel(new ImageIcon(generatedMap));
+            getDirectionFrame.getContentPane().add(getDirectionLabel);
+            getDirectionFrame.pack();
+            if (!getDirectionFrame.isVisible()){
+                getDirectionFrame.setVisible(true);
+            }
         } else if (evt.getNewValue() instanceof GetCurrentUserState){
             GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
             currentUser = state.getUsername();
