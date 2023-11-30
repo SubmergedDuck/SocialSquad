@@ -12,8 +12,8 @@ public class GetDirectionController {
         this.interactor = interactor;
     }
 
-    public void execute(User currentUser, Event event, int mapWidth, int mapHeight){
-        GetDirectionInputData inputData = new GetDirectionInputData(event.getEventID(), currentUser.getUsername(),
+    public void execute(String username, int eventID, int mapWidth, int mapHeight){
+        GetDirectionInputData inputData = new GetDirectionInputData(eventID, username,
                 mapWidth, mapHeight);
         interactor.execute(inputData);
     }
