@@ -18,6 +18,8 @@ public class LeaveEventOutputData {
     public LeaveEventOutputData(ArrayList<String> getPeopleJoined) {
             this.getPeopleJoined = getPeopleJoined;
     }
+
+    ArrayList<String> peopleJoined(){return this.getPeopleJoined;}
 }
 
 
