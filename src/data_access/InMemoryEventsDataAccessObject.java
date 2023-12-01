@@ -47,11 +47,8 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      * @param event The event to be saved
      */
     public void save(Event event){
-        System.out.println("AKER1");
         nameToEvents.put(event.getEventName(), event);
-        System.out.println(nameToEvents);
         eventsToID.put(event.getEventID(), event);
-        System.out.println(eventsToID);
     }
     
     /**

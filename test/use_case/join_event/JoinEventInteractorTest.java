@@ -104,7 +104,6 @@ public class JoinEventInteractorTest {
 
         // get the first event in the user's joinedEvents list
         Event evtInArray = inMemoryUsersDataAccessObject.getUserJoinedEvents("Anna").get(0);
-        System.out.println(inMemoryUsersDataAccessObject.getUsernameToUser());
 
     }
 
