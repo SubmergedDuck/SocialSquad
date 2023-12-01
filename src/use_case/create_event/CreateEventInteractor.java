@@ -76,8 +76,8 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
     private ArrayList<String> errorHelper(CreateEventInputData input){
         //Helps to detect if there are any invalid inputs
         ArrayList<String> allErrors = new ArrayList<>();
-        Boolean emptyInput = (input.getEventName().isEmpty()) || (input.getTime().isEmpty()) ||
-                (input.getType().isEmpty());
+        String[] allStrings = {input.getEventName(), input.getType(), input.getEventName(), input.getCapacity(),
+        input.getTime(), input.getDescription()};
         if (input.getEventName().isEmpty()){
             allErrors.add("no event name");
         }
@@ -102,6 +102,17 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
             Location location = locationFactory.makeLocation(input.getLocation());
         } catch (IOException e){
             allErrors.add("invalid coordinates");
+        }
+
+        //We don't want inputs besides the coordinates to have commas, otherwise it messes with how data is stored in the csv.
+        boolean hasComma = false;
+        for (String givenInput : allStrings){
+            if (givenInput.contains(",")){
+                hasComma = true;
+            }
+        }
+        if (hasComma){
+            allErrors.add("A non-coordinate input has a comma");
         }
 
         return allErrors;
