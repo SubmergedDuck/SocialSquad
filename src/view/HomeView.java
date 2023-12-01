@@ -339,8 +339,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 JFrame application = new JFrame("Home - Search nearby - Event detail demo");
                 SearchNearbyState state = new SearchNearbyState();
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
-                CreateEventViewModel createEventViewModel = new CreateEventViewModel(new ViewManagerModel());
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
+                CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
 
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
@@ -386,7 +386,6 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController);
                 createEventViewModel.addPropertyChangeListener(createEventView);
                 createEventViewModel.addPropertyChangeListener(view);
-                view.addPropertyChangeListener(createEventView);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
@@ -447,7 +446,6 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                     viewManagerModel.setActiveView(homeView.viewName);
                     viewManagerModel.firePropertyChanged();
                     homeView.setVisible(true);
-
 
                     application.pack();
                     application.setVisible(true);
