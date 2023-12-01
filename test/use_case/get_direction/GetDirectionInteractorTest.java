@@ -10,6 +10,9 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 import entity.Users.CommonUser;
 import entity.Users.User;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -25,9 +28,47 @@ import javax.swing.JLabel;
  * Test used to check if a route image is displayed
  */
 public class GetDirectionInteractorTest {
-    public static GetDirectionInteractor getDirectionInteractor;
-    public static String username;
-    public static int eventID;
+    private static GetDirectionInteractor getDirectionInteractor;
+    private final static InMemoryUsersDataAccessObject usersDataAccessObject = new InMemoryUsersDataAccessObject();
+    private final static InMemoryEventsDataAccessObject eventsDataAccessObject = new InMemoryEventsDataAccessObject();
+    private final static GetDirectionAPIDataAccessInterface apiDataAccess = new GenerateRoute();
+    private static String username;
+    private static int eventID;
+
+
+    /**
+     * Initializes the objects that will be used for the tests.
+     * @throws IOException api error
+     */
+    @Before
+    public void init() throws IOException {
+        User user = new CommonUser("username", "123", 20, "m", "test@gmail.com");
+        username = user.getUsername();
+        LocationFactory locationFactory = new CommonLocationFactory();
+        Location userLocation = locationFactory.makeLocation("(43.662137,-79.377021)");
+        Location eventLocation = locationFactory.makeLocation("(47.64054,-122.12934)");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse("2022-04-08 12:30", formatter);
+        Event event = new CommonEvent(0, "test event", "username", eventLocation,
+                new ArrayList<String>(), new ArrayList<String>(), dateTime, "type", "description", false, 10);
+        user.setLocation(userLocation);
+        usersDataAccessObject.save(user);
+        eventsDataAccessObject.save(event);
+    }
+
+    @Test
+    public void presenterReceivesImageTest(){
+        GetDirectionOutputBoundary mockPresenter = new GetDirectionOutputBoundary() {
+            @Override
+            public void prepareView(GetDirectionOutputData outputData) {
+                assert(!(outputData.getDirectionImage() == null));
+            }
+        };
+        getDirectionInteractor = new GetDirectionInteractor(mockPresenter, eventsDataAccessObject, usersDataAccessObject,
+                apiDataAccess);
+        GetDirectionInputData inputData = new GetDirectionInputData(eventID, username, 250,250);
+        getDirectionInteractor.execute(inputData);
+    }
 
     public static void main(String[] args) throws IOException {
         GetDirectionOutputBoundary mockPresenter = new GetDirectionOutputBoundary() {
@@ -41,22 +82,6 @@ public class GetDirectionInteractorTest {
                 frame.setVisible(true);
             }
         };
-        GetDirectionAPIDataAccessInterface apiDataAccess = new GenerateRoute();
-
-        User user = new CommonUser("username", "123", 20, "m", "test@gmail.com");
-        username = user.getUsername();
-        LocationFactory locationFactory = new CommonLocationFactory();
-        Location userLocation = locationFactory.makeLocation("(43.662137,-79.377021)");
-        Location eventLocation = locationFactory.makeLocation("(47.64054,-122.12934)");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse("2022-04-08 12:30", formatter);
-        Event event = new CommonEvent(0, "test event", "username", eventLocation,
-                new ArrayList<String>(), new ArrayList<String>(), dateTime, "type", "description", false, 10);
-        user.setLocation(userLocation);
-        InMemoryUsersDataAccessObject usersDataAccessObject = new InMemoryUsersDataAccessObject();
-        usersDataAccessObject.save(user);
-        InMemoryEventsDataAccessObject eventsDataAccessObject = new InMemoryEventsDataAccessObject();
-        eventsDataAccessObject.save(event);
         getDirectionInteractor = new GetDirectionInteractor(mockPresenter, eventsDataAccessObject, usersDataAccessObject,
                 apiDataAccess);
         GetDirectionInputData inputData = new GetDirectionInputData(eventID, username, 250,250);
