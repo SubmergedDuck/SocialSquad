@@ -57,7 +57,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
         ArrayList<String> allErrors = errorHelper(input);
         Event currentEvent; //temp value, will be reassigned once the event type is figured out
         if (!allErrors.isEmpty()){
-            presentErrorHelper(input);
+            presentErrorHelper(allErrors);
         } else {
             //No errors with input.
             Location eventLocation = locationFactory.makeLocation(input.getLocation());
@@ -69,8 +69,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
             eventDataAccessObject.save(currentEvent);
             userDataAccessObject.save(currentEvent);
 
-            CreateEventOutputData output = new CreateEventOutputData(currentEvent);
-            createEventPresenter.prepareSuccessView(output);
+            createEventPresenter.prepareSuccessView();
         }
     }
 
@@ -99,20 +98,17 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
             allErrors.add("invalid time");
         }
 
-        return allErrors;
-    }
-    private void presentErrorHelper(CreateEventInputData input){
-        //Presents error
-        ArrayList<String> errors = new ArrayList<>();
-        String allErrors = "Errors: ";
-        if (input.getEventName().isEmpty()){
-            errors.add("No event name was inputted");
-        } else if (input.getTime().isEmpty()){
-            errors.add("No date was inputted");
-        } else if (input.getType().isEmpty()){
-            errors.add("No event type was inputted");
+        try {
+            Location location = locationFactory.makeLocation(input.getLocation());
+        } catch (IOException e){
+            allErrors.add("invalid coordinates");
         }
 
+        return allErrors;
+    }
+    private void presentErrorHelper(ArrayList<String> errors){
+        //Presents error
+        String allErrors = "Errors: ";
         //Generates the error message that points out all the errors with the inputs.
         for (int i = 0; i < errors.size(); i++){
             if (i == errors.size() - 1){
