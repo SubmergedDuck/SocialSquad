@@ -7,6 +7,7 @@ import entity.Location.DistanceCalculatorInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_event_details.GetEventDetailsDataAccessInterface;
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
+import use_case.join_event.JoinEventEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -21,7 +22,8 @@ import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
-        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface {
+        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
+        JoinEventEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -45,8 +47,11 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
      * @param event The event to be saved
      */
     public void save(Event event){
+        System.out.println("AKER1");
         nameToEvents.put(event.getEventName(), event);
+        System.out.println(nameToEvents);
         eventsToID.put(event.getEventID(), event);
+        System.out.println(eventsToID);
     }
     
     /**
@@ -162,5 +167,23 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public String[] getEventCoordinates(int eventID) {
         Event event = eventsToID.get(eventID);
         return event.getLocation().getCoordinates();
+    }
+
+    @Override
+    public void userJoinEvent(String username, Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        event.getPeopleJoined().add(username);
+    }
+
+    @Override
+    public String getCapacity(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return String.valueOf(event.getCapacity());
+    }
+
+    @Override
+    public ArrayList<String> getPeopleJoined(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return event.getPeopleJoined();
     }
 }
