@@ -61,7 +61,7 @@ public class GSMInteractorTest {
         eventsDataAccessObject.save(event1);
         eventsDataAccessObject.save(event2);
 
-        GSMInputData inputData = new GSMInputData(user.getUsername(),3,300,300);
+        GSMInputData inputData = new GSMInputData(user.getLocation().getCoordinates(), 3,300,300);
         GSMInteractor testInteractor = new GSMInteractor(apiDataAccessObject,usersDataAccessObject,
                 eventsDataAccessObject,mockPresenter);
         testInteractor.execute(inputData);
