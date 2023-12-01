@@ -302,7 +302,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 BackOutController backOutController = new BackOutController(backOutInteractor);
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
-                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventInteractor joinEventInteractor = null; //TEMPORARY
 
 
                 EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel,
