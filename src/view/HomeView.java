@@ -385,10 +385,14 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
                 EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
                 CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController);
+                createEventViewModel.addPropertyChangeListener(createEventView);
+                createEventViewModel.addPropertyChangeListener(view);
+                view.addPropertyChangeListener(createEventView);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
+                createEventViewModel.addPropertyChangeListener(view);
 
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());

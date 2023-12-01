@@ -29,6 +29,7 @@ public class CreateEventViewModel extends ViewModel {
     @Override
     public void firePropertyChanged() {
         if (state.getDisplayed()) { // Means Create Event button is clicked
+            System.out.println("going to create event view");
             viewManagerModel.setActiveView("create event");
         } else {
             observable.firePropertyChange("create event", null, this.state);
