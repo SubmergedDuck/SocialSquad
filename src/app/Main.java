@@ -134,10 +134,11 @@ public class Main {
                 GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel, viewManagerModel, eventDataAccessObject);
 
         // Instantiate CreateEvent use case
-        // TODO replace with factory later
-        CreateEventOutputBoundary createEventPresenter = new CreateEventPresenter(createEventViewModel);
-        CreateEventInputBoundary createEventInteractor = new CreateEventInteractor(eventDataAccessObject, userDataAccessObject, createEventPresenter, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
-        CreateEventController createEventController = new CreateEventController(createEventInteractor);
+        CreateEventController createEventController =
+                CreateEventUseCaseFactory.createEventUseCase(createEventViewModel, eventDataAccessObject,
+                        userDataAccessObject, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
+        CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController);
+        views.add(createEventView.getRootPane(), createEventView.viewName);
 
         // Instantiate JoinEvent use case
         // TODO replace with factory later
