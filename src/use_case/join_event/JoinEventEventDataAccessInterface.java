@@ -23,4 +23,6 @@ public interface JoinEventEventDataAccessInterface {
      */
     ArrayList<String> getPeopleJoined(Integer eventID);
 
+    Event getEvent(Integer eventID);
+
 }

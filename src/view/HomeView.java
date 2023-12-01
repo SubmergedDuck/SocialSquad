@@ -373,7 +373,11 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
-                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventInteractor joinEventInteractor = null; //TEMPORARY
+
+
+
+
                 ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
                 BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
                 BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);

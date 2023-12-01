@@ -125,7 +125,7 @@ public class Main {
 
         // Instantiate JoinEvent use case
         // TODO replace with factory later
-        JoinEventInputBoundary joinEventInteractor = new JoinEventInteractor();
+        JoinEventInputBoundary joinEventInteractor = null; //TEMPORARY
         JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
         // Build Login view
