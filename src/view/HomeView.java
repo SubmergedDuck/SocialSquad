@@ -408,7 +408,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 application.add(views);
 
                 views.add(view.getRootPane(), "search nearby");
-                views.add(eventDetailsView.getRootPane(), "get event details");
+                views.add(eventDetailsView.getRootPane(), "event details");
                 views.add(homeView.getRootPane(), "home");
                 views.add(createEventView.getRootPane(), "create event");
 
