@@ -5,5 +5,5 @@ import java.awt.image.BufferedImage;
  * API data access interface for the GetDirection use case.
  */
 public interface GetDirectionAPIDataAccessInterface {
-    BufferedImage generateRouteImage(String coordinates1, String coordinates2);
+    BufferedImage generateRouteImage(String coordinates1, String coordinates2, String imageSize);
 }

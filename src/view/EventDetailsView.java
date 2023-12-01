@@ -2,16 +2,49 @@
 
 package view;
 
+import entity.Events.CommonEvent;
+import entity.Events.Event;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Location.LocationFactory;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
+import interface_adapter.get_event_details.GetEventDetailsController;
+import interface_adapter.get_event_details.GetEventDetailsPresenter;
+import interface_adapter.get_event_details.GetEventDetailsState;
+import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.join_event.JoinEventController;
+import interface_adapter.search_nearby.SearchNearbyPresenter;
+import use_case.back_out.BackOutInteractor;
+import use_case.get_event_details.GetEventDetailsOutputData;
+import use_case.join_event.JoinEventInteractor;
+import use_case.search_nearby.SearchNearbyOutputData;
+
+import javax.swing.text.View;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 /**
  *
  * @author submergedduck
  */
-public class EventDetailsView extends javax.swing.JFrame {
+public class EventDetailsView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
 
     /**
      * Creates new form loginView
      */
+    public final String viewName = "event details";
+    private final GetEventDetailsViewModel getEventDetailsViewModel;
+    private final BackOutController backOutController;
+    private final JoinEventController joinEventController;
 
+    private ButtonGradient GetDirection_BUTTON;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private javax.swing.JPanel BottomSeperator_PANEL1;
@@ -34,9 +67,22 @@ public class EventDetailsView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     private javax.swing.JLabel TypeByUser_LABEL;
-    public EventDetailsView() {
+    private javax.swing.JLabel EventAlreadyJoinedWarning_LABEL;
+
+    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
+                            BackOutController backOutController) {
         initComponents();
+        this.getEventDetailsViewModel = getEventDetailsViewModel;
+        this.joinEventController = joinEventController;
+        this.backOutController = backOutController;
+        this.getEventDetailsViewModel.addPropertyChangeListener(this);
     }
+
+//    // A constructor just for testing
+//    public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel) {
+//        initComponents();
+//        this.getEventDetailsViewModel = getEventDetailsViewModel;
+//    }
 
     private void initComponents() {
 
@@ -62,6 +108,8 @@ public class EventDetailsView extends javax.swing.JFrame {
         Location_SCROLLPANE = new javax.swing.JScrollPane();
         Location_TEXTAREA = new javax.swing.JTextArea();
         TimeDescription_LABEL = new javax.swing.JLabel();
+        GetDirection_BUTTON = new ButtonGradient();
+        EventAlreadyJoinedWarning_LABEL = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,7 +123,7 @@ public class EventDetailsView extends javax.swing.JFrame {
         Title_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 14)); // NOI18N
         Title_LABEL.setForeground(new java.awt.Color(255, 255, 255));
         Title_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Title_LABEL.setText("Create Your Own Event");
+        Title_LABEL.setText("Event details");
         Title_LABEL.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 1, 1, 1));
 
         TopSeperator_PANEL.setBackground(new java.awt.Color(118, 43, 236));
@@ -125,7 +173,7 @@ public class EventDetailsView extends javax.swing.JFrame {
         EventName_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         EventName_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         EventName_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        EventName_LABEL.setText("Drop-In Outdoor Frisbee, Aug 12 '23");
+//        EventName_LABEL.setText("Drop-In Outdoor Frisbee, Aug 12 '23");
 
         JoinLeaveEvent_BUTTON.setText("Join Event");
         JoinLeaveEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
@@ -227,7 +275,7 @@ public class EventDetailsView extends javax.swing.JFrame {
         Description_TEXTAREA.setForeground(new java.awt.Color(140, 100, 255));
         Description_TEXTAREA.setLineWrap(true);
         Description_TEXTAREA.setRows(5);
-        Description_TEXTAREA.setText("Join us for a day of spirited throws and friendly competition at our Drop-In Outdoor Frisbee sessions! No experience? No problem! Players of all levels are encouraged to join.");
+//        Description_TEXTAREA.setText("Join us for a day of spirited throws and friendly competition at our Drop-In Outdoor Frisbee sessions! No experience? No problem! Players of all levels are encouraged to join.");
         Description_TEXTAREA.setCaretColor(new java.awt.Color(255, 255, 255));
         Description_TEXTAREA.setSelectionColor(new java.awt.Color(140, 100, 255));
         Description_SCROLLPANE.setViewportView(Description_TEXTAREA);
@@ -235,7 +283,7 @@ public class EventDetailsView extends javax.swing.JFrame {
         TypeByUser_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
         TypeByUser_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         TypeByUser_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        TypeByUser_LABEL.setText("Frisbee by iloveDucks");
+//        TypeByUser_LABEL.setText("Frisbee by iloveDucks");
 
         BottomSeperator_PANEL1.setBackground(new java.awt.Color(229, 222, 233));
         BottomSeperator_PANEL1.setPreferredSize(new java.awt.Dimension(100, 1));
@@ -254,7 +302,7 @@ public class EventDetailsView extends javax.swing.JFrame {
         Capacity_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         Capacity_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         Capacity_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        Capacity_LABEL.setText("4/12 People");
+//        Capacity_LABEL.setText("4/12 People"); //TODO here
 
         Location_SCROLLPANE.setBorder(null);
         Location_SCROLLPANE.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -267,7 +315,7 @@ public class EventDetailsView extends javax.swing.JFrame {
         Location_TEXTAREA.setForeground(new java.awt.Color(140, 100, 255));
         Location_TEXTAREA.setLineWrap(true);
         Location_TEXTAREA.setRows(5);
-        Location_TEXTAREA.setText("Toronto, ON, Canada, M5S 2E5\nBack Campus");
+//        Location_TEXTAREA.setText("Toronto, ON, Canada, M5S 2E5\nBack Campus"); //TODO here
         Location_TEXTAREA.setCaretColor(new java.awt.Color(255, 255, 255));
         Location_TEXTAREA.setSelectionColor(new java.awt.Color(140, 100, 255));
         Location_SCROLLPANE.setViewportView(Location_TEXTAREA);
@@ -275,7 +323,19 @@ public class EventDetailsView extends javax.swing.JFrame {
         TimeDescription_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         TimeDescription_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         TimeDescription_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        TimeDescription_LABEL.setText("10:00 AM to 01:00 PM");
+//        TimeDescription_LABEL.setText("10:00 AM to 01:00 PM"); //TODO here
+
+        GetDirection_BUTTON.setText("Get Direction");
+        GetDirection_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GetDirection_BUTTONActionPerformed(evt);
+            }
+        });
+
+        EventAlreadyJoinedWarning_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
+        EventAlreadyJoinedWarning_LABEL.setForeground(new java.awt.Color(255, 102, 197));
+        EventAlreadyJoinedWarning_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        EventAlreadyJoinedWarning_LABEL.setText("*Note: You have already joined the event!");
 
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -287,17 +347,6 @@ public class EventDetailsView extends javax.swing.JFrame {
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(EventName_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(TypeByUser_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addGap(35, 35, 35)
@@ -315,11 +364,26 @@ public class EventDetailsView extends javax.swing.JFrame {
                                         .addComponent(Time_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(TimeDescription_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(83, 83, 83)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(EventAlreadyJoinedWarning_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addComponent(EventName_LABEL, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(TypeByUser_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
                 Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(Main_PANELLayout.createSequentialGroup()                .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(EventName_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -340,13 +404,17 @@ public class EventDetailsView extends javax.swing.JFrame {
                                 .addComponent(Description_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Description_SCROLLPANE, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48)
+                                .addGap(2, 2, 2)
+                                .addComponent(GetDirection_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(Back_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(JoinLeaveEvent_BUTTON, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(38, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(EventAlreadyJoinedWarning_LABEL)
+                                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -364,40 +432,112 @@ public class EventDetailsView extends javax.swing.JFrame {
     }
 
     private void JoinLeaveEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // TODO change this for later
+        System.out.println("You just joined this event!");
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO change this later
+        System.out.println("Go back");
+    }
+
+    private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
     /**
      * @param args the command line arguments
      */
-//    public static void main(String args[]) {
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(eventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new eventDetailsView().setVisible(true);
-//            }
-//        });
-//    }
+    public static void main(String args[]) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("FlatLaf Light".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(EventDetailsView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
 
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
+                GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
+
+                ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
+                BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
+                BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInteractor);
+
+                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
+                getEventDetailsViewModel.addPropertyChangeListener(view);
+
+
+                try {
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+
+                    GetEventDetailsPresenter presenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
+                    GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(event.getOwnerUser(),
+                            event.getEventName(), event.getEventAddress(), event.getEventDate(), event.getDescription(),
+                            String.valueOf(event.getCapacity()));
+                    presenter.prepareView(outputData);
+                    view.setVisible(true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                view.setVisible(true);
+            }
+        });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("event details")) { // Set the label by values given
+            GetEventDetailsState state = (GetEventDetailsState) evt.getNewValue();
+            String ownerUser = state.getOwnerUser();
+            String name = state.getEventName();
+            String address = state.getEventAddress();
+            String time = state.getEventDate();
+            String description = state.getEventDescription();
+            String capacity = state.getEventCapacity();
+
+            TypeByUser_LABEL.setText(name + " by " + ownerUser);
+            Capacity_LABEL.setText(capacity + " People");
+            Location_TEXTAREA.setText(address);
+            TimeDescription_LABEL.setText(time);
+            Description_TEXTAREA.setText(description);
+            EventName_LABEL.setText(name + " " + time);
+
+
+
+
+        }
+
+    }
 }
+
+
+
+
+

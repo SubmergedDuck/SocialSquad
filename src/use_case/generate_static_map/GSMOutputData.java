@@ -18,7 +18,12 @@ public class GSMOutputData {
         this.generatedMap = generatedMap;
         this.pinToEvent = pinToEvent;
     }
-    BufferedImage getGeneratedMap(){return this.generatedMap;}
+
+    /**
+     * Provides the generated static map with all the pins
+     * @return the map created by the API call.
+     */
+    public BufferedImage getGeneratedMap(){return this.generatedMap;}
 
     Map<Integer, Event> pinToEvent(){return this.pinToEvent;}
 }

@@ -2,12 +2,13 @@ package data_access;
 
 import entity.Events.Event;
 import entity.Users.User;
+import use_case.get_current_user.CurrentUserDataAccessInterface;
 import use_case.join_event.JoinEventCurrentUserDataAccessInterface;
 import use_case.logout.LogoutCurrentUserDataAccessInterface;
 
 // TODO: Class should implement interfaces in:
 //  LoginUseCase, LogoutUseCase, JoinEventUseCase, LeaveEventUseCase, CreateEventUseCase, & GetDirectionUseCase
-public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterface,
+public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterface, CurrentUserDataAccessInterface,
                                                JoinEventCurrentUserDataAccessInterface {
     private User currentUser;
 
@@ -15,6 +16,7 @@ public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterf
      * A public method that saves the current user that is logged in.
      * @param user The user that is currently logged in.
      */
+    @Override
     public void loginCurrentUser(User user) {
         this.currentUser = user;
     }
@@ -22,6 +24,7 @@ public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterf
     /**
      * A public method that logs out the current user.
      */
+    @Override
     public void logoutCurrentUser() {
         this.currentUser = null;
     }
@@ -41,8 +44,14 @@ public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterf
      * A public method that returns the current user that is logged in.
      * @return The current user that is logged in.
      */
+    @Override
     public User getCurrentUser() {
         return this.currentUser;
     }
 
+    /**
+     * A public method that changes the current logged-in user saved in the DAO.
+     * @param user the new logged-in user.
+     */
+    public void changeUser(User user){currentUser = user;}
 }

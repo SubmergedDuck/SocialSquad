@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * The interactor for the join event use case.
  */
 
-public class JoinEventInteractor {
+public class JoinEventInteractor implements JoinEventInputBoundary {
 
     private final JoinEventOutputBoundary joinEventPresenter;
     private final JoinEventUserDataAccessInterface userDataAccessObject;

@@ -15,5 +15,5 @@ public class GetEventDetailsInputData {
         this.eventID = eventID;
     }
 
-    int getEventID(){return this.eventID;}
+    public int getEventID(){return this.eventID;}
 }
