@@ -4,7 +4,7 @@ package data_access;
 import entity.Location.Location;
 import entity.Events.*;
 import entity.Location.LocationFactory;
-import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.join_event.JoinEventEventDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
 
@@ -14,7 +14,7 @@ import java.util.*;
 
 public class FileEventsDataAccessObject implements
                                                    SearchEventDataAccessInterface,
-                                                   JoinEventDataAccessInterface {
+                                                   JoinEventEventDataAccessInterface {
     private final File eventDatabase;
 
     private final Map<String, Integer> headers = new LinkedHashMap<>();
@@ -192,4 +192,18 @@ public class FileEventsDataAccessObject implements
         return null;
     }
 
+    @Override
+    public void userJoinEvent(String username, Integer eventID) {
+
+    }
+
+    @Override
+    public String getCapacity(Integer eventID) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<String> getPeopleJoined(Integer eventID) {
+        return null;
+    }
 }

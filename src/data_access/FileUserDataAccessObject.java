@@ -2,7 +2,7 @@ package data_access;
 
 import entity.Users.CommonUser;
 import entity.Users.UserFactory;
-import use_case.join_event.JoinEventDataAccessInterface;
+import use_case.join_event.JoinEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -15,7 +15,7 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 
 public class FileUserDataAccessObject implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-        JoinEventDataAccessInterface{
+        JoinEventUserDataAccessInterface{
     private final File userDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String,User> usernameToUser = new HashMap<>();
@@ -163,13 +163,24 @@ public class FileUserDataAccessObject implements SignupUserDataAccessInterface, 
     public boolean existsByName(String identifier) {
         return usernameToUser.containsKey(identifier);
     }
+//    @Override
+//    public void save(CommonUser commonUser) {
+//
+//    }
+
+
     @Override
-    public void save(CommonUser commonUser) {
+    public void userJoinEvent(String username, Event event) {
 
     }
 
-    @Override
-    public CommonUser get(String username) {
-        return null;
-    }
+//    @Override
+//    public CommonUser get(String username) {
+//        return null;
+//    }
+//
+//    @Override
+//    public void userJoinEvent(String username, Integer eventID) {
+//
+//    }
 }
