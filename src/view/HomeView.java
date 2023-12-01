@@ -55,7 +55,6 @@ import java.beans.PropertyChangeListener;
  * @author submergedduck
  */
 
-// TODO: Fix Compiler Errors
 public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     /**
      * Creates new form HomeView
