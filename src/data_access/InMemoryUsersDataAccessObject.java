@@ -3,8 +3,8 @@ package data_access;
 import entity.Events.Event;
 import entity.Users.User;
 import use_case.common_interfaces.MapUserDataAccessInterface;
-import use_case.get_direction.GetDirectionUserDataAccessInterface;
 import use_case.get_ids.GetIDsDataAccessInterface;
+import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.join_event.JoinEventDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
@@ -17,8 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
-        SearchEventDataAccessInterface, RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
-        CreateEventDataAccessInterface, MapUserDataAccessInterface,
+        RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
+        CreateEventDataAccessInterface, MapUserDataAccessInterface,LoggedInUserDataAccessInterface,
+        LoginUserDataAccessInterface, GetIDsDataAccessInterface{
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
