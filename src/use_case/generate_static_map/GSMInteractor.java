@@ -36,7 +36,10 @@ public class GSMInteractor implements GSMInputBoundary{
      */
     @Override
     public void execute(GSMInputData inputData) throws IOException {
+        String[] userCoordinates = inputData.getCoordinates();
+
         String[] userCoordinates = userDataAccessObject.getCoordinates(inputData.getUsername());
+
         String formattedCoordinates = userCoordinates[0] + "," + userCoordinates[1];
         HashMap<Integer, Event> numToEvent = eventDataAccessObject.getEvents(inputData.getTotalPins());
         HashMap<Integer, String> numToCoordinates = numToCoordinates(numToEvent);
