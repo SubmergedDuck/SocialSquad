@@ -111,7 +111,7 @@ public class Main {
 
         // Instantiate CreateEvent use case
         // TODO replace with factory later
-        CreateEventController createEventController = new CreateEventController();
+        CreateEventController createEventController = null; //temp
 
         // Instantiate JoinEvent use case
         // TODO replace with factory later

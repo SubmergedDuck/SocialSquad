@@ -174,7 +174,11 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         CreateEvent_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateEvent_BUTTONActionPerformed(evt);
+                try {
+                    CreateEvent_BUTTONActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -269,9 +273,9 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         pack();
     }
 
-    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(CreateEvent_BUTTON)) {
-            createEventController.execute();
+            //createEventController.execute();
         }
     }
 
@@ -336,7 +340,14 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
 
-                CreateEventController createEventController = new CreateEventController();
+                CreateEventController createEventController = null; //TEMPORARY
+
+
+
+
+
+
+
 
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
                 GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);

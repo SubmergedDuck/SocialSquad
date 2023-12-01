@@ -1,16 +1,46 @@
 package view;
 // TODO: add imports
 
+import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.CommonEventFactory;
+import entity.Location.CommonLocationFactory;
+import entity.Users.CommonUserFactory;
+import entity.Users.User;
+import entity.Users.UserFactory;
+import interface_adapter.create_event.CreateEventController;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventState;
+import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserState;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import use_case.create_event.CreateEventInteractor;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+
 /**
  *
  * @author submergedduck
  */
-public class CreateEventView extends javax.swing.JFrame {
+public class CreateEventView extends javax.swing.JFrame implements PropertyChangeListener {
 
     /**
      * Creates new form loginView
      */
 
+    private final CreateEventViewModel createEventViewModel;
+
+    private final CreateEventController createEventController;
+
+    private final GetCurrentUserViewModel getCurrentUserViewModel;
     private view.ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private javax.swing.JLabel Capacity_LABEL;
@@ -39,7 +69,12 @@ public class CreateEventView extends javax.swing.JFrame {
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
-    public CreateEventView() {
+    public CreateEventView(CreateEventViewModel createEventViewModel, CreateEventController createEventController,
+                           GetCurrentUserViewModel getCurrentUserViewModel) {
+        this.createEventController = createEventController;
+        this.createEventViewModel = createEventViewModel;
+        this.getCurrentUserViewModel = getCurrentUserViewModel;
+        createEventViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
@@ -138,11 +173,6 @@ public class CreateEventView extends javax.swing.JFrame {
         EventName_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         EventName_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         EventName_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        EventName_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EventName_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         EventName_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         EventName_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -160,11 +190,6 @@ public class CreateEventView extends javax.swing.JFrame {
         StartTime_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         StartTime_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         StartTime_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        StartTime_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                StartTime_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         Time_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Time_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -176,17 +201,15 @@ public class CreateEventView extends javax.swing.JFrame {
         TimeCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         TimeCreateFailed_LABEL.setText("*Evt Creation Failed: invalid time format");
 
+
+
+        //END TIME IS NOT NEEDED
         EndTime_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         EndTime_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
         EndTime_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
         EndTime_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         EndTime_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         EndTime_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        EndTime_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EndTime_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         Location_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Location_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
@@ -194,11 +217,6 @@ public class CreateEventView extends javax.swing.JFrame {
         Location_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Location_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Location_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Location_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Location_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         Location_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Location_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -216,11 +234,6 @@ public class CreateEventView extends javax.swing.JFrame {
         Capacity_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Capacity_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Capacity_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Capacity_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Capacity_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         Date_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Date_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
@@ -228,11 +241,6 @@ public class CreateEventView extends javax.swing.JFrame {
         Date_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Date_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Date_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Date_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Date_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         DateCapacityCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         DateCapacityCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
@@ -242,7 +250,7 @@ public class CreateEventView extends javax.swing.JFrame {
         Date_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Date_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Date_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Date_LABEL.setText("Date (dd/mm/yy)");
+        Date_LABEL.setText("Date (yyyy-mm-dd)");
 
         Capacity_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Capacity_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -257,7 +265,11 @@ public class CreateEventView extends javax.swing.JFrame {
         CreateEvent_BUTTON.setText("Create Event");
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateEvent_BUTTONActionPerformed(evt);
+                try {
+                    CreateEvent_BUTTONActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -276,11 +288,6 @@ public class CreateEventView extends javax.swing.JFrame {
         EventType_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         EventType_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         EventType_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        EventType_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EventType_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         EventType_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         EventType_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -300,6 +307,144 @@ public class CreateEventView extends javax.swing.JFrame {
         Description_TEXTAREA.setRows(5);
         Description_TEXTAREA.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 222, 233)), javax.swing.BorderFactory.createEmptyBorder(10, 10, 1, 1)));
         Description_TEXTAREA.setCaretColor(new java.awt.Color(196, 182, 206));
+
+
+        EventType_TEXTFIELD.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = EventType_TEXTFIELD.getText() + e.getKeyChar();
+                state.setEventType(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
+        Capacity_TEXTFIELD.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = Capacity_TEXTFIELD.getText() + e.getKeyChar();
+                state.setCapacity(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        Location_TEXTFIELD.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = Location_TEXTFIELD.getText() + e.getKeyChar();
+                state.setCoordinates(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        StartTime_TEXTFIELD.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = StartTime_TEXTFIELD.getText() + e.getKeyChar();
+                state.setEventTime(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
+        Description_TEXTAREA.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = Description_TEXTAREA.getText() + e.getKeyChar();
+                state.setDescription(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        EventName_TEXTFIELD.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = EventName_TEXTFIELD.getText() + e.getKeyChar();
+                state.setEventName(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
+
+        Date_TEXTFIELD.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                CreateEventState state = createEventViewModel.getState();
+                String text = Date_TEXTFIELD.getText() + e.getKeyChar();
+                state.setDate(text);
+                createEventViewModel.setState(state);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
 
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -417,41 +562,25 @@ public class CreateEventView extends javax.swing.JFrame {
         pack();
     }
 
-    private void EventName_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
+        CreateEventState state = createEventViewModel.getState();
+        String eventOwner = getCurrentUserViewModel.getState().getUsername();
+        String eventName = state.getEventName();
+        String eventType = state.getEventType();
+        String coordinates = state.getCoordinates();
+        String capacity = state.getCapacity();
+        String date = state.getDate();
+        String eventTime = state.getEventTime();
+        String description = state.getDescription();
+        String formattedDate = String.format("%s %s", date, eventTime);
 
-    private void StartTime_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void EndTime_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void Location_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void Capacity_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void Date_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        createEventController.execute(eventOwner, eventName, eventType, coordinates, capacity, description, formattedDate);
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void EventType_TEXTFIELDActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
 
     /**
      * @param args the command line arguments
@@ -477,8 +606,38 @@ public class CreateEventView extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CreateEventView().setVisible(true);
+                CommonUserFactory userFactory = new CommonUserFactory();
+                InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+                InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+                User user = userFactory.create("testuser","123",20,"m","test contact");
+                inMemoryUsersDataAccessObject.save(user);
+                CreateEventViewModel createEventViewModel1 = new CreateEventViewModel();
+                GetCurrentUserViewModel currentUserViewModel = new GetCurrentUserViewModel();
+                GetCurrentUserState getCurrentUserState = currentUserViewModel.getState();
+                getCurrentUserState.setUsername(user.getUsername());
+                currentUserViewModel.setState(getCurrentUserState);
+
+                CreateEventPresenter createEventPresenter = new CreateEventPresenter(createEventViewModel1);
+                CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject, inMemoryUsersDataAccessObject,
+                        createEventPresenter,new CommonEventFactory(), new CommonLocationFactory());
+                CreateEventController createEventController1 = new CreateEventController(createEventInteractor);
+
+                new CreateEventView(createEventViewModel1,createEventController1,currentUserViewModel).setVisible(true);
             }
         });
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue() instanceof CreateEventState){
+            CreateEventState createEventState = (CreateEventState)evt.getNewValue();
+            if (createEventState.isEventCreated()){
+                JOptionPane.showMessageDialog(this, "Event was created!");
+                createEventState.setEventCreated(false);
+                this.createEventViewModel.setState(createEventState);
+            } else {
+                JOptionPane.showMessageDialog(this, createEventState.getInputError());
+            }
+        }
     }
 }

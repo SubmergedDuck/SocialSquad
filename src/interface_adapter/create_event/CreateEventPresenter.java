@@ -19,6 +19,9 @@ public class CreateEventPresenter implements CreateEventOutputBoundary {
 
     @Override
     public void prepareSuccessView() {
-
+        CreateEventState state = createEventViewModel.getState();
+        state.setEventCreated(true);
+        createEventViewModel.setState(state);
+        createEventViewModel.firePropertyChanged();
     }
 }

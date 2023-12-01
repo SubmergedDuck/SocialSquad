@@ -63,7 +63,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
             Location eventLocation = locationFactory.makeLocation(input.getLocation());
             Integer eventID = eventDataAccessObject.generateEventID();
             LocalDateTime date = LocalDateTime.parse(input.getTime(), formatter);
-            currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
+            currentEvent = eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
                     new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
                     input.getDescription(), false, Integer.valueOf(input.getCapacity()));
             eventDataAccessObject.save(currentEvent);
