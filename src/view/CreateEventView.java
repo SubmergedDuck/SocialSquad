@@ -51,7 +51,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     private javax.swing.JTextField Date_TEXTFIELD;
     private javax.swing.JLabel Description_LABEL;
     private javax.swing.JTextArea Description_TEXTAREA;
-    private javax.swing.JTextField EndTime_TEXTFIELD;
     private javax.swing.JLabel EventNameCreateFailed_LABEL;
     private javax.swing.JLabel EventName_LABEL;
     private javax.swing.JTextField EventName_TEXTFIELD;
@@ -91,7 +90,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         StartTime_TEXTFIELD = new javax.swing.JTextField();
         Time_LABEL = new javax.swing.JLabel();
         TimeCreateFailed_LABEL = new javax.swing.JLabel();
-        EndTime_TEXTFIELD = new javax.swing.JTextField();
         Location_TEXTFIELD = new javax.swing.JTextField();
         Location_LABEL = new javax.swing.JLabel();
         LocationCreateFailed_LABEL = new javax.swing.JLabel();
@@ -179,11 +177,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         EventName_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         EventName_LABEL.setText("Event Name");
 
-        EventNameCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
-        EventNameCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
-        EventNameCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        EventNameCreateFailed_LABEL.setText("*Evt Creation Failed: invalid name");
-
         StartTime_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         StartTime_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
         StartTime_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
@@ -194,22 +187,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         Time_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Time_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Time_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Time_LABEL.setText("Time (format: 01:23 PM)");
-
-        TimeCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
-        TimeCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
-        TimeCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        TimeCreateFailed_LABEL.setText("*Evt Creation Failed: invalid time format");
-
-
-
-        //END TIME IS NOT NEEDED
-        EndTime_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
-        EndTime_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
-        EndTime_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
-        EndTime_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
-        EndTime_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
-        EndTime_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
+        Time_LABEL.setText("Time (format: 01:23)");
 
         Location_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Location_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
@@ -222,11 +200,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         Location_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Location_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Location_LABEL.setText("Location (Long, Lat)");
-
-        LocationCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
-        LocationCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
-        LocationCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        LocationCreateFailed_LABEL.setText("*Evt Creation Failed: invalid location format");
 
         Capacity_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
         Capacity_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
@@ -241,11 +214,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         Date_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Date_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Date_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-
-        DateCapacityCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
-        DateCapacityCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
-        DateCapacityCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        DateCapacityCreateFailed_LABEL.setText("* Evt Creation Failed: invalid date format");
 
         Date_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Date_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -293,11 +261,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         EventType_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         EventType_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         EventType_LABEL.setText("Event Type");
-
-        EventTypeCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
-        EventTypeCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
-        EventTypeCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        EventTypeCreateFailed_LABEL.setText("*Evt Creation Failed: invalid type");
 
         Description_TEXTAREA.setBackground(new java.awt.Color(251, 247, 255));
         Description_TEXTAREA.setColumns(20);
@@ -465,8 +428,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
                                                         .addComponent(TimeCreateFailed_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                                                 .addComponent(StartTime_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addComponent(EndTime_TEXTFIELD))
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                                                         .addComponent(Location_TEXTFIELD)
                                                         .addComponent(Location_LABEL)
                                                         .addComponent(LocationCreateFailed_LABEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -509,8 +471,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
                                 .addComponent(Time_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(StartTime_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(EndTime_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(StartTime_TEXTFIELD, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(2, 2, 2)
                                 .addComponent(TimeCreateFailed_LABEL)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
