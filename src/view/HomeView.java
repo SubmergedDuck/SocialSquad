@@ -1,6 +1,7 @@
 package view;
 import data_access.GenerateRoute;
 import data_access.InMemoryCurrentUserDAO;
+import data_access.GenerateStaticMapBody;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEvent;
@@ -19,16 +20,19 @@ import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
 import interface_adapter.get_direction.GetDirectionViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
+import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
+import interface_adapter.generate_static_map.GenerateStaticMapState;
+import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
-import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.search_event.SearchEventController;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.search_event.SearchEventController;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
@@ -36,6 +40,7 @@ import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.back_out.BackOutInteractor;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_direction.GetDirectionInteractor;
+import use_case.generate_static_map.GSMInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
@@ -46,13 +51,14 @@ import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 /**
  *
@@ -60,7 +66,7 @@ import java.beans.PropertyChangeListener;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
+public class HomeView extends javax.swing.JFrame implements PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -69,7 +75,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private final LoggedInController loggedInController;
     private final SearchNearbyController searchNearbyController;
     private final CreateEventController createEventController;
-
+    private final GenerateStaticMapController generateStaticMapController;
+    private final GenerateStaticMapViewModel generateStaticMapViewModel;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
     private javax.swing.JLabel LogoutIcon_LABEL;
@@ -80,30 +87,32 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
-    private view.ButtonGradient MyEvents_BUTTON;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController) {
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
+                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
+        this.generateStaticMapController = generateStaticMapController;
+        this.generateStaticMapViewModel = generateStaticMapViewModel;
+        this.generateStaticMapViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws IOException {
 
         Main_PANEL = new javax.swing.JPanel();
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
         Title_LABEL = new javax.swing.JLabel();
         TopSeperator_PANEL = new javax.swing.JPanel();
-        SearchEvent_BUTTON = new ButtonGradient();
+        SearchEvent_BUTTON = new view.ButtonGradient();
         BottomSeperator_PANEL = new javax.swing.JPanel();
-        CreateEvent_BUTTON = new ButtonGradient();
+        CreateEvent_BUTTON = new view.ButtonGradient();
         MapImage_LABEL = new javax.swing.JLabel();
         LogoutIcon_LABEL = new javax.swing.JLabel();
         Logout_BUTTON = new javax.swing.JButton();
-        MyEvents_BUTTON = new ButtonGradient();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -117,7 +126,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         Title_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 14)); // NOI18N
         Title_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Title_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Title_LABEL.setText("Click on the Map!");
+        Title_LABEL.setText("All events created by users");
         Title_LABEL.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 1, 1, 1));
 
         TopSeperator_PANEL.setBackground(new java.awt.Color(229, 222, 233));
@@ -159,7 +168,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 try {
                     SearchEvent_BUTTONActionPerformed(evt);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("IOException occured.");
                 }
             }
         });
@@ -191,27 +200,24 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         MapImage_LABEL.setBackground(new java.awt.Color(204, 204, 255));
         MapImage_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        // TODO: MapImage_LABEL should be updated w/ get_direction use case
-        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("")); // NOI18N
-        MapImage_LABEL.setText("MapImage");
+        // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
 
-        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("src/view/ImageIcons/LogoutIcon.png")); // NOI18N
-        LogoutIcon_LABEL.setText("LogoutIcon");
+        String[] currentCoordinates = CoordinatesFromIP.getCoordinates();
+        generateStaticMapController.execute(currentCoordinates, 100,350, 504);
+
+
+
+
+
+
+        // TODO: Import logout image icon to src/view
+        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
+        LogoutIcon_LABEL.setText("jLabel2");
 
         Logout_BUTTON.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
         Logout_BUTTON.setForeground(new java.awt.Color(229, 222, 233));
         Logout_BUTTON.setText("Logout");
         Logout_BUTTON.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
-        MyEvents_BUTTON.setText("My Events");
-        MyEvents_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
-        MyEvents_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
-        MyEvents_BUTTON.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MyEvents_BUTTONActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
@@ -223,22 +229,17 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addGap(14, 14, 14)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addGap(14, 14, 14)
-                                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(Logout_BUTTON))
-                                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(Logout_BUTTON))
+                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addGap(95, 95, 95)
-                                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
@@ -246,10 +247,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 504, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -274,7 +273,6 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
 
         pack();
     }
@@ -307,8 +305,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         }
     }
 
-    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue() instanceof GenerateStaticMapState){
+            GenerateStaticMapState state = (GenerateStaticMapState)evt.getNewValue();
+            BufferedImage generatedMap = state.getGeneratedMap();
+            MapImage_LABEL.setIcon(new javax.swing.ImageIcon(generatedMap));
+        }
     }
 
     /**
@@ -318,7 +321,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("FlatLaf Light".equals(info.getName())) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -344,6 +347,33 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
                 InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
 
+                ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
+                try {
+                    User user = new CommonUser("owner", "password", 20, "f", "contact");
+
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
+                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
+
+                    eventArrayList.add(event);
+                    eventArrayList.add(event2);
+
+                    user.setCreatedEvents(eventArrayList); // Let the user create these events
+
+                    // Save the objects to inMemoryDAOs for use
+                    inMemoryUsersDataAccessObject.save(user);
+                    for (Event event1: eventArrayList) {
+                        inMemoryEventsDataAccessObject.save(event1);
+                    }
+                } catch (Exception e) {
+                    System.out.println("run time exceptions occured.");;
+                }
+
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
 
@@ -355,11 +385,9 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
                 JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
-
                 ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
                 BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
                 BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
-                BackOutController backOutController = new BackOutController(backOutInteractor);
 
 
                 GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
@@ -385,8 +413,19 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController);
-                //homeView.setVisible(true);
+                GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
+                GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(gsmViewModel);
+                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject, generateStaticMapPresenter);
+                GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
+                HomeView homeView = null;
+                try {
+                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,
+                            generateStaticMapController, gsmViewModel);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                homeView.setVisible(true);
 
                 homeView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 view.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -402,56 +441,19 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);
                 viewManagerModel.addPropertyChangeListener(viewManager);
 
-                try {
-                    User user = new CommonUser("owner", "password", 20, "f", "contact");
+                state.setEventsSearched(eventArrayList);
+                searchNearbyViewModel.setState(state);
+                SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
+                presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
 
-                    LocationFactory factory = new CommonLocationFactory();
-                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
-                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
-                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
-                            10); // This event should be returned
-                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
-
-                    ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
-                    eventArrayList.add(event);
-                    eventArrayList.add(event2);
-
-                    user.setCreatedEvents(eventArrayList); // Let the user create these events
-
-                    // Save the objects to inMemoryDAOs for use
-                    inMemoryUsersDataAccessObject.save(user);
-                    for (Event event1: eventArrayList) {
-                        inMemoryEventsDataAccessObject.save(event1);
-                    }
-
-                    state.setEventsSearched(eventArrayList);
-                    searchNearbyViewModel.setState(state);
-                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
-                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
-
-                    viewManagerModel.setActiveView(homeView.viewName);
-                    viewManagerModel.firePropertyChanged();
-                    homeView.setVisible(true);
+                viewManagerModel.setActiveView(homeView.viewName);
+                viewManagerModel.firePropertyChanged();
+                homeView.setVisible(true);
 
 
-                    application.pack();
-                    application.setVisible(true);
-                } catch (Exception e) {
-                    System.out.println("run time exceptions occured.");;
-                }
+                application.pack();
+                application.setVisible(true);
             }
         });
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        LoggedInState state = (LoggedInState) evt.getNewValue();
     }
 }
