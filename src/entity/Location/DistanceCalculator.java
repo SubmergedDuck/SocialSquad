@@ -19,11 +19,11 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
     }
 
     @Override
-    public boolean within2KM(String[] strCoord, Event event) throws Exception {
+    public boolean within2KM(String[] strCoord, Event event) throws IOException {
         return calculateDistance(strCoord, event) <= 2;
     }
 
-    public double calculateDistance(String[] startCoord, Event event) throws Exception {
+    public double calculateDistance(String[] startCoord, Event event) throws IOException {
         double startLat = Double.valueOf(Arrays.stream(startCoord).toList().get(0));
         double startLon = Double.valueOf(Arrays.stream(startCoord).toList().get(1));
         String[] endCoord = event.getLocation().getCoordinates();
@@ -35,7 +35,7 @@ public class DistanceCalculator implements DistanceCalculatorInterface {
     }
 
 
-    private String apiCaller(double startLat, double startLon, double endLat, double endLon) throws Exception{
+    private String apiCaller(double startLat, double startLon, double endLat, double endLon) throws IOException{
         try {
                 String apiKey = "An_Fn1bhTQPuLmUi8MsH-5_btdPIKgINhoecH-ayEq0rjUhrnFbXoHHVnwjAli_K";
                 String bingMapsApiUrl = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix" +
