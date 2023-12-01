@@ -30,23 +30,6 @@ public class JoinEventInteractorTest {
     InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
     InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
 
-
-    @Before
-    public void setUp() throws IOException {
-//        ArrayList<String> testPeopleJoined = new ArrayList<>();
-//
-//        User testUser =  new CommonUser("username", "123", 20, "m", "test@gmail.com");
-//        Event testEvent = new CommonEvent(12345, "test event", "OrganizerBobTheBuilder",
-//                null, testPeopleJoined, null, null, "type", "description",
-//                false, 10);
-//
-//        inMemoryEventsDataAccessObject.save(testEvent);
-//
-//        inMemoryCurrentUserDAO.loginCurrentUser(testUser);
-//        inMemoryUsersDataAccessObject.save(testUser);
-
-    }
-
     @Test
     public void testExecute() throws IOException {
 
