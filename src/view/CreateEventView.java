@@ -280,9 +280,12 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
+                    System.out.println("CreateEventView: button action performed.");
+                    System.out.println("create event button on create event view is clicked\n");
                     CreateEvent_BUTTONActionPerformed(evt);
                 } catch (Exception e) {
-                    System.out.println("run time exception occured.");
+                    System.out.println("CreateEvent View: run time exception occured.");
+                    e.printStackTrace();
                 }
             }
         });
@@ -571,6 +574,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
 
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         CreateEventState state = createEventViewModel.getState();
+        System.out.println("current displayed state: " + String.valueOf(state.getIsDisplayed()) + "\n" + "has been displayed: " + String.valueOf(state.hasBeenDisplayed));
         String eventOwner = getCurrentUserViewModel.getState().getUsername();
         String eventName = state.getEventName();
         String eventType = state.getEventType();
@@ -581,7 +585,13 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         String description = state.getDescription();
         String formattedDate = String.format("%s %s", date, eventTime);
 
-        createEventController.execute(eventOwner, eventName, eventType, coordinates, capacity, description, formattedDate);
+        System.out.println("View: all input data is collected.\n");
+        try{
+            createEventController.execute(eventOwner, eventName, eventType, coordinates, capacity, description, formattedDate);
+        } catch (IOException ex) {
+            System.out.println("create event controller has api call error.\n");
+
+        }
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {

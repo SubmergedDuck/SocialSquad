@@ -2,6 +2,7 @@ package interface_adapter.create_event;
 
 public class CreateEventState {
     private boolean isDisplayed = false;
+    public boolean hasBeenDisplayed = false;
     private String inputError = null;
     private boolean eventCreated = false;
     private String eventName = "";

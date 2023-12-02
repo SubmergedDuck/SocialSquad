@@ -1,4 +1,5 @@
 package view;
+import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
@@ -187,6 +188,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
+                    System.out.println("create event button is clicked");
                     CreateEvent_BUTTONActionPerformed(evt);
                 } catch (IOException e) {
                     System.out.println("run time exception occured.");;
@@ -288,9 +290,10 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(CreateEvent_BUTTON)) {
             CreateEventState state = createEventViewModel.getState();
+            System.out.println("HomeView: CreatEvent button is clicked");
             System.out.println("display state: " + String.valueOf(state.getIsDisplayed() + "\n")); // currently false
             if (state.getIsDisplayed()) { // the page is already on display
-                System.out.println("you are on create event view.");
+                System.out.println("you are on create event view.\n");
                 String eventOwner = getCurrentUserViewModel.getState().getUsername();
                 String eventName = state.getEventName();
                 String eventType = state.getEventType();
@@ -373,21 +376,12 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+                InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
+                User testUser = new CommonUser("aa", "123", 1, "f", "contact");
+                inMemoryCurrentUserDAO.changeUser(testUser);
+                inMemoryUsersDataAccessObject.save(testUser);
 
                 EventFactory eventFactory = new CommonEventFactory();
-                RestrictedEventFactory restrictedEventFactory = new RestrictedEventFactory() {
-                    @Override
-                    public RestrictedEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, Integer ageRestriction, String sexRestriction) {
-                        return null;
-                    }
-                };
-
-                InviteOnlyEventFactory inviteEventFactory = new InviteOnlyEventFactory() {
-                    @Override
-                    public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, ArrayList<String> peopleInvited) {
-                        return null;
-                    }
-                };
 
                 LocationFactory locationFactory = new CommonLocationFactory();
 
@@ -487,6 +481,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(CreateEvent_BUTTON)){
+            try {
+                CreateEvent_BUTTONActionPerformed(e);
+            } catch (IOException ex) {
+                System.out.println("IO exception occured.");
+            }
+        }
 
     }
 
