@@ -3,6 +3,39 @@ package view;
 
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.*;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
+import entity.Location.LocationFactory;
+import entity.Users.CommonUser;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
+import interface_adapter.create_event.CreateEventController;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventState;
+import interface_adapter.create_event.CreateEventViewModel;
+import use_case.back_out.BackOutInteractor;
+import use_case.back_out.BackOutOutputBoundary;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
+
+import javax.swing.*;
+import javax.swing.text.View;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
+import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEventFactory;
 import entity.Location.CommonLocationFactory;
 import entity.Users.CommonUserFactory;
@@ -30,11 +63,15 @@ import java.io.IOException;
  *
  * @author submergedduck
  */
-public class CreateEventView extends javax.swing.JFrame implements PropertyChangeListener {
+public class CreateEventView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
 
     /**
      * Creates new form loginView
      */
+    public final String viewName = "create event";
+    private final CreateEventViewModel createEventViewModel;
+    private final CreateEventController createEventController;
+    private final BackOutController backOutController;
 
     private final CreateEventViewModel createEventViewModel;
 
@@ -51,6 +88,8 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     private javax.swing.JTextField Date_TEXTFIELD;
     private javax.swing.JLabel Description_LABEL;
     private javax.swing.JTextArea Description_TEXTAREA;
+    private javax.swing.JTextField Description_TEXTFIELD;
+    private javax.swing.JTextField EndTime_TEXTFIELD;
     private javax.swing.JLabel EventNameCreateFailed_LABEL;
     private javax.swing.JLabel EventName_LABEL;
     private javax.swing.JTextField EventName_TEXTFIELD;
@@ -69,8 +108,10 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
 
     public CreateEventView(CreateEventViewModel createEventViewModel, CreateEventController createEventController,
+                           BackOutController backOutController,
                            GetCurrentUserViewModel getCurrentUserViewModel) {
         this.createEventController = createEventController;
+        this.backOutController = backOutController;
         this.createEventViewModel = createEventViewModel;
         this.getCurrentUserViewModel = getCurrentUserViewModel;
         createEventViewModel.addPropertyChangeListener(this);
@@ -99,6 +140,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         Date_LABEL = new javax.swing.JLabel();
         Capacity_LABEL = new javax.swing.JLabel();
         Description_LABEL = new javax.swing.JLabel();
+        Description_TEXTFIELD = new javax.swing.JTextField();
         CreateEvent_BUTTON = new view.ButtonGradient();
         Back_BUTTON = new view.ButtonGradient();
         EventType_TEXTFIELD = new javax.swing.JTextField();
@@ -225,6 +267,18 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
         Capacity_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         Capacity_LABEL.setText("Capacity");
 
+        Description_TEXTFIELD.setBackground(new java.awt.Color(251, 247, 255));
+        Description_TEXTFIELD.setFont(new java.awt.Font("Gotham Medium", 3, 12)); // NOI18N
+        Description_TEXTFIELD.setForeground(new java.awt.Color(196, 182, 206));
+        Description_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
+        Description_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
+        Description_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
+        Description_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Description_TEXTFIELDActionPerformed(evt);
+            }
+        });
+
         Description_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Description_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Description_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -235,8 +289,8 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     CreateEvent_BUTTONActionPerformed(evt);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    System.out.println("run time exception occured.");
                 }
             }
         });
@@ -539,9 +593,8 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        backOutController.execute();
     }
-
 
     /**
      * @param args the command line arguments
