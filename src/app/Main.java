@@ -1,5 +1,8 @@
 package app;
 
+import data_access.GenerateRoute;
+import data_access.InMemoryCurrentUserDAO;
+import data_access.GenerateStaticMapURL;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
@@ -13,18 +16,35 @@ import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
+import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
+import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.logged_in.LoggedInController;
+import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInteractor;
+import use_case.generate_static_map.GSMInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInputBoundary;
 import use_case.join_event.JoinEventInteractor;
+import use_case.loggedIn.LoggedInInteractor;
+import use_case.search_nearby.SearchNearbyInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 import view.*;
 
@@ -35,7 +55,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Build the main program window, the main panel containing the
         // various cards, and the layout, and stitch them together.
 
@@ -69,9 +89,12 @@ public class Main {
         // TODO: change this to the real DAOs later
         InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
+        InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
+        User testUser = new CommonUser("aa", "123", 1, "f", "contact");
+        currentUserDAO.changeUser(testUser);
 
         // Create sample entities
-        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
+        userDataAccessObject.save(testUser);
 
         try {
             User user = new CommonUser("owner", "password", 20, "f", "contact");
@@ -115,7 +138,7 @@ public class Main {
 
         // Instantiate JoinEvent use case
         // TODO replace with factory later
-        JoinEventInputBoundary joinEventInteractor = new JoinEventInteractor();
+        JoinEventInputBoundary joinEventInteractor = null; //TEMPORARY
         JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
         // Build Login view
@@ -129,8 +152,24 @@ public class Main {
         views.add(signupView.getRootPane(), signupView.viewName);
 
         // Build Home view
-        HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,searchNearbyViewModel,
-                loginViewModel, userDataAccessObject, eventDataAccessObject, createEventController);
+
+        /*
+        LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
+                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel
+         */
+        GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
+        GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(generateStaticMapViewModel);
+        GSMInteractor gsmInteractor = new GSMInteractor(new GenerateStaticMapURL(),userDataAccessObject,eventDataAccessObject,generateStaticMapPresenter);
+        GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(gsmInteractor);
+        SearchNearbyPresenter searchNearbyPresenter = new SearchNearbyPresenter(searchNearbyViewModel,viewManagerModel);
+        SearchNearbyInteractor searchNearbyInteractor = new SearchNearbyInteractor(eventDataAccessObject,searchNearbyPresenter);
+        SearchNearbyController searchNearbyController = new SearchNearbyController(searchNearbyInteractor);
+        LoggedInPresenter loggedInPresenter = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        LoggedInInteractor loggedInInteractor = new LoggedInInteractor(userDataAccessObject,loggedInPresenter);
+        LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
+        HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
+                createEventController,generateStaticMapController,generateStaticMapViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
@@ -141,7 +180,19 @@ public class Main {
         views.add(searchNearbyView.getRootPane(), searchNearbyView.viewName);
 
         // Build GetEventDetails view
-        EventDetailsView eventDetailsView = GetEventDetailsUseCaseFactory.create(getEventDetailsViewModel, searchNearbyView, joinEventController, backOutController);
+        GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
+        GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
+        GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,eventDataAccessObject,userDataAccessObject,
+                new GenerateRoute());
+        GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
+
+        GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
+        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
+        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,currentUserDAO);
+        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+
+        EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
+                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1,getCurrentUserController1);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);

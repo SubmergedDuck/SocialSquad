@@ -5,22 +5,21 @@ import entity.Users.User;
 import entity.Users.UserFactory;
 import use_case.common_interfaces.MapUserDataAccessInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.join_event.JoinEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * File data access object for users.
  */
-public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
-        CreateEventDataAccessInterface, MapUserDataAccessInterface, LoggedInUserDataAccessInterface, LoginUserDataAccessInterface{
+
+public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface, LoginUserDataAccessInterface,
+        JoinEventUserDataAccessInterface, CreateEventDataAccessInterface, MapUserDataAccessInterface, LoggedInUserDataAccessInterface {
     private final File userDataBase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();
@@ -124,10 +123,15 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
 
         Event eventRemove = null;
         for (Event event : joinedEvents) {
-            if (event.getEventID() == eventID) {
+            if (Objects.equals(event.getEventID(), eventID)) {
                 eventRemove = event;
             }
         }
         joinedEvents.remove(eventRemove);
+    }
+
+    @Override
+    public void userJoinEvent(String username, Event event) {
+
     }
 }

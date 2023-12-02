@@ -8,18 +8,22 @@ import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.leave_event.LeaveEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.join_event.JoinEventUserDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import data_access.InMemoryEventsDataAccessObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
         RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
         CreateEventDataAccessInterface, MapUserDataAccessInterface,LoggedInUserDataAccessInterface,
-        LoginUserDataAccessInterface, GetIDsDataAccessInterface, LeaveEventUserDataAccessInterface {
+        LoginUserDataAccessInterface, GetIDsDataAccessInterface, JoinEventUserDataAccessInterface,LeaveEventUserDataAccessInterface {
 
     private final HashMap<String, User> usernameToUser = new HashMap();
+
 
     @Override
     public void removeUser(String username, Integer eventID) {
@@ -94,6 +98,23 @@ public class InMemoryUsersDataAccessObject implements
             }
         }
         joinedEvents.remove(selectedEvent);
+    }
+ 
+    @Override
+    public void userJoinEvent(String username, Event event) {
+        User user = usernameToUser.get(username);
+        user.getJoinedEvents().add(event);
+    }
+
+    @Override
+    public ArrayList<Event> getUserJoinedEvents(String username) {
+        User user = usernameToUser.get(username);
+        return user.getJoinedEvents();
+    }
+
+    @Override
+    public HashMap<String, User> getUsernameToUser() {
+        return usernameToUser;
     }
 }
 
