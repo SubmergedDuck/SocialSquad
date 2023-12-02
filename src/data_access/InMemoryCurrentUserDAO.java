@@ -4,12 +4,13 @@ import entity.Events.Event;
 import entity.Users.User;
 import use_case.get_current_user.CurrentUserDataAccessInterface;
 import use_case.join_event.JoinEventCurrentUserDataAccessInterface;
+import use_case.login.LoginCurrentUserDataAccessInterface;
 import use_case.logout.LogoutCurrentUserDataAccessInterface;
 
 // TODO: Class should implement interfaces in:
 //  LoginUseCase, LogoutUseCase, JoinEventUseCase, LeaveEventUseCase, CreateEventUseCase, & GetDirectionUseCase
 public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterface, CurrentUserDataAccessInterface,
-                                               JoinEventCurrentUserDataAccessInterface {
+                                               JoinEventCurrentUserDataAccessInterface, LoginCurrentUserDataAccessInterface {
     private User currentUser;
 
     /**
@@ -54,4 +55,9 @@ public class InMemoryCurrentUserDAO implements LogoutCurrentUserDataAccessInterf
      * @param user the new logged-in user.
      */
     public void changeUser(User user){currentUser = user;}
+
+    @Override
+    public void setUser(User user) {
+        currentUser = user;
+    }
 }

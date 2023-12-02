@@ -5,9 +5,12 @@ import entity.Users.User;
 import entity.Users.UserFactory;
 import use_case.common_interfaces.MapUserDataAccessInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
+import use_case.get_ids.GetIDsDataAccessInterface;
 import use_case.join_event.JoinEventUserDataAccessInterface;
+import use_case.leave_event.LeaveEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.my_event.MyEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
@@ -18,8 +21,10 @@ import java.util.*;
  * File data access object for users.
  */
 
-public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-        JoinEventUserDataAccessInterface, CreateEventDataAccessInterface, MapUserDataAccessInterface, LoggedInUserDataAccessInterface {
+public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
+        CreateEventDataAccessInterface, MapUserDataAccessInterface,LoggedInUserDataAccessInterface,
+        LoginUserDataAccessInterface, GetIDsDataAccessInterface, JoinEventUserDataAccessInterface, LeaveEventUserDataAccessInterface,
+        MyEventDataAccessInterface {
     private final File userDataBase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();
@@ -91,7 +96,7 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
             writer.write(String.join(",", headers.keySet()));
             writer.newLine();
             for (User user : usernameToUser.values()){
-                String line = String.format("%s,%s,%s,%s,%s",user.getUsername(),user.getPassword(),String.valueOf(user.getAge()),
+                String line = String.format("%s,%s,%s,%s,%s",user.getUsername(),user.getPassword(),user.getAge(),
                         user.getSex(), user.getContact());
                 writer.write(line);
                 writer.newLine();
@@ -137,6 +142,54 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
 
     @Override
     public void userJoinEvent(String username, Event event) {
+        User user = usernameToUser.get(username);
+        user.getJoinedEvents().add(event);
+    }
 
+    @Override
+    public ArrayList<Integer> getIds(String username, boolean isCreatedEvent) {
+        ArrayList<Integer> currentIDs = new ArrayList<>();
+        User user = usernameToUser.get(username);
+        if (isCreatedEvent){
+            for (Event event : user.getCreatedEvents()){
+                currentIDs.add(event.getEventID());
+            }
+        } else {
+            for (Event event : user.getJoinedEvents()){
+                currentIDs.add(event.getEventID());
+            }
+        }
+        return currentIDs;
+    }
+
+    @Override
+    public void userLeaveEvent(String username, Integer eventID) {
+        User user = usernameToUser.get(username);
+        ArrayList<Event> joinedEvents = user.getJoinedEvents();
+        Event selectedEvent = null;
+        for (Event joinedEvent : joinedEvents){
+            if (joinedEvent.getEventID().equals(eventID)){
+                selectedEvent = joinedEvent;
+            }
+        }
+        joinedEvents.remove(selectedEvent);
+    }
+
+    @Override
+    public ArrayList<Event> getUserJoinedEvents(String username) {
+        User user = usernameToUser.get(username);
+        return user.getJoinedEvents();
+    }
+
+    @Override
+    public List<Event> getJoinedEvents(String username) {
+        User user = usernameToUser.get(username);
+        return user.getJoinedEvents();
+    }
+
+    @Override
+    public List<Event> getCreatedEvents(String username) {
+        User user = usernameToUser.get(username);
+        return user.getCreatedEvents();
     }
 }

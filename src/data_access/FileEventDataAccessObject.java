@@ -11,11 +11,14 @@ import use_case.create_event.CreateEventEventDataAccessInterface;
 import use_case.generate_static_map.GSMEventDataAccessInterface;
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
 import use_case.get_event_details.GetEventDetailsDataAccessInterface;
+import use_case.join_event.JoinEventEventDataAccessInterface;
+import use_case.leave_event.LeaveEventEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
 import use_case.search_nearby.SearchNearbyDataAccessInterface;
 import use_case.search_nearby.SearchNearbyInputData;
+import use_case.view_participants.ViewParticipantsDataAccessInterface;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -25,9 +28,10 @@ import java.util.*;
 /**
  * File data access object for events.
  */
-public class FileEventDataAccessObject implements GSMEventDataAccessInterface,
-        GetDirectionEventDataAccessInterface, GetEventDetailsDataAccessInterface, RemoveParticipantDataAccessInterface,
-        SearchNearbyDataAccessInterface, SearchEventDataAccessInterface, CreateEventEventDataAccessInterface {
+public class FileEventDataAccessObject implements SearchEventDataAccessInterface,
+        RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
+        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
+        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface, LeaveEventEventDataAccessInterface {
     private final File eventDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<Integer, Event> eventsToID = new HashMap<>();
@@ -103,6 +107,7 @@ public class FileEventDataAccessObject implements GSMEventDataAccessInterface,
      * @param event the event that is being saved
      */
     public void save(Event event){
+        System.out.println("temp point");
         eventsToID.put(event.getEventID(), event);
         save();
     }
@@ -127,10 +132,16 @@ public class FileEventDataAccessObject implements GSMEventDataAccessInterface,
             writer.newLine();
             for (Event event : eventsToID.values()){
                 String[] coordinates = event.getLocation().getCoordinates();
-                String formattedCoordinates = String.format("(%s%s%s)", coordinates[0], elementSeperator, coordinates[1]);
+                String formattedCoordinates = String.format("%s%s%s", coordinates[0], elementSeperator, coordinates[1]);
                 String peopleJoined = FormatStringList.formatStringList(event.getPeopleJoined(),elementSeperator);
                 String peopleWaitlisted = FormatStringList.formatStringList(event.getPeopleWaitlisted(),elementSeperator);
                 String eventTime = event.getTime().format(formatter);
+                if (peopleJoined.equals("")){
+                    peopleJoined = " "; //adding a space so that we can load from the csv without any error
+                }
+                if (peopleWaitlisted.equals("")){
+                    peopleWaitlisted = " ";
+                }
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", event.getOwnerUser(), event.getEventID(),
                         event.getEventName(), formattedCoordinates, peopleJoined, peopleWaitlisted, eventTime,
                         event.getType(), event.getDescription(), event.getPrivacy().toString(),event.getCapacity().toString());
@@ -241,10 +252,45 @@ public class FileEventDataAccessObject implements GSMEventDataAccessInterface,
         Integer currentID = 0;
         for (Integer eventID : eventsToID.keySet()){
             //The new eventID will be the highest event ID.
-            if (currentID < eventID){
-                currentID = eventID + 1;
+            if (currentID <= eventID){
+                currentID = currentID + 1;
             }
         }
         return currentID;
+    }
+
+    @Override
+    public void userJoinEvent(String username, Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        event.getPeopleJoined().add(username);
+    }
+
+    @Override
+    public String getCapacity(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return String.valueOf(event.getCapacity());
+    }
+
+    @Override
+    public void userLeaveEvent(String username, Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        ArrayList<String> joinedUsers = event.getPeopleJoined();
+        joinedUsers.remove(username);
+    }
+
+    @Override
+    public ArrayList<String> getPeopleJoined(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return event.getPeopleJoined();
+    }
+
+    @Override
+    public Event getEvent(Integer eventID) {
+        return null;
+    }
+
+    @Override
+    public List<String> getParticipants(Integer eventID) {
+        return null;
     }
 }
