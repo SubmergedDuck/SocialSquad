@@ -18,13 +18,12 @@ public class JoinEventPresenter implements JoinEventOutputBoundary {
         joinEventState.setSuccess(true);
         joinEventViewModel.setState(joinEventState);
         joinEventViewModel.firePropertyChanged();
-
     }
 
     @Override
-    public void prepareFailView(JoinEventOutputData outputData) {
+    public void prepareFailView() {
         JoinEventState joinEventState = joinEventViewModel.getState();
-        joinEventState.setError(outputData.getFailureReason());
+        //joinEventState.setError(outputData.getFailureReason());
         joinEventViewModel.setState(joinEventState);
         joinEventViewModel.firePropertyChanged();
 

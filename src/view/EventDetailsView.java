@@ -2,48 +2,28 @@
 
 package view;
 
-import data_access.*;
 import entity.Events.CommonEvent;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
-import entity.Users.CommonUserFactory;
-import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.back_out.BackOutPresenter;
-import interface_adapter.get_current_user.GetCurrentUserController;
-import interface_adapter.get_current_user.GetCurrentUserPresenter;
-import interface_adapter.get_current_user.GetCurrentUserState;
-import interface_adapter.get_current_user.GetCurrentUserViewModel;
-import interface_adapter.get_direction.GetDirectionController;
-import interface_adapter.get_direction.GetDirectionPresenter;
-import interface_adapter.get_direction.GetDirectionState;
-import interface_adapter.get_direction.GetDirectionViewModel;
-import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
-import interface_adapter.search_nearby.SearchNearbyPresenter;
 import use_case.back_out.BackOutInteractor;
-import use_case.get_current_user.GetCurrentUserInteractor;
-import use_case.get_direction.GetDirectionInteractor;
 import use_case.get_event_details.GetEventDetailsOutputData;
 import use_case.join_event.JoinEventInteractor;
-import use_case.search_nearby.SearchNearbyOutputData;
 
-import javax.swing.*;
 import javax.swing.text.View;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -58,18 +38,9 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
      */
     public final String viewName = "event details";
     private final GetEventDetailsViewModel getEventDetailsViewModel;
-
-    private final GetCurrentUserController getCurrentUserController;
-
-    private final GetDirectionController getDirectionController;
     private final BackOutController backOutController;
     private final JoinEventController joinEventController;
 
-    private String currentUser;
-
-    private JFrame getDirectionFrame = new JFrame();
-
-    private JLabel getDirectionLabel;
     private ButtonGradient GetDirection_BUTTON;
     private ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -96,18 +67,12 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private javax.swing.JLabel EventAlreadyJoinedWarning_LABEL;
 
     public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
-                            BackOutController backOutController, GetDirectionController getDirectionController,
-                            GetDirectionViewModel getDirectionViewModel, GetCurrentUserViewModel currentUserViewModel,
-                            GetCurrentUserController getCurrentUserController) {
+                            BackOutController backOutController) {
+        initComponents();
         this.getEventDetailsViewModel = getEventDetailsViewModel;
         this.joinEventController = joinEventController;
         this.backOutController = backOutController;
-        this.getDirectionController = getDirectionController;
-        this.getCurrentUserController = getCurrentUserController;
-        currentUserViewModel.addPropertyChangeListener(this);
-        getDirectionViewModel.addPropertyChangeListener(this);
         this.getEventDetailsViewModel.addPropertyChangeListener(this);
-        initComponents();
     }
 
 //    // A constructor just for testing
@@ -117,8 +82,6 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 //    }
 
     private void initComponents() {
-
-        getCurrentUserController.execute();
 
         Main_PANEL = new javax.swing.JPanel();
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
@@ -362,11 +325,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         GetDirection_BUTTON.setText("Get Direction");
         GetDirection_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    GetDirection_BUTTONActionPerformed(evt);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                GetDirection_BUTTONActionPerformed(evt);
             }
         });
 
@@ -479,14 +438,9 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         System.out.println("Go back");
     }
 
-    private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
-        int eventID = getEventDetailsViewModel.getState().getEventID();
-        getDirectionController.execute(currentUser,eventID,350,504);
+    private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
     }
-
-
-
-
 
     /**
      * @param args the command line arguments
@@ -512,33 +466,14 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
-                InMemoryEventsDataAccessObject eventsDataAccessObject = new InMemoryEventsDataAccessObject();
-                InMemoryUsersDataAccessObject usersDataAccessObject = new InMemoryUsersDataAccessObject();
-
-                Event event;
-                try{
-                    LocationFactory factory = new CommonLocationFactory();
-                    CommonUserFactory userFactory = new CommonUserFactory();
-                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
-                    Location location2 = factory.makeLocation("(43.4669381322,-79.6857955901)");
-                    event = new CommonEvent(0, "badminton", "owner", location, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
-                            10); // This event should be returned
-                    User user = userFactory.create("testUser","123",20,"m","my contact");
-                    user.setLocation(location2);
-
-                    eventsDataAccessObject.save(event);
-                    usersDataAccessObject.save(user);
-                    currentUserDAO.changeUser(user);
-                } catch (IOException e){
-                    throw new RuntimeException(e);
-                }
-
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
 
-                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventInteractor joinEventInteractor = null; //TEMPORARY
+
+
+
+
                 JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
                 ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
@@ -546,28 +481,23 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                 BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
                 BackOutController backOutController = new BackOutController(backOutInteractor);
 
-                GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
-                GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
-                GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,eventsDataAccessObject,usersDataAccessObject,
-                        new GenerateRoute());
-                GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
-
-                GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
-                GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
-                GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,currentUserDAO);
-                GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
-
-                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
-                        getDirectionController1, getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
+                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
 
 
                 try {
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+
                     GetEventDetailsPresenter presenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
                     GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(event.getOwnerUser(),
                             event.getEventName(), event.getEventAddress(), event.getEventDate(), event.getDescription(),
-                            String.valueOf(event.getCapacity()), event.getEventID());
+                            String.valueOf(event.getCapacity()));
                     presenter.prepareView(outputData);
+                    view.setVisible(true);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -599,19 +529,12 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             TimeDescription_LABEL.setText(time);
             Description_TEXTAREA.setText(description);
             EventName_LABEL.setText(name + " " + time);
-        } else if (evt.getNewValue() instanceof GetDirectionState){
-            GetDirectionState state = (GetDirectionState)evt.getNewValue();
-            BufferedImage generatedMap = state.getGeneratedImage();
-            getDirectionLabel = new JLabel(new ImageIcon(generatedMap));
-            getDirectionFrame.getContentPane().add(getDirectionLabel);
-            getDirectionFrame.pack();
-            if (!getDirectionFrame.isVisible()){
-                getDirectionFrame.setVisible(true);
-            }
-        } else if (evt.getNewValue() instanceof GetCurrentUserState){
-            GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
-            currentUser = state.getUsername();
+
+
+
+
         }
+
     }
 }
 
