@@ -21,6 +21,7 @@ public class GetIDsPresenter implements GetIDsOutputBoundary {
     public void prepareView(GetIDsOutputData outputData) {
         GetIDsState state = getIDsViewModel.getState();
         state.setAllIDs(outputData.getEventIDs());
+        state.setIsCreated(outputData.isCreated());
         this.getIDsViewModel.setState(state);
         getIDsViewModel.firePropertyChanged();
     }

@@ -23,6 +23,7 @@ public class GetEventDetailsPresenter implements GetEventDetailsOutputBoundary {
         state.setEventDate(outputData.getDate());
         state.setEventDescription(outputData.getDescription());
         state.setEventCapacity(outputData.getCapacity());
+        state.setEventID(outputData.getEventID());
         this.getEventDetailsViewModel.setState(state);
         getEventDetailsViewModel.firePropertyChanged();
 
