@@ -18,9 +18,7 @@ import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventViewModel;
-import interface_adapter.get_current_user.GetCurrentUserViewModel;
-import interface_adapter.get_current_user.GetCurrentUserController;
-import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.*;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
@@ -105,6 +103,9 @@ public class Main {
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
         User testUser = new CommonUser("aa", "123", 1, "f", "contact");
         currentUserDAO.changeUser(testUser);
+        GetCurrentUserState testState = getCurrentUserViewModel.getState();
+        testState.setUsername(testState.getUsername());
+        getCurrentUserViewModel.setState(testState);
         // Instantiate all factories
         EventFactory eventFactory = new CommonEventFactory();
 
@@ -198,8 +199,10 @@ public class Main {
         ArrayList<String> peopledJoined = new ArrayList<>();
         peopledJoined.add(newUser.getUsername());
         Location location = null;
+        Location location2 = null;
         try {
             location = locationFactory.makeLocation("(43.665510,-79.387280)");
+            location2 = locationFactory.makeLocation("(43.4669381322,-79.6857955901)");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -208,17 +211,16 @@ public class Main {
         eventDataAccessObject.save(newEvent);
         ArrayList<Event> userJoinedEvents = newUser.getJoinedEvents();
         userJoinedEvents.add(newEvent);
-
+        newUser.setLocation(location2);
 
         //TODO:fix
 
-//        GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
 
         //Creating the controllers,presenters, and interactors for each use case in this view.
         GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel);
         GetIDsPresenter getIDsPresenter = new GetIDsPresenter(getIDsViewModel);
-        OnlyGetEventDetailsPresenter getEventDetailsPresenter = new OnlyGetEventDetailsPresenter(getEventDetailsViewModel);
+        GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel,viewManagerModel);
 
         GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter, currentUserDAO);
         GetIDsInteractor getIDsInteractor = new GetIDsInteractor(userDataAccessObject, getIDsPresenter);
@@ -245,10 +247,8 @@ public class Main {
                 new GenerateRoute());
         GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
-        GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
-
         EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
-                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1,getCurrentUserController1);
+                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController1);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);

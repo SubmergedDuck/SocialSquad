@@ -12,8 +12,8 @@ public class GetEventDetailsOutputData {
     private final String date;
     private final String description;
     private final String capacity;
-
     private final int eventID;
+    private final boolean changeView;
 
     /**
      * Constructor for GetEventDetailsOutputData
@@ -24,7 +24,7 @@ public class GetEventDetailsOutputData {
      * @param description the event description.
      */
     public GetEventDetailsOutputData(String ownerUser, String eventName, String eventAddress, String date, String description,
-                                     String capacity, int eventID){
+                                     String capacity, int eventID, boolean changeView){
         this.ownerUser = ownerUser;
         this.eventName = eventName;
         this.eventAddress = eventAddress;
@@ -32,6 +32,7 @@ public class GetEventDetailsOutputData {
         this.description = description;
         this.capacity = capacity;
         this.eventID = eventID;
+        this.changeView = changeView;
     }
 
     /**
@@ -75,4 +76,6 @@ public class GetEventDetailsOutputData {
      * @return returns the ID of the event.
      */
     public int getEventID(){return this.eventID;}
+
+    public boolean isChangeView(){return this.changeView;}
 }
