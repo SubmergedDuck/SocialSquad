@@ -80,19 +80,6 @@ public class Main {
 
         // Instantiate all factories
         EventFactory eventFactory = new CommonEventFactory();
-        RestrictedEventFactory restrictedEventFactory = new RestrictedEventFactory() {
-            @Override
-            public RestrictedEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, Integer ageRestriction, String sexRestriction) {
-                return null;
-            }
-        };
-
-        InviteOnlyEventFactory inviteEventFactory = new InviteOnlyEventFactory() {
-            @Override
-            public InviteOnlyEvent create(Integer eventID, String eventName, String owner, Location location, ArrayList<String> peopleJoined, ArrayList<String> peopleWaitlisted, LocalDateTime time, String type, String description, Boolean privacy, Integer capacity, ArrayList<String> peopleInvited) {
-                return null;
-            }
-        };
 
         LocationFactory locationFactory = new CommonLocationFactory();
 
@@ -138,7 +125,7 @@ public class Main {
         // Instantiate CreateEvent use case
         CreateEventController createEventController =
                 CreateEventUseCaseFactory.createEventUseCase(createEventViewModel, eventDataAccessObject,
-                        userDataAccessObject, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
+                        userDataAccessObject, eventFactory, locationFactory);
         CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
         views.add(createEventView.getRootPane(), createEventView.viewName);
 
@@ -149,7 +136,7 @@ public class Main {
 
         // Build Login view
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
-                signupViewModel, userDataAccessObject);
+                signupViewModel, userDataAccessObject, getCurrentUserViewModel);
         views.add(loginView.getRootPane(), loginView.viewName);
 
         // Build Signup view

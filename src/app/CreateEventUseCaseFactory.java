@@ -28,8 +28,6 @@ public class CreateEventUseCaseFactory {
     public static CreateEventController createEventUseCase(CreateEventViewModel createEventViewModel,
                                                            CreateEventDataAccessInterface eventDAO,
                                                            CreateEventDataAccessInterface userDAO, EventFactory eventFactory,
-                                                           InviteOnlyEventFactory inviteEventFactory,
-                                                           RestrictedEventFactory restrictedEventFactory,
                                                            LocationFactory locationFactory){
         CreateEventOutputBoundary presenter = new CreateEventPresenter(createEventViewModel);
         CreateEventInputBoundary interactor = new CreateEventInteractor(eventDAO, userDAO, presenter, eventFactory, locationFactory);
