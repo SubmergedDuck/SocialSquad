@@ -12,9 +12,10 @@ public class BackOutPresenter implements BackOutOutputBoundary {
         this.viewManagerModelAdapter = viewManagerModelAdapter;
     }
     @Override
-    public void prepareSuccessView() {
-        String lastViewName = viewManagerModelAdapter.getLastViewName();
-        viewManagerModelAdapter.setActiveView(lastViewName);
+    public void prepareSuccessView(String viewName) {
+        System.out.println("Presenter\nprepare success view, bringing up " + viewName);
+        //String lastViewName = viewManagerModelAdapter.getLastViewName();
+        viewManagerModelAdapter.setActiveView(viewName);
 
 
     }
