@@ -184,4 +184,9 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         Event event = eventsToID.get(eventID);
         return event.getPeopleJoined();
     }
+
+    @Override
+    public Event getEvent(Integer eventID) {
+        return eventsToID.get(eventID);
+    }
 }

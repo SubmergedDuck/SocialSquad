@@ -16,12 +16,12 @@ import view.SearchNearbyView;
 public class GetEventDetailsUseCaseFactory {
     private GetEventDetailsUseCaseFactory(){}
 
-    public static EventDetailsView create(GetEventDetailsViewModel getEventDetailsViewModel, SearchNearbyView searchNearbyView,
-                                          JoinEventController joinEventController,
-                                          BackOutController backOutController) {
-        getEventDetailsViewModel.addPropertyChangeListener(searchNearbyView);
-        return new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
-    }
+//    public static EventDetailsView create(GetEventDetailsViewModel getEventDetailsViewModel, SearchNearbyView searchNearbyView,
+//                                          JoinEventController joinEventController,
+//                                          BackOutController backOutController) {
+//        getEventDetailsViewModel.addPropertyChangeListener(searchNearbyView);
+//        return new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController);
+//    }
 
     public static GetEventDetailsController createGetEventDetailsUseCase(GetEventDetailsViewModel getEventDetailsViewModel,
                                                                          ViewManagerModel viewManagerModel,

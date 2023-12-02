@@ -8,6 +8,8 @@ public class GetEventDetailsState {
     private String eventDescription = "";
     private String eventCapacity = "";
 
+    private int eventID;
+
     public GetEventDetailsState(GetEventDetailsState copy) {
         this.ownerUser = copy.ownerUser;
         eventName = copy.eventName;
@@ -65,5 +67,9 @@ public class GetEventDetailsState {
     public void setEventCapacity(String eventCapacity) {
         this.eventCapacity = eventCapacity;
     }
+
+    public void setEventID(int eventID){this.eventID = eventID;}
+
+    public int getEventID(){return eventID;}
 
 }

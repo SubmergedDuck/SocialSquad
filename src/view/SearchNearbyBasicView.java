@@ -3,7 +3,7 @@ package view;
 import data_access.InMemoryEventsDataAccessObject;
 import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
-import entity.Location.CoordinatesFromIP;
+import data_access.CoordinatesFromIP;
 import entity.Location.Location;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.join_event.JoinEventController;

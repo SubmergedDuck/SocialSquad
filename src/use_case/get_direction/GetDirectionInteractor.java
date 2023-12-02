@@ -18,7 +18,7 @@ public class GetDirectionInteractor implements GetDirectionInputBoundary {
      * @param getDirectionPresenter the presenter for the get directions use case
      * @param eventDataAccessObject event DAO, used for getting the location of a specified event
      * @param userDataAccessObject user DAO, used for getting the location of a specific user.
-     * @param apiDataAccessObject calls the API to genereate a route image.
+     * @param apiDataAccessObject calls the API to generate a route image.
      */
     public GetDirectionInteractor(GetDirectionOutputBoundary getDirectionPresenter,
                                   GetDirectionEventDataAccessInterface eventDataAccessObject,

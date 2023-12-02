@@ -44,10 +44,11 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
 
     public void execute(JoinEventInputData joinEventInputData) {
         String username = joinEventInputData.getUsername();
-        Event event = joinEventInputData.getEvent();
-        String capacity = eventsDataAccessObject.getCapacity(event.getEventID());
+        int eventID = joinEventInputData.getEvent();
+        String capacity = eventsDataAccessObject.getCapacity(eventID);
+        Event event = eventsDataAccessObject.getEvent(eventID);
 
-        ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
+        ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(eventID);
 
         // Count number of people already joined
         int current_number_joined = 0;
@@ -62,15 +63,14 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
         } else {
             // Updates DAOs
             userDataAccessObject.userJoinEvent(username, event);
-            eventsDataAccessObject.userJoinEvent(username, event.getEventID());
+            eventsDataAccessObject.userJoinEvent(username, eventID);
             currentUserDataAccessObject.currentUserJoinEvent(event.getEventID());
 
             // Update getPeopleJoined from eventsDataAccessObject
             getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
 
             // Output data will be used for getting the # of people joined to update #/capacity text
-            JoinEventOutputData joinEventOutputData = new JoinEventOutputData(getPeopleJoined);
-            joinEventPresenter.prepareSuccessView(joinEventOutputData);
+            joinEventPresenter.prepareSuccessView();
         }
 
     }
