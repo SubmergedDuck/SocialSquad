@@ -3,6 +3,7 @@ package app;
 import entity.Users.CommonUserFactory;
 import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.back_out.BackOutController;
 import interface_adapter.get_current_user.GetCurrentUserController;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
@@ -30,12 +31,16 @@ public class MyEventUseCaseFactory {
             ViewManagerModel viewManagerModel,
             MyEventViewModel myEventViewModel,
             MyEventDataAccessInterface dataAccessInterface,
-            GetIDsController getIDsController, GetIDsViewModel getIDsViewModel, GetCurrentUserController getCurrentUserController,
-            GetCurrentUserViewModel getCurrentUserViewModel, GetEventDetailsController getEventDetailsController, GetEventDetailsViewModel getEventDetailsViewModel
+            GetIDsController getIDsController,
+            GetIDsViewModel getIDsViewModel,
+            GetCurrentUserController getCurrentUserController,
+            BackOutController backOutController,
+            GetCurrentUserViewModel getCurrentUserViewModel,
+            GetEventDetailsController getEventDetailsController, GetEventDetailsViewModel getEventDetailsViewModel
             ){
         try{
             MyEventController myEventController = createUserMyEventUseCase(viewManagerModel,myEventViewModel,dataAccessInterface);
-            return new MyEventsView(getIDsController,getIDsViewModel,getCurrentUserController,getCurrentUserViewModel,getEventDetailsController,getEventDetailsViewModel);
+            return new MyEventsView(getIDsController,getIDsViewModel,getCurrentUserController, getCurrentUserViewModel,getEventDetailsController,backOutController, getEventDetailsViewModel);
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
 
