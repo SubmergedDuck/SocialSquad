@@ -163,13 +163,13 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
 
 
 //TODO:FIX
-
-//        getCurrentUserController.execute();
-//        getIDsController.execute(currentUser, false);
 //
-//        for (Integer eventID: joinedEvents){
-//            getEventDetailsController.execute(eventID);
-//        }
+        getCurrentUserController.execute();
+        getIDsController.execute(currentUser, false);
+
+        for (Integer eventID: joinedEvents){
+            getEventDetailsController.execute(eventID);
+        }
 
         Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = eventDescriptions.toArray(new String[eventDescriptions.size()]);
@@ -288,11 +288,25 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     }
 
     private void Joined_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+        if (evt.getSource().equals(Joined_BUTTON)){
+        getCurrentUserController.execute();
+        getIDsController.execute(currentUser, false);
+
+        for (Integer eventID: joinedEvents){
+            getEventDetailsController.execute(eventID);
+        }
+//        // TODO add your handling code here:
+    }}
 
     private void Owned_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if(evt.getSource().equals(Owned_BUTTON)){
+        getCurrentUserController.execute();
+        getIDsController.execute(currentUser, true);
+
+        for (Integer eventID: joinedEvents){
+            getEventDetailsController.execute(eventID);
+        }}
+//        // TODO add your handling code here:
     }
 
     /**

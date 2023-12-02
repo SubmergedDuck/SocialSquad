@@ -150,6 +150,25 @@ public class Main {
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
         //Build MyEvents View
+        CommonUserFactory userFactory = new CommonUserFactory();
+        User newUser = userFactory.create("username","123",20,"m","test contact");
+        currentUserDAO.changeUser(newUser);
+        userDataAccessObject.save(newUser);
+        ArrayList<String> peopledJoined = new ArrayList<>();
+        peopledJoined.add(newUser.getUsername());
+        CommonEventFactory eventFactory = new CommonEventFactory();
+        CommonLocationFactory locationFactory = new CommonLocationFactory();
+        Location location = null;
+        try {
+            location = locationFactory.makeLocation("(43.665510,-79.387280)");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Event newEvent = eventFactory.create(0,"test event","another user",location,peopledJoined,
+                new ArrayList<String>(), LocalDateTime.now(),"test event", "test", false, 10);
+        eventDataAccessObject.save(newEvent);
+        ArrayList<Event> userJoinedEvents = newUser.getJoinedEvents();
+        userJoinedEvents.add(newEvent);
 
 
         //TODO:fix
