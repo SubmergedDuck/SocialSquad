@@ -20,6 +20,7 @@ public class OnlyGetEventDetailsPresenter implements GetEventDetailsOutputBounda
         state.setEventDate(outputData.getDate());
         state.setEventDescription(outputData.getDescription());
         state.setEventCapacity(outputData.getCapacity());
+        state.setEventID(outputData.getEventID());
         this.getEventDetailsViewModel.setState(state);
         getEventDetailsViewModel.firePropertyChanged();
 
