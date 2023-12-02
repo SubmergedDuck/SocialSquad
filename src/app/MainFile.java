@@ -130,7 +130,8 @@ public class MainFile {
         GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
         GetEventDetailsController onlyGetEventDetailsController = new GetEventDetailsController(getEventDetailsInteractor);
 
-        MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,fileUserDataAccessObject,getIDsController1,getIDsViewModel,getCurrentUserController1,getCurrentUserViewModel,
+        MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,fileUserDataAccessObject,
+                getIDsController1,getIDsViewModel,getCurrentUserController1,backOutController,getCurrentUserViewModel,
                 onlyGetEventDetailsController,getEventDetailsViewModel);
         views.add(myEventsView.getRootPane(),myEventsView.viewName);
         myEventViewModel.addPropertyChangeListener(myEventsView);

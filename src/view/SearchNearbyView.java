@@ -262,7 +262,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
         if (evt.getSource().equals(Back_BUTTON)) {
-            backOutController.execute();
+            backOutController.execute("Home");
         }
     }
 

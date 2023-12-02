@@ -595,7 +595,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        backOutController.execute();
+        backOutController.execute("Home");
     }
 
     /**
