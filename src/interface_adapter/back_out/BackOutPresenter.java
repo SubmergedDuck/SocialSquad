@@ -13,6 +13,7 @@ public class BackOutPresenter implements BackOutOutputBoundary {
     }
     @Override
     public void prepareSuccessView() {
+        System.out.println("Presenter\nprepare success view\n");
         String lastViewName = viewManagerModelAdapter.getLastViewName();
         viewManagerModelAdapter.setActiveView(lastViewName);
 

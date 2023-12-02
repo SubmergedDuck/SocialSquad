@@ -18,6 +18,7 @@ public class ViewManagerModelAdapter implements PropertyChangeListener {
 
     public ViewManagerModelAdapter(ViewManagerModel viewManagerModel) {
         this.viewManagerModel = viewManagerModel;
+        lastViews.add("home"); // home is the default last view
     }
 
     public String getLastViewName() {
@@ -30,8 +31,11 @@ public class ViewManagerModelAdapter implements PropertyChangeListener {
      * @param lastViewName the last active view
      */
     public void setActiveView(String lastViewName) {
+        System.out.println("VMM adapter\nsetActiveView\n");
+        System.out.println("last views: " + String.valueOf(lastViews));
         if (!lastViews.isEmpty()) {
             previousViewName = lastViews.pop(); // the most top last view is now active, so pop
+            System.out.println("previous view name: " + previousViewName);
             if (previousViewName.equals(lastViewName)) { // we are going back now
                 previousViewName = lastViews.pop();
             }

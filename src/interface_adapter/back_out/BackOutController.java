@@ -11,6 +11,8 @@ public class BackOutController {
     }
 
     public void execute() {
+        System.out.println("Controller\n execute\n");
+
         this.interactor.execute();
     }
 }

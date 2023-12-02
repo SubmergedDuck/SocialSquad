@@ -7,6 +7,7 @@ public class BackOutInteractor implements BackOutInputBoundary{
     }
     @Override
     public void execute() {
+        System.out.println("Interactor\n execute\n");
         presenter.prepareSuccessView();
 
     }
