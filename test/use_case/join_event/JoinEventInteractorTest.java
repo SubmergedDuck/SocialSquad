@@ -33,7 +33,6 @@ public class JoinEventInteractorTest {
     @Test
     public void testExecute() throws IOException {
 
-        // @Before
         ArrayList<String> testPeopleJoined = new ArrayList<>();
 
         User testUser =  new CommonUser("Anna", "123", 20, "m", "test@gmail.com");
@@ -47,18 +46,17 @@ public class JoinEventInteractorTest {
 
 
         JoinEventOutputBoundary joinEventPresenter = new JoinEventOutputBoundary() {
-            @Override
-            public void prepareSuccessView() {
-
+            @Override // Mock Presenter
+            public void prepareSuccessView(JoinEventOutputData outputData) {
             }
 
             @Override // Mock Presenter
-            public void prepareFailView() {
+            public void prepareFailView(JoinEventOutputData outputData) {
             }
 
         };
 
-        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent.getEventID(), "Anna");
+        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent, "Anna");
         JoinEventUserDataAccessInterface joinEventUsersDataAccessObject = inMemoryUsersDataAccessObject;
         JoinEventEventDataAccessInterface joinEventEventsDataAccessObject = inMemoryEventsDataAccessObject;
 
@@ -90,7 +88,4 @@ public class JoinEventInteractorTest {
         Event evtInArray = inMemoryUsersDataAccessObject.getUserJoinedEvents("Anna").get(0);
 
     }
-
-
-
 }
