@@ -14,6 +14,7 @@ import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventState;
 import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
@@ -346,6 +347,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
+                GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
 
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
@@ -371,7 +373,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
 
                 CreateEventOutputBoundary createEventPresenter = new CreateEventPresenter(createEventViewModel);
-                CreateEventInputBoundary createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject, inMemoryUsersDataAccessObject, createEventPresenter, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
+                CreateEventInputBoundary createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject, inMemoryUsersDataAccessObject, createEventPresenter, eventFactory, locationFactory);
                 CreateEventController createEventController = new CreateEventController(createEventInteractor);
 
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
@@ -388,7 +390,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
                 EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
-                CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController);
+                CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
                 createEventViewModel.addPropertyChangeListener(createEventView);
                 createEventViewModel.addPropertyChangeListener(view);
 

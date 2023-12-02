@@ -1,6 +1,7 @@
 package interface_adapter.create_event;
 
 public class CreateEventState {
+    private boolean displayed = false;
     private String inputError = null;
     private boolean eventCreated = false;
     private String eventName = "";
@@ -22,6 +23,14 @@ public class CreateEventState {
     }
 
     public CreateEventState(){}
+
+    public boolean getDisplayed() {
+        return displayed;
+    }
+
+    public void setDisplayed(boolean displayed) {
+        this.displayed = displayed;
+    }
 
     public String getEventName(){return this.eventName;}
 

@@ -15,6 +15,7 @@ import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
@@ -70,6 +71,7 @@ public class Main {
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
+        GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
@@ -137,7 +139,7 @@ public class Main {
         CreateEventController createEventController =
                 CreateEventUseCaseFactory.createEventUseCase(createEventViewModel, eventDataAccessObject,
                         userDataAccessObject, eventFactory, inviteEventFactory, restrictedEventFactory, locationFactory);
-        CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController);
+        CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
         views.add(createEventView.getRootPane(), createEventView.viewName);
 
         // Instantiate JoinEvent use case

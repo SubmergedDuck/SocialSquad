@@ -16,6 +16,7 @@ import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventState;
 import interface_adapter.create_event.CreateEventViewModel;
+import use_case.back_out.BackOutInputBoundary;
 import use_case.back_out.BackOutInteractor;
 import use_case.back_out.BackOutOutputBoundary;
 import use_case.create_event.CreateEventInputBoundary;
@@ -63,7 +64,7 @@ import java.io.IOException;
  *
  * @author submergedduck
  */
-public class CreateEventView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
+public class CreateEventView extends javax.swing.JFrame implements PropertyChangeListener {
 
     /**
      * Creates new form loginView
@@ -72,10 +73,6 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
     private final CreateEventViewModel createEventViewModel;
     private final CreateEventController createEventController;
     private final BackOutController backOutController;
-
-    private final CreateEventViewModel createEventViewModel;
-
-    private final CreateEventController createEventController;
 
     private final GetCurrentUserViewModel getCurrentUserViewModel;
     private view.ButtonGradient Back_BUTTON;
@@ -273,11 +270,6 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
         Description_TEXTFIELD.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.LineBorder(new java.awt.Color(229, 222, 233), 1, true), javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 1)));
         Description_TEXTFIELD.setCaretColor(new java.awt.Color(196, 182, 206));
         Description_TEXTFIELD.setSelectionColor(new java.awt.Color(140, 100, 255));
-        Description_TEXTFIELD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Description_TEXTFIELDActionPerformed(evt);
-            }
-        });
 
         Description_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
         Description_LABEL.setForeground(new java.awt.Color(140, 100, 255));
@@ -621,12 +613,16 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 CommonUserFactory userFactory = new CommonUserFactory();
+
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
+
                 User user = userFactory.create("testuser","123",20,"m","test contact");
                 inMemoryUsersDataAccessObject.save(user);
-                CreateEventViewModel createEventViewModel1 = new CreateEventViewModel();
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
+                CreateEventViewModel createEventViewModel1 = new CreateEventViewModel(viewManagerModel);
                 GetCurrentUserViewModel currentUserViewModel = new GetCurrentUserViewModel();
+
                 GetCurrentUserState getCurrentUserState = currentUserViewModel.getState();
                 getCurrentUserState.setUsername(user.getUsername());
                 currentUserViewModel.setState(getCurrentUserState);
@@ -636,7 +632,11 @@ public class CreateEventView extends javax.swing.JFrame implements ActionListene
                         createEventPresenter,new CommonEventFactory(), new CommonLocationFactory());
                 CreateEventController createEventController1 = new CreateEventController(createEventInteractor);
 
-                new CreateEventView(createEventViewModel1,createEventController1,currentUserViewModel).setVisible(true);
+                BackOutOutputBoundary backOutPresenter = new BackOutPresenter(new ViewManagerModelAdapter(viewManagerModel));
+                BackOutInputBoundary backOutInteractor = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInteractor);
+
+                new CreateEventView(createEventViewModel1,createEventController1,backOutController, currentUserViewModel).setVisible(true);
             }
         });
     }
