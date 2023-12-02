@@ -7,6 +7,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
@@ -40,11 +41,12 @@ public class LoggedInUseCaseFactory {
             LoggedInUserDataAccessInterface userDataAccessInterface,
             SearchNearbyDataAccessInterface searchNearbyDataAccessObject,
             CreateEventController createEventController,
-            CreateEventViewModel createEventViewModel) {
+            CreateEventViewModel createEventViewModel,
+            GetCurrentUserViewModel getCurrentUserViewModel) {
         try{
             LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,userDataAccessInterface);
             SearchNearbyController searchNearbyController = SearchNearbyUseCaseFactory.createSearchNearbyUseCase(viewManagerModel, searchNearbyViewModel, searchNearbyDataAccessObject);
-            return new HomeView(loggedInViewModel,loggedInController, searchNearbyController, createEventController, createEventViewModel);
+            return new HomeView(loggedInViewModel,loggedInController, searchNearbyController, createEventController, createEventViewModel, getCurrentUserViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }

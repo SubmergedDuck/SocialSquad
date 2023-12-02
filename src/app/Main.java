@@ -159,7 +159,7 @@ public class Main {
 
         // Build Home view
         HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,searchNearbyViewModel,
-                loginViewModel, userDataAccessObject, eventDataAccessObject, createEventController, createEventViewModel);
+                loginViewModel, userDataAccessObject, eventDataAccessObject, createEventController, createEventViewModel, getCurrentUserViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
