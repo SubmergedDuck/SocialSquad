@@ -37,8 +37,6 @@ public class CreateEventInteractorTest {
     public void init() {
         //Creating all the instances for the event interactor
         LocationFactory locationFactory = new CommonLocationFactory();
-        InviteOnlyEventFactory inviteOnlyEventFactory = new CommonInviteOnlyEventFactory();
-        RestrictedEventFactory restrictedEventFactory = new CommonRestrictedEventFactory();
         EventFactory eventFactory = new CommonEventFactory();
         CreateEventOutputBoundary mockPresenter = new MockCreateEventPresenter();
         InMemoryUsersDataAccessObject userDAO = (InMemoryUsersDataAccessObject)inMemoryUsersDataAccessObject;
@@ -48,8 +46,7 @@ public class CreateEventInteractorTest {
         userDAO.save(testCreator);
 
         this.createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
-                inMemoryUsersDataAccessObject, mockPresenter, eventFactory, inviteOnlyEventFactory, restrictedEventFactory,
-                locationFactory);
+                inMemoryUsersDataAccessObject, mockPresenter, eventFactory, locationFactory);
     }
 
     /**
@@ -77,7 +74,7 @@ public class CreateEventInteractorTest {
 
         //Creates regular event with an invalid input. Here, there is no owner.
         CreateEventInputData testInput = new CreateEventInputData("Bob", "", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10");
+                "Movie night", "Have fun!", "10");
         createEventInteractor.execute(testInput);
         String printedOutput = outContent.toString();
         assertEquals("error\n", printedOutput);
@@ -90,7 +87,7 @@ public class CreateEventInteractorTest {
     public void validInput() throws IOException {
         //Creates a restricted event where the age restriction is 5 and there is no sex restriction.
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10", "5", "");
+                "Movie night", "Have fun!", "10");
         createEventInteractor.execute(testInput);
         String printedOutput = outContent.toString();
         assertEquals("success\n", printedOutput);
@@ -102,8 +99,8 @@ public class CreateEventInteractorTest {
     @Test
     public void addsEvent() throws IOException {
         //Checks if the event was added to the DAO.
-        CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10", "5", "");
+        CreateEventInputData testInput = new CreateEventInputData("Bob", "Test", "(47.64054,-122.12934)", "2016-03-04 11:30",
+                "Movie night", "Have fun!", "10");
         createEventInteractor.execute(testInput);
         InMemoryEventsDataAccessObject eventDAO = (InMemoryEventsDataAccessObject)inMemoryEventsDataAccessObject;
         assertEquals(1, eventDAO.getEventMap().size());
@@ -115,7 +112,7 @@ public class CreateEventInteractorTest {
     @Test
     public void updatesUser() throws IOException {
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10", "5", "");
+                "Movie night", "Have fun!", "10");
         createEventInteractor.execute(testInput);
         InMemoryUsersDataAccessObject userDAO =  (InMemoryUsersDataAccessObject)inMemoryUsersDataAccessObject;
         User userTest = userDAO.getUser("Bob");

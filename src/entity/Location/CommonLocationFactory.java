@@ -32,7 +32,7 @@ public class CommonLocationFactory implements LocationFactory {
             String country = converter.getCountry();
             String address = converter.getAddress();
             location = create(strCoordinates, address, country);
-        } catch (IOException e){
+        } catch (IOException | StringIndexOutOfBoundsException e){
             location = create(null, null, null);
         }
         return location;

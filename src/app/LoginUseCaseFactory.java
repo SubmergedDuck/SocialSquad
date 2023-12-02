@@ -5,6 +5,7 @@ import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.create_account.CreateAccountController;
 import interface_adapter.create_account.CreateAccountPresesnter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -30,11 +31,14 @@ public class LoginUseCaseFactory {
             LoginViewModel loginViewModel,
             LoggedInViewModel loggedInViewModel,
             SignupViewModel signupViewModel,
-            LoginUserDataAccessInterface userDataAccessObject) {
+            LoginUserDataAccessInterface userDataAccessObject,
+            GetCurrentUserViewModel getCurrentUserViewModel) {
 
         try {
-            LoginController loginController = createLoginUseCase(viewManagerModel, loginViewModel, loggedInViewModel,signupViewModel, userDataAccessObject);
-            return new LoginView(loginViewModel,loginController,signupViewModel);
+            LoginController loginController = createLoginUseCase(viewManagerModel, loginViewModel, loggedInViewModel,signupViewModel, userDataAccessObject, getCurrentUserViewModel);
+//            return new LoginView(loginViewModel, loginController);//from previous Login view
+            CreateAccountController createAccountController = createAccountUseCase(viewManagerModel,loginViewModel,signupViewModel,userDataAccessObject);
+            return new LoginView(loginViewModel,loginController,createAccountController);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }
@@ -47,10 +51,11 @@ public class LoginUseCaseFactory {
             LoginViewModel loginViewModel,
             LoggedInViewModel loggedInViewModel,
             SignupViewModel signupViewModel,
-            LoginUserDataAccessInterface userDataAccessObject) throws IOException {
+            LoginUserDataAccessInterface userDataAccessObject,
+            GetCurrentUserViewModel getCurrentUserViewModel) throws IOException {
 
         // Notice how we pass this method's parameters to the Presenter.
-        LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel, loggedInViewModel, loginViewModel);
+        LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel, loggedInViewModel, loginViewModel, getCurrentUserViewModel);
 
         UserFactory userFactory = new CommonUserFactory();
 

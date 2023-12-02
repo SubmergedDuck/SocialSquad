@@ -1,11 +1,12 @@
 package interface_adapter.back_out;
 
+import use_case.back_out.BackOutInputBoundary;
 import use_case.back_out.BackOutInteractor;
 
 public class BackOutController {
-    final BackOutInteractor interactor;
+    final BackOutInputBoundary interactor;
 
-    public BackOutController(BackOutInteractor interactor) {
+    public BackOutController(BackOutInputBoundary interactor) {
         this.interactor = interactor;
     }
 

@@ -11,7 +11,7 @@ public class MockCreateEventPresenter implements CreateEventOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(CreateEventOutputData output) {
+    public void prepareSuccessView() {
         System.out.println("success");
     }
 }
