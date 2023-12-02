@@ -1,6 +1,8 @@
 package app;
 
+import data_access.GenerateStaticMapBody;
 import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
 import entity.Users.CommonUserFactory;
 import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
@@ -47,9 +49,10 @@ public class LoggedInUseCaseFactory {
             SearchNearbyDataAccessInterface searchNearbyDataAccessObject,
             CreateEventController createEventController,
             CreateEventViewModel createEventViewModel,
+            MyEventViewModel myEventViewModel,
             GetCurrentUserViewModel getCurrentUserViewModel) {
         try{
-            LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,userDataAccessInterface);
+            LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,myEventViewModel,userDataAccessInterface);
             SearchNearbyController searchNearbyController = SearchNearbyUseCaseFactory.createSearchNearbyUseCase(viewManagerModel, searchNearbyViewModel, searchNearbyDataAccessObject);
 
             GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
@@ -58,7 +61,7 @@ public class LoggedInUseCaseFactory {
                     new InMemoryEventsDataAccessObject(), generateStaticMapPresenter);
             GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
             return new HomeView(loggedInViewModel,loggedInController, searchNearbyController,
-                    createEventController, createEventViewModel, getCurrentUserViewModel,generateStaticMapController, generateStaticMapViewModel);
+                    createEventController, createEventViewModel, getCurrentUserViewModel,generateStaticMapController, generateStaticMapViewModel,myEventViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }

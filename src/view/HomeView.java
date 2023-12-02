@@ -143,10 +143,9 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
                     SearchNearbyController searchNearbyController, CreateEventController createEventController, CreateEventViewModel createEventViewModel,
                     GetCurrentUserViewModel getCurrentUserViewModel,
-                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
-        this.loggedInViewModel = loggedInViewModel;
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
-                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel, MyEventViewModel myEventViewModel) throws IOException {
+                    GenerateStaticMapController generateStaticMapController,
+                    GenerateStaticMapViewModel generateStaticMapViewModel,
+                    MyEventViewModel myEventViewModel) throws IOException {
         this.loggedInController = loggedInController;
         this.loggedInViewModel = loggedInViewModel;
         this.searchNearbyController = searchNearbyController;
@@ -392,7 +391,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         // TODO add your handling code here:
     }
 
-    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(CreateEvent_BUTTON)) {
             CreateEventState state = createEventViewModel.getState();
             System.out.println("HomeView: CreatEvent button is clicked");
@@ -551,7 +550,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 MyEventController myEventController = new MyEventController(myEventInteractor);
 
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
-                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
+                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel(),myEventViewModel);
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
                 GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
@@ -561,7 +560,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
                 HomeView homeView = null;
                 try {
-                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,
+                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,createEventViewModel,getCurrentUserViewModel,
                             generateStaticMapController, gsmViewModel, myEventViewModel);
                 } catch (IOException e) {
                     System.out.println("IO Exception occurred");;

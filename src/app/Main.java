@@ -191,7 +191,7 @@ public class Main {
         LoggedInInteractor loggedInInteractor = new LoggedInInteractor(userDataAccessObject,loggedInPresenter);
         LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
         HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
-                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel);
+                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,myEventViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
@@ -202,8 +202,6 @@ public class Main {
         userDataAccessObject.save(newUser);
         ArrayList<String> peopledJoined = new ArrayList<>();
         peopledJoined.add(newUser.getUsername());
-        CommonEventFactory eventFactory = new CommonEventFactory();
-        CommonLocationFactory locationFactory = new CommonLocationFactory();
         Location location = null;
         try {
             location = locationFactory.makeLocation("(43.665510,-79.387280)");
@@ -218,7 +216,7 @@ public class Main {
 
 
         //TODO:fix
-        GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+
 //        GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
 
@@ -252,9 +250,6 @@ public class Main {
         GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
         GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
-        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
-        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,currentUserDAO);
-        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
 
         EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
                 getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1,getCurrentUserController1);
