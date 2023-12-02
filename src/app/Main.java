@@ -90,9 +90,11 @@ public class Main {
         InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
         InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
+        User testUser = new CommonUser("aa", "123", 1, "f", "contact");
+        currentUserDAO.changeUser(testUser);
 
         // Create sample entities
-        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
+        userDataAccessObject.save(testUser);
 
         try {
             User user = new CommonUser("owner", "password", 20, "f", "contact");
