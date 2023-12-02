@@ -1,9 +1,13 @@
 package view;
+import data_access.*;
+import entity.Events.CommonEvent;
 import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
+import entity.Events.CommonEventFactory;
 import entity.Events.Event;
+import entity.Events.EventFactory;
 import entity.Location.*;
 import entity.Users.CommonUser;
 import entity.Users.User;
@@ -12,31 +16,69 @@ import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
+import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
+import interface_adapter.generate_static_map.GenerateStaticMapState;
+import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventState;
 import interface_adapter.create_event.CreateEventViewModel;
 import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventState;
+import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
+import interface_adapter.generate_static_map.GenerateStaticMapState;
+import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserState;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventPresenter;
+import interface_adapter.join_event.JoinEventViewModel;
+import interface_adapter.join_event.JoinEventPresenter;
+import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.search_event.SearchEventController;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.search_event.SearchEventController;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.back_out.BackOutInteractor;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInteractor;
+import use_case.generate_static_map.GSMInteractor;
 import use_case.create_event.CreateEventInputBoundary;
 import use_case.create_event.CreateEventInteractor;
 import use_case.create_event.CreateEventOutputBoundary;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInputBoundary;
+import use_case.get_direction.GetDirectionInteractor;
+import use_case.get_direction.GetDirectionOutputBoundary;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInteractor;
+import use_case.join_event.JoinEventOutputBoundary;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
@@ -45,13 +87,19 @@ import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -70,6 +118,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private final CreateEventViewModel createEventViewModel;
     private final GetCurrentUserViewModel getCurrentUserViewModel;
 
+    private final GenerateStaticMapController generateStaticMapController;
+    private final GenerateStaticMapViewModel generateStaticMapViewModel;
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
     private javax.swing.JLabel LogoutIcon_LABEL;
@@ -84,7 +134,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
                     SearchNearbyController searchNearbyController, CreateEventController createEventController, CreateEventViewModel createEventViewModel,
-                    GetCurrentUserViewModel getCurrentUserViewModel) {
+                    GetCurrentUserViewModel getCurrentUserViewModel,
+                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
         this.searchNearbyController = searchNearbyController;
@@ -92,10 +143,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         this.createEventViewModel = createEventViewModel;
         this.getCurrentUserViewModel = getCurrentUserViewModel;
         createEventViewModel.addPropertyChangeListener(this);
+        this.generateStaticMapController = generateStaticMapController;
+        this.generateStaticMapViewModel = generateStaticMapViewModel;
+        this.generateStaticMapViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents() throws IOException {
 
         Main_PANEL = new javax.swing.JPanel();
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
@@ -121,7 +175,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         Title_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 14)); // NOI18N
         Title_LABEL.setForeground(new java.awt.Color(140, 100, 255));
         Title_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Title_LABEL.setText("Click on the Map!");
+        Title_LABEL.setText("All events created by users");
         Title_LABEL.setBorder(javax.swing.BorderFactory.createEmptyBorder(15, 1, 1, 1));
 
         TopSeperator_PANEL.setBackground(new java.awt.Color(229, 222, 233));
@@ -163,7 +217,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 try {
                     SearchEvent_BUTTONActionPerformed(evt);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("IOException occured.");
                 }
             }
         });
@@ -200,12 +254,20 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         MapImage_LABEL.setBackground(new java.awt.Color(204, 204, 255));
         MapImage_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        // TODO: MapImage_LABEL should be updated w/ get_direction use case
-        MapImage_LABEL.setIcon(new javax.swing.ImageIcon("")); // NOI18N
-        MapImage_LABEL.setText("MapImage");
+        // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
 
-        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("src/view/ImageIcons/LogoutIcon.png")); // NOI18N
-        LogoutIcon_LABEL.setText("LogoutIcon");
+        CoordinatesFromIP coordinatesFromIP = new CoordinatesFromIP();
+        String[] currentCoordinates = coordinatesFromIP.getCoordinates();
+        generateStaticMapController.execute(currentCoordinates, 100,350, 504);
+
+
+
+
+
+
+        // TODO: Import logout image icon to src/view
+        LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
+        LogoutIcon_LABEL.setText("jLabel2");
 
         Logout_BUTTON.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
         Logout_BUTTON.setForeground(new java.awt.Color(229, 222, 233));
@@ -284,8 +346,10 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                         .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-
         pack();
+    }
+
+    private void MyEvents_BUTTONActionPerformed(ActionEvent evt) {
     }
 
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
@@ -338,8 +402,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         }
     }
 
-    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue() instanceof GenerateStaticMapState){
+            GenerateStaticMapState state = (GenerateStaticMapState)evt.getNewValue();
+            BufferedImage generatedMap = state.getGeneratedMap();
+            MapImage_LABEL.setIcon(new javax.swing.ImageIcon(generatedMap));
+        }
     }
 
     /**
@@ -403,18 +472,34 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
-                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventViewModel joinEventViewModel = new JoinEventViewModel("join event");
+                JoinEventOutputBoundary joinEventPresenter = new JoinEventPresenter(joinEventViewModel);
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor(joinEventPresenter,inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject,inMemoryCurrentUserDAO);
+                JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
                 ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
                 BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
                 BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
                 BackOutController backOutController = new BackOutController(backOutInteractor);
 
+                GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
+                GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
+                GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,inMemoryEventsDataAccessObject,inMemoryUsersDataAccessObject,
+                        new GenerateRoute());
+                GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
+
+                GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
+                GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
+                GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,inMemoryCurrentUserDAO);
+                GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController);
                 CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
                 createEventViewModel.addPropertyChangeListener(createEventView);
                 createEventViewModel.addPropertyChangeListener(view);
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
+                        getDirectionController1,getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
@@ -425,8 +510,20 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, createEventViewModel, getCurrentUserViewModel);
-                //homeView.setVisible(true);
+                GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
+                GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(gsmViewModel);
+                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject, generateStaticMapPresenter);
+                GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
+                HomeView homeView = null;
+                try {
+                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, createEventViewModel,getCurrentUserViewModel,
+                            generateStaticMapController, gsmViewModel);
+                } catch (IOException e) {
+                    System.out.println("IO Exception occurred");;
+                    e.printStackTrace();
+                }
+                homeView.setVisible(true);
 
                 homeView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 view.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -497,8 +594,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        //LoggedInState state = (LoggedInState) evt.getNewValue();
-    }
+//    @Override
+//    public void propertyChange(PropertyChangeEvent evt) {
+//        //LoggedInState state = (LoggedInState) evt.getNewValue();
+//    }
 }

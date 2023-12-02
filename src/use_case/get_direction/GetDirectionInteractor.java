@@ -1,5 +1,7 @@
 package use_case.get_direction;
 
+import use_case.common_interfaces.MapUserDataAccessInterface;
+
 import java.awt.image.BufferedImage;
 
 /**
@@ -8,7 +10,7 @@ import java.awt.image.BufferedImage;
 public class GetDirectionInteractor implements GetDirectionInputBoundary {
     private final GetDirectionOutputBoundary getDirectionPresenter;
     private final GetDirectionEventDataAccessInterface eventDataAccessObject;
-    private final GetDirectionUserDataAccessInterface userDataAccessObject;
+    private final MapUserDataAccessInterface userDataAccessObject;
     private final GetDirectionAPIDataAccessInterface apiDataAccessObject;
 
     /**
@@ -16,11 +18,11 @@ public class GetDirectionInteractor implements GetDirectionInputBoundary {
      * @param getDirectionPresenter the presenter for the get directions use case
      * @param eventDataAccessObject event DAO, used for getting the location of a specified event
      * @param userDataAccessObject user DAO, used for getting the location of a specific user.
-     * @param apiDataAccessObject calls the API to genereate a route image.
+     * @param apiDataAccessObject calls the API to generate a route image.
      */
     public GetDirectionInteractor(GetDirectionOutputBoundary getDirectionPresenter,
                                   GetDirectionEventDataAccessInterface eventDataAccessObject,
-                                  GetDirectionUserDataAccessInterface userDataAccessObject,
+                                  MapUserDataAccessInterface userDataAccessObject,
                                   GetDirectionAPIDataAccessInterface apiDataAccessObject){
         this.getDirectionPresenter = getDirectionPresenter;
         this.eventDataAccessObject = eventDataAccessObject;

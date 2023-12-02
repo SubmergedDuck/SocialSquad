@@ -16,5 +16,9 @@ public class GetDirectionOutputData {
         this.directionImage = directionImage;
     }
 
-    BufferedImage getDirectionImage(){return this.directionImage;}
+    /**
+     * The generated direction map from the API
+     * @return provides the map from the API call.
+     */
+    public BufferedImage getDirectionImage(){return this.directionImage;}
 }

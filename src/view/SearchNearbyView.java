@@ -1,5 +1,7 @@
 package view;
 
+import data_access.GenerateRoute;
+import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.CommonEvent;
@@ -8,19 +10,30 @@ import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 import entity.Users.CommonUser;
+import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewManagerModelAdapter;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.back_out.BackOutPresenter;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventPresenter;
+import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.back_out.BackOutInteractor;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInteractor;
 import use_case.get_event_details.GetEventDetailsInputData;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInteractor;
@@ -287,7 +300,11 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
+                InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
+                CommonUserFactory userFactory = new CommonUserFactory();
+                User tempUser = userFactory.create("username","123",20,"m","contact");
+                inMemoryCurrentUserDAO.changeUser(tempUser);
 
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
 
@@ -302,11 +319,25 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 BackOutController backOutController = new BackOutController(backOutInteractor);
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
-                JoinEventInteractor joinEventInteractor = new JoinEventInteractor();
+                JoinEventViewModel joinEventViewModel = new JoinEventViewModel("join event");
+                JoinEventPresenter joinEventPresenter = new JoinEventPresenter(joinEventViewModel);
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor(joinEventPresenter,inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject,inMemoryCurrentUserDAO);
+                JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
+                GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
+                GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
+                GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,inMemoryEventsDataAccessObject,inMemoryUsersDataAccessObject,
+                        new GenerateRoute());
+                GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel,
-                        new JoinEventController(joinEventInteractor), backOutController);
+                GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
+                GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
+                GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,inMemoryCurrentUserDAO);
+                GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
+                        getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view); //TODO here
@@ -383,25 +414,25 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
                 Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
                 Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
-                public int getSize() { return eventsFound.size(); }
-                public String getElementAt(int i) {// formalize text here
-                    String result = "";
+                    public int getSize() { return eventsFound.size(); }
+                    public String getElementAt(int i) {// formalize text here
+                        String result = "";
 
-                    Event event = eventsFound.get(i);
-                    String name = event.getEventName().toUpperCase() + " ";
+                        Event event = eventsFound.get(i);
+                        String name = event.getEventName().toUpperCase() + " ";
 
-                    LocalDateTime time = event.getTime();
-                    String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
-                    String.valueOf(time.getDayOfMonth()) + "/" + String.valueOf(time.getMonth()) + "/" +
-                            String.valueOf(time.getYear()) + " ";
-                    String location = event.getLocation().getAddress() + " ";
-                    String capacity = "[" + String.valueOf(event.getCapacity()) + "] ";
+                        LocalDateTime time = event.getTime();
+                        String strTime = String.valueOf(time.getHour()) + ":" + String.valueOf(time.getMinute()) + " " +
+                                String.valueOf(time.getDayOfMonth()) + "/" + String.valueOf(time.getMonth()) + "/" +
+                                String.valueOf(time.getYear()) + " ";
+                        String location = event.getLocation().getAddress() + " ";
+                        String capacity = "[" + String.valueOf(event.getCapacity()) + "] ";
 
-                    result = result + name + strTime + location + capacity;
+                        result = result + name + strTime + location + capacity;
 
-                    return result;
-                }
-            });
+                        return result;
+                    }
+                });
                 Events_LIST.setFixedCellHeight(40);
                 Events_LIST.setSelectionBackground(new java.awt.Color(251, 247, 255));
                 Events_LIST.setSelectionForeground(new java.awt.Color(140, 100, 255));

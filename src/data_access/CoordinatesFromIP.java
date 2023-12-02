@@ -1,4 +1,6 @@
-package entity.Location;
+package data_access;
+
+import entity.Location.CoordinatesToAddress;
 
 import java.io.BufferedReader;
 import java.io.IOException;
