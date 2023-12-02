@@ -1,7 +1,13 @@
 package view;
 import data_access.*;
 import entity.Events.CommonEvent;
+import data_access.InMemoryCurrentUserDAO;
+import data_access.InMemoryEventsDataAccessObject;
+import data_access.InMemoryUsersDataAccessObject;
+import entity.Events.*;
+import entity.Events.CommonEventFactory;
 import entity.Events.Event;
+import entity.Events.EventFactory;
 import entity.Location.*;
 import entity.Users.CommonUser;
 import entity.Users.User;
@@ -20,14 +26,35 @@ import interface_adapter.generate_static_map.GenerateStaticMapController;
 import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
 import interface_adapter.generate_static_map.GenerateStaticMapState;
 import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventState;
+import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserState;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventState;
+import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
+import interface_adapter.generate_static_map.GenerateStaticMapState;
+import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserState;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_direction.GetDirectionController;
+import interface_adapter.get_direction.GetDirectionPresenter;
+import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.join_event.JoinEventPresenter;
 import interface_adapter.join_event.JoinEventViewModel;
+import interface_adapter.join_event.JoinEventPresenter;
+import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
+import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_event.SearchEventController;
@@ -39,8 +66,19 @@ import use_case.back_out.BackOutInteractor;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_direction.GetDirectionInteractor;
 import use_case.generate_static_map.GSMInteractor;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
+import use_case.get_current_user.GetCurrentUserInteractor;
+import use_case.get_direction.GetDirectionInputBoundary;
+import use_case.get_direction.GetDirectionInteractor;
+import use_case.get_direction.GetDirectionOutputBoundary;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.join_event.JoinEventInteractor;
+import use_case.join_event.JoinEventOutputBoundary;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
@@ -49,6 +87,11 @@ import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -63,8 +106,7 @@ import java.util.Arrays;
  * @author submergedduck
  */
 
-// TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame implements PropertyChangeListener {
+public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
     /**
      * Creates new form HomeView
      */
@@ -73,6 +115,9 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     private final LoggedInController loggedInController;
     private final SearchNearbyController searchNearbyController;
     private final CreateEventController createEventController;
+    private final CreateEventViewModel createEventViewModel;
+    private final GetCurrentUserViewModel getCurrentUserViewModel;
+
     private final GenerateStaticMapController generateStaticMapController;
     private final GenerateStaticMapViewModel generateStaticMapViewModel;
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -85,14 +130,19 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private view.ButtonGradient MyEvents_BUTTON;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController, CreateEventViewModel createEventViewModel,
+                    GetCurrentUserViewModel getCurrentUserViewModel,
                     GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
+        this.createEventViewModel = createEventViewModel;
+        this.getCurrentUserViewModel = getCurrentUserViewModel;
+        createEventViewModel.addPropertyChangeListener(this);
         this.generateStaticMapController = generateStaticMapController;
         this.generateStaticMapViewModel = generateStaticMapViewModel;
         this.generateStaticMapViewModel.addPropertyChangeListener(this);
@@ -105,12 +155,13 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
         Title_LABEL = new javax.swing.JLabel();
         TopSeperator_PANEL = new javax.swing.JPanel();
-        SearchEvent_BUTTON = new view.ButtonGradient();
+        SearchEvent_BUTTON = new ButtonGradient();
         BottomSeperator_PANEL = new javax.swing.JPanel();
-        CreateEvent_BUTTON = new view.ButtonGradient();
+        CreateEvent_BUTTON = new ButtonGradient();
         MapImage_LABEL = new javax.swing.JLabel();
         LogoutIcon_LABEL = new javax.swing.JLabel();
         Logout_BUTTON = new javax.swing.JButton();
+        MyEvents_BUTTON = new ButtonGradient();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -191,7 +242,12 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         CreateEvent_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
         CreateEvent_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateEvent_BUTTONActionPerformed(evt);
+                try {
+                    System.out.println("create event button is clicked");
+                    CreateEvent_BUTTONActionPerformed(evt);
+                } catch (IOException e) {
+                    System.out.println("run time exception occured.");;
+                }
             }
         });
 
@@ -218,6 +274,16 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         Logout_BUTTON.setText("Logout");
         Logout_BUTTON.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
+        MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
+        MyEvents_BUTTON.setText("My Events");
+        MyEvents_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
+        MyEvents_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
+        MyEvents_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyEvents_BUTTONActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout Main_PANELLayout = new javax.swing.GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
         Main_PANELLayout.setHorizontalGroup(
@@ -228,17 +294,22 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(Logout_BUTTON))
-                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(14, 14, 14)
+                                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(Logout_BUTTON))
+                                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(95, 95, 95)
+                                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
@@ -246,8 +317,10 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 504, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -276,9 +349,34 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         pack();
     }
 
-    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+    private void MyEvents_BUTTONActionPerformed(ActionEvent evt) {
+    }
+
+    private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(CreateEvent_BUTTON)) {
-            createEventController.execute();
+            CreateEventState state = createEventViewModel.getState();
+            System.out.println("HomeView: CreatEvent button is clicked");
+            System.out.println("display state: " + String.valueOf(state.getIsDisplayed() + "\n")); // currently false
+            if (state.getIsDisplayed()) { // the page is already on display
+                System.out.println("you are on create event view.\n");
+                String eventOwner = getCurrentUserViewModel.getState().getUsername();
+                String eventName = state.getEventName();
+                String eventType = state.getEventType();
+                String coordinates = state.getCoordinates();
+                String capacity = state.getCapacity();
+                String date = state.getDate();
+                String eventTime = state.getEventTime();
+                String description = state.getDescription();
+                String formattedDate = String.format("%s %s", date, eventTime);
+
+                createEventController.execute(eventOwner, eventName, eventType, coordinates, capacity, description, formattedDate);
+
+            } else { // the button is pressed to set create event page active
+                state.setIsDisplayed(true);
+                createEventViewModel.setState(state);
+                createEventViewModel.firePropertyChanged();
+                System.out.println("create event view will be set active.");
+            }
         }
     }
 
@@ -320,7 +418,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("FlatLaf Light".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -342,41 +440,32 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 SearchNearbyState state = new SearchNearbyState();
                 SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
+                CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
+                GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+
+
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
                 InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
+                User testUser = new CommonUser("aa", "123", 1, "f", "contact");
+                inMemoryCurrentUserDAO.changeUser(testUser);
+                inMemoryUsersDataAccessObject.save(testUser);
 
-                ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
-                try {
-                    User user = new CommonUser("owner", "password", 20, "f", "contact");
-                    inMemoryCurrentUserDAO.changeUser(user);
-                    LocationFactory factory = new CommonLocationFactory();
-                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
-                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
-                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
-                            10); // This event should be returned
-                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
-                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
+                // put the test user as the user logged in
+                GetCurrentUserState getCurrentUserState = getCurrentUserViewModel.getState();
+                getCurrentUserState.setUsername(testUser.getUsername());
+                getCurrentUserViewModel.setState(getCurrentUserState);
 
-                    eventArrayList.add(event);
-                    eventArrayList.add(event2);
+                EventFactory eventFactory = new CommonEventFactory();
 
-                    user.setCreatedEvents(eventArrayList); // Let the user create these events
-
-                    // Save the objects to inMemoryDAOs for use
-                    inMemoryUsersDataAccessObject.save(user);
-                    for (Event event1: eventArrayList) {
-                        inMemoryEventsDataAccessObject.save(event1);
-                    }
-                } catch (Exception e) {
-                    System.out.println("run time exceptions occured.");;
-                }
+                LocationFactory locationFactory = new CommonLocationFactory();
 
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
 
-                CreateEventController createEventController = new CreateEventController();
+                CreateEventOutputBoundary createEventPresenter = new CreateEventPresenter(createEventViewModel);
+                CreateEventInputBoundary createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject, inMemoryUsersDataAccessObject, createEventPresenter, eventFactory, locationFactory);
+                CreateEventController createEventController = new CreateEventController(createEventInteractor);
 
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
                 GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
@@ -384,7 +473,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
                 JoinEventViewModel joinEventViewModel = new JoinEventViewModel("join event");
-                JoinEventPresenter joinEventPresenter = new JoinEventPresenter(joinEventViewModel);
+                JoinEventOutputBoundary joinEventPresenter = new JoinEventPresenter(joinEventViewModel);
                 JoinEventInteractor joinEventInteractor = new JoinEventInteractor(joinEventPresenter,inMemoryUsersDataAccessObject,
                         inMemoryEventsDataAccessObject,inMemoryCurrentUserDAO);
                 JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
@@ -406,12 +495,16 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
+                CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
+                createEventViewModel.addPropertyChangeListener(createEventView);
+                createEventViewModel.addPropertyChangeListener(view);
                 EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
                         getDirectionController1,getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
+                createEventViewModel.addPropertyChangeListener(view);
 
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
@@ -424,10 +517,11 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
                 HomeView homeView = null;
                 try {
-                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,
+                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, createEventViewModel,getCurrentUserViewModel,
                             generateStaticMapController, gsmViewModel);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("IO Exception occurred");;
+                    e.printStackTrace();
                 }
                 homeView.setVisible(true);
 
@@ -439,25 +533,69 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 application.add(views);
 
                 views.add(view.getRootPane(), "search nearby");
-                views.add(eventDetailsView.getRootPane(), "get event details");
+                views.add(eventDetailsView.getRootPane(), "event details");
                 views.add(homeView.getRootPane(), "home");
+                views.add(createEventView.getRootPane(), "create event");
 
                 ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);
                 viewManagerModel.addPropertyChangeListener(viewManager);
 
-                state.setEventsSearched(eventArrayList);
-                searchNearbyViewModel.setState(state);
-                SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
-                presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
+                try {
+                    User user = new CommonUser("owner", "password", 20, "f", "contact");
 
-                viewManagerModel.setActiveView(homeView.viewName);
-                viewManagerModel.firePropertyChanged();
-                homeView.setVisible(true);
+                    LocationFactory factory = new CommonLocationFactory();
+                    Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
+                    Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
+                    entity.Events.Event event = new CommonEvent(1, "badminton", "owner", location, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false,
+                            10); // This event should be returned
+                    entity.Events.Event event2 = new CommonEvent(2, "group trip", "owner", location2, new ArrayList<>(),
+                            new ArrayList<>(), LocalDateTime.now(), "type", "description", false, 10);
 
+                    ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
+                    eventArrayList.add(event);
+                    eventArrayList.add(event2);
 
-                application.pack();
-                application.setVisible(true);
+                    user.setCreatedEvents(eventArrayList); // Let the user create these events
+
+                    // Save the objects to inMemoryDAOs for use
+                    inMemoryUsersDataAccessObject.save(user);
+                    for (Event event1: eventArrayList) {
+                        inMemoryEventsDataAccessObject.save(event1);
+                    }
+
+                    state.setEventsSearched(eventArrayList);
+                    searchNearbyViewModel.setState(state);
+                    SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
+                    presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
+
+                    viewManagerModel.setActiveView(homeView.viewName);
+                    viewManagerModel.firePropertyChanged();
+                    homeView.setVisible(true);
+
+                    application.pack();
+                    application.setVisible(true);
+                } catch (Exception e) {
+                    System.out.println("run time exceptions occured.");;
+                }
             }
         });
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(CreateEvent_BUTTON)){
+            try {
+                CreateEvent_BUTTONActionPerformed(e);
+            } catch (IOException ex) {
+                System.out.println("IO exception occured.");
+            }
+        }
+
+    }
+
+//    @Override
+//    public void propertyChange(PropertyChangeEvent evt) {
+//        //LoggedInState state = (LoggedInState) evt.getNewValue();
+//    }
 }

@@ -72,6 +72,11 @@ public class InMemoryUsersDataAccessObject implements
     }
 
     @Override
+    public Integer generateEventID() {
+        return null;
+    }
+
+    @Override
     public ArrayList<Integer> getIds(String username, boolean isCreatedEvent) {
         ArrayList<Integer> currentIDs = new ArrayList<>();
         User user = usernameToUser.get(username);

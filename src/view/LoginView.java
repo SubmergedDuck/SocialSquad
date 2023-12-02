@@ -10,6 +10,7 @@ import entity.Users.CommonUser;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.create_account.CreateAccountController;
 import interface_adapter.create_account.CreateAccountPresesnter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -450,7 +451,8 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         LoginViewModel loginViewModel = new LoginViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
-        LoginOutputBoundary presenter = new LoginPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+        LoginOutputBoundary presenter = new LoginPresenter(viewManagerModel,loggedInViewModel,loginViewModel, getCurrentUserViewModel);
         CreateAccountOutputBoundary createAccountOutputBoundary = new CreateAccountPresesnter(viewManagerModel,signupViewModel,loginViewModel);
 
 
