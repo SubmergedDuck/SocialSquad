@@ -1,26 +1,27 @@
 package app;
 
-import data_access.InMemoryEventsDataAccessObject;
 import entity.Users.CommonUserFactory;
 import entity.Users.UserFactory;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
-import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.my_event.MyEventController;
+import interface_adapter.my_event.MyEventPresenter;
+import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
-import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
-import use_case.loggedIn.LoggedInUserDataAccessInterface;
+import use_case.my_event.MyEventDataAccessInterface;
+import use_case.my_event.MyEventInputBoundary;
+import use_case.my_event.MyEventInteractor;
+import use_case.my_event.MyEventOutputBoundary;
 import use_case.search_nearby.SearchNearbyDataAccessInterface;
-import use_case.search_nearby.SearchNearbyInteractor;
 import view.HomeView;
 
 
@@ -37,12 +38,15 @@ public class LoggedInUseCaseFactory {
             SearchNearbyViewModel searchNearbyViewModel,
             LoginViewModel loginViewModel,
             LoggedInUserDataAccessInterface userDataAccessInterface,
+            MyEventDataAccessInterface dataAccessInterface,
             SearchNearbyDataAccessInterface searchNearbyDataAccessObject,
-            CreateEventController createEventController) {
+            CreateEventController createEventController,
+            MyEventViewModel myEventViewModel) {
         try{
-            LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,userDataAccessInterface);
+            LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,userDataAccessInterface,myEventViewModel);
             SearchNearbyController searchNearbyController = SearchNearbyUseCaseFactory.createSearchNearbyUseCase(viewManagerModel, searchNearbyViewModel, searchNearbyDataAccessObject);
-            return new HomeView(loggedInViewModel,loggedInController, searchNearbyController, createEventController);
+            MyEventController myEventController = createUserMyEventUseCase(viewManagerModel,myEventViewModel,loginViewModel,dataAccessInterface);
+            return new HomeView(loggedInViewModel,loggedInController, searchNearbyController, createEventController, myEventController, myEventViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }
@@ -54,13 +58,27 @@ public class LoggedInUseCaseFactory {
             ViewManagerModel viewManagerModel,
             LoggedInViewModel loggedInViewModel,
             LoginViewModel loginViewModel,
-            LoggedInUserDataAccessInterface userDataAccessInterface
+            LoggedInUserDataAccessInterface userDataAccessInterface,
+            MyEventViewModel myEventViewModel
     ) throws IOException{
-        LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel, myEventViewModel);
         UserFactory userFactory = new CommonUserFactory();
 
         LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(userDataAccessInterface, loggedInOutputBoundary);
 
         return new LoggedInController(loggedInInteractor);
+    }
+    private static MyEventController createUserMyEventUseCase(
+            ViewManagerModel viewManagerModel,
+            MyEventViewModel myEventViewModel,
+            LoginViewModel loginViewModel,
+            MyEventDataAccessInterface dataAccessInterface) throws IOException{
+        MyEventOutputBoundary myEventOutputBoundary = new MyEventPresenter(myEventViewModel);
+
+        UserFactory userFactory = new CommonUserFactory();
+        MyEventInputBoundary myEventInputBoundary = new MyEventInteractor(
+                myEventOutputBoundary,dataAccessInterface
+        );
+        return  new MyEventController(myEventInputBoundary);
     }
 }

@@ -33,7 +33,7 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loggedInViewModel.setState(loggedInState);
         this.loggedInViewModel.firePropertyChanged();
 
-        this.viewManagerModel.setActiveView("home");
+        this.viewManagerModel.setActiveView("Home");
         this.viewManagerModel.firePropertyChanged();
     }
 

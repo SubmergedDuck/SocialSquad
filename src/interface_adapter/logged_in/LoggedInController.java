@@ -1,5 +1,6 @@
 package interface_adapter.logged_in;
 
+import interface_adapter.ViewModel;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInputData;
 
@@ -10,9 +11,9 @@ public class LoggedInController {
     }
 
 
-    public void execute(String username) {
+    public void execute(String username, ViewModel viewModel) {
         LoggedInInputData loggedInInputData = new LoggedInInputData(
-                username);
+                username,viewModel);
 
         loggedInUseCaseInteractor.execute(loggedInInputData);
     }
