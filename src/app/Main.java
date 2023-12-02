@@ -175,11 +175,6 @@ public class Main {
 
         // Build Home view
 
-        /*
-        LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
-                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel
-         */
         GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
         GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(generateStaticMapViewModel);
         GSMInteractor gsmInteractor = new GSMInteractor(new GenerateStaticMapURL(),userDataAccessObject,eventDataAccessObject,generateStaticMapPresenter);
@@ -231,9 +226,10 @@ public class Main {
 
         GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
         GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
-//        GetEventDetailsController getEventDetailsController1 = new GetEventDetailsController(getEventDetailsInteractor);
+        GetEventDetailsController onlyGetEventDetailsController = new GetEventDetailsController(getEventDetailsInteractor);
+
         MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,myeventDataAccessObject,getIDsController1,getIDsViewModel,getCurrentUserController1,getCurrentUserViewModel,
-                getEventDetailsController,getEventDetailsViewModel);
+                onlyGetEventDetailsController,getEventDetailsViewModel);
         views.add(myEventsView.getRootPane(),myEventsView.viewName);
         myEventViewModel.addPropertyChangeListener(myEventsView);
 
