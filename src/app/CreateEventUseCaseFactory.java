@@ -1,8 +1,6 @@
 package app;
 
 import entity.Events.EventFactory;
-import entity.Events.InviteOnlyEventFactory;
-import entity.Events.RestrictedEventFactory;
 import entity.Location.LocationFactory;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
