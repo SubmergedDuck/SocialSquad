@@ -15,8 +15,12 @@ public class SignupInputData {
     final private String sex;
 
     final private String contact;
+    final private boolean clickBack;
+    public boolean isClickBack() {
+        return clickBack;
+    }
 
-    public SignupInputData(String username, String realName, String password, String repeatPassword, String age, String sex, String contact){
+    public SignupInputData(String username, String realName, String password, String repeatPassword, String age, String sex, String contact, boolean clickBack){
         //Strings are inputted in the textbox.
         this.username = username;
         this.realName = realName;
@@ -25,6 +29,7 @@ public class SignupInputData {
         this.age = age;
         this.sex = sex;
         this.contact = contact;
+        this.clickBack = clickBack;
     }
 
     String getUsername(){return username;}

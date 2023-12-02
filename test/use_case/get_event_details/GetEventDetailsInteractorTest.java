@@ -72,7 +72,7 @@ public class GetEventDetailsInteractorTest {
                 assertEquals(expectedOutput,actualOutput);
             }
         };
-        GetEventDetailsInputData inputData = new GetEventDetailsInputData(currentEvent.getEventID());
+        GetEventDetailsInputData inputData = new GetEventDetailsInputData(currentEvent.getEventID(), false);
 
     }
 }

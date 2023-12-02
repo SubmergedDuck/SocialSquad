@@ -34,6 +34,7 @@ import java.security.Key;
  * @author submergedduck
  */
 public class SignupView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
+
     public final String viewName = "sign up";
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;
@@ -396,13 +397,15 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
         if (evt.getSource().equals(SignUp_BUTTON)) {
             signupController.execute(Username_TEXTFIELD.getText(),"",
                     String.valueOf(Password_PASSWORDFIELD.getPassword()),
-                    String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","");
+                    String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","",false);
             System.out.println("sign up");
         }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Back_BUTTONActionPerformed
-        // TODO add your handling code here:
+        signupController.execute("", "",
+                "",
+                "", "", "", "", true);
     }//GEN-LAST:event_Back_BUTTONActionPerformed
 
     @Override

@@ -30,6 +30,8 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -40,10 +42,11 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     /**
      * Creates new form MyEventsView
      */
+    public final String viewName = "My Events";
 
     private final GetIDsController getIDsController;
     private final GetCurrentUserController getCurrentUserController;
-    private final GetEventDetailsController getEventDetailsController;
+    private final GetEventDetailsController eventDetailsController;
     private String currentUser;
     private ArrayList<Integer> joinedEvents;
     private ArrayList<Integer> createdEvents;
@@ -62,10 +65,10 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     public MyEventsView(GetIDsController getIDsController, GetIDsViewModel getIDsViewModel,
                         GetCurrentUserController getCurrentUserController, GetCurrentUserViewModel getCurrentUserViewModel,
-                        GetEventDetailsController getEventDetailsController, GetEventDetailsViewModel getEventDetailsViewModel) {
+                        GetEventDetailsController eventDetailsController, GetEventDetailsViewModel getEventDetailsViewModel) {
         this.getIDsController = getIDsController;
         this.getCurrentUserController = getCurrentUserController;
-        this.getEventDetailsController = getEventDetailsController;
+        this.eventDetailsController = eventDetailsController;
         getIDsViewModel.addPropertyChangeListener(this);
         getCurrentUserViewModel.addPropertyChangeListener(this);
         getEventDetailsViewModel.addPropertyChangeListener(this);
@@ -163,7 +166,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         getIDsController.execute(currentUser, false);
 
         for (Integer eventID: joinedEvents){
-            getEventDetailsController.execute(eventID);
+            eventDetailsController.execute(eventID, false);
         }
 
         Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
@@ -275,7 +278,15 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     }// </editor-fold>//GEN-END:initComponents
 
     private void EventDetails_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (evt.getSource().equals(EventDetails_BUTTON)){
+            if (Events_LIST.getSelectedIndex() != -1){
+                String value = Events_LIST.getSelectedValue();
+                Matcher matcher = Pattern.compile("\\d+").matcher(value);
+                matcher.find();
+                int eventID = Integer.valueOf(matcher.group());
+                eventDetailsController.execute(eventID,true);
+            }
+        }
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
@@ -291,7 +302,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         getIDsController.execute(currentUser, false);
 
         for (Integer eventID: joinedEvents){
-            getEventDetailsController.execute(eventID);
+            eventDetailsController.execute(eventID, false);
         }
     }
 
@@ -304,7 +315,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         getIDsController.execute(currentUser, true);
 
         for (Integer eventID: createdEvents){
-            getEventDetailsController.execute(eventID);
+            eventDetailsController.execute(eventID, false);
         }
     }
 
@@ -395,12 +406,12 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             if (!state.getIsCreated()){
                 joinedEvents = state.getAllIDs();
                 for (Integer eventID: joinedEvents){
-                    getEventDetailsController.execute(eventID);
+                    eventDetailsController.execute(eventID,false);
                 }
             } else {
                 createdEvents = state.getAllIDs();
                 for (Integer eventID: createdEvents){
-                    getEventDetailsController.execute(eventID);
+                    eventDetailsController.execute(eventID,false);
                 }
             }
             eventDescriptions = new ArrayList<>();

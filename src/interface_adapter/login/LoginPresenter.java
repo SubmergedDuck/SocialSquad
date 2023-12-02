@@ -1,6 +1,7 @@
 package interface_adapter.login;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewModel;
 import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.logged_in.LoggedInState;
@@ -41,16 +42,18 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loggedInViewModel.setState(loggedInState);
         this.loggedInViewModel.firePropertyChanged();
 
-        this.viewManagerModel.setActiveView("home");
+        this.viewManagerModel.setActiveView("Home");
         this.viewManagerModel.firePropertyChanged();
     }
 
     @Override
-    public void prepareLinkView(String viewName) {
-        this.viewManagerModel.setActiveView(viewName);
+    public void prepareLinkView(ViewModel viewModel) {
+        // jump to another view, set its previous view name to current one
+        viewModel.setPreviousViewName(loginViewModel.getViewName());
+        this.viewManagerModel.setActiveView(viewModel.getViewName());
         this.viewManagerModel.firePropertyChanged();
-
     }
+
 
     @Override
     public void prepareFailView(String error) {

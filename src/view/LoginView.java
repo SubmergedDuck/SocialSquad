@@ -46,15 +46,16 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
     private final LoginController loginController;
 
 
-    private final CreateAccountController controller;
-    public LoginView(LoginViewModel loginViewModel, LoginController controller, CreateAccountController createAccountController) {
-        this.controller = createAccountController;
+    private final SignupViewModel signupViewModel;
+
+    public LoginView(LoginViewModel loginViewModel, LoginController controller, SignupViewModel signupViewModel) {
+        this.signupViewModel = signupViewModel;
         initComponents();
 
         this.loginController = controller;
         this.loginViewModel = loginViewModel;
         this.loginViewModel.addPropertyChangeListener(this);
-        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,6 +76,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
     private JLabel UsernameLoginFailed_LABEL;
     private JLabel Username_LABEL;
     private JTextField Username_TEXTFIELD;
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -114,28 +116,28 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         GroupLayout TopSeperator_PANELLayout = new GroupLayout(TopSeperator_PANEL);
         TopSeperator_PANEL.setLayout(TopSeperator_PANELLayout);
         TopSeperator_PANELLayout.setHorizontalGroup(
-            TopSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                TopSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
         );
         TopSeperator_PANELLayout.setVerticalGroup(
-            TopSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 1, Short.MAX_VALUE)
+                TopSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1, Short.MAX_VALUE)
         );
 
         GroupLayout Top_GRADIENTPANELLayout = new GroupLayout(Top_GRADIENTPANEL);
         Top_GRADIENTPANEL.setLayout(Top_GRADIENTPANELLayout);
         Top_GRADIENTPANELLayout.setHorizontalGroup(
-            Top_GRADIENTPANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(SocialSquadTitle_LABEL, GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)
-            .addComponent(TopSeperator_PANEL, GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                Top_GRADIENTPANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(SocialSquadTitle_LABEL, GroupLayout.PREFERRED_SIZE, 350, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TopSeperator_PANEL, GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
         );
         Top_GRADIENTPANELLayout.setVerticalGroup(
-            Top_GRADIENTPANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, Top_GRADIENTPANELLayout.createSequentialGroup()
-                .addContainerGap(67, Short.MAX_VALUE)
-                .addComponent(SocialSquadTitle_LABEL, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TopSeperator_PANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                Top_GRADIENTPANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, Top_GRADIENTPANELLayout.createSequentialGroup()
+                                .addContainerGap(67, Short.MAX_VALUE)
+                                .addComponent(SocialSquadTitle_LABEL, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(TopSeperator_PANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
 
         SignIn_BUTTON.setText("Sign In");
@@ -145,8 +147,9 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
                     LoginState currentState = loginViewModel.getState();
 
                     loginController.execute(
-                            currentState.getUsername(),
-                            currentState.getPassword()
+                            Username_TEXTFIELD.getText(),
+                            String.valueOf(Password_PASSWORDFIELD.getPassword()),
+                            null
                     );
                 }
             }
@@ -156,11 +159,13 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignUp_BUTTON.setHorizontalTextPosition(SwingConstants.CENTER);
         SignUp_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                if (evt.getSource().equals(SignUp_BUTTON)){
-//                    LoginState currentState = loginViewModel.getState();
+                if (evt.getSource().equals(SignUp_BUTTON)) {
+                    LoginState currentState = loginViewModel.getState();
 //
-//                    controller.execute();
-                    loginController.linkTo(new SignupViewModel().getViewName());
+                    loginController.execute(
+                            currentState.getUsername(),
+                            currentState.getPassword(),
+                            signupViewModel);
 
 
                 }
@@ -186,12 +191,12 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         GroupLayout BottomSeperator_PANELLayout = new GroupLayout(BottomSeperator_PANEL);
         BottomSeperator_PANEL.setLayout(BottomSeperator_PANELLayout);
         BottomSeperator_PANELLayout.setHorizontalGroup(
-            BottomSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                BottomSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGap(0, 0, Short.MAX_VALUE)
         );
         BottomSeperator_PANELLayout.setVerticalGroup(
-            BottomSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 1, Short.MAX_VALUE)
+                BottomSeperator_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1, Short.MAX_VALUE)
         );
 
         Password_LABEL.setFont(new java.awt.Font("Gotham Medium", 0, 12)); // NOI18N
@@ -268,151 +273,142 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         GroupLayout Main_PANELLayout = new GroupLayout(Main_PANEL);
         Main_PANEL.setLayout(Main_PANELLayout);
         Main_PANELLayout.setHorizontalGroup(
-            Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                                .addComponent(SignUp_BUTTON, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
-                                .addGap(72, 72, 72))
-                            .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                                .addComponent(SocialSquadTitle_LABEL2)
-                                .addGap(47, 47, 47))
-                            .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                                .addComponent(SignIn_BUTTON, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
-                                .addGap(99, 99, 99))
-                            .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                .addContainerGap()
                                 .addGroup(Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                    .addComponent(Password_LABEL)
-                                    .addComponent(Password_PASSWORDFIELD, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Username_TEXTFIELD, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Username_LABEL)
-                                    .addComponent(UsernameLoginFailed_LABEL, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(PasswordLoginFailed_LABEL, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))
-                                .addGap(48, 48, 48))))
-                    .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
-                        .addComponent(BottomSeperator_PANEL, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                        .addContainerGap())))
-            .addComponent(Top_GRADIENTPANEL, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addGroup(Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SignUp_BUTTON, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(72, 72, 72))
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SocialSquadTitle_LABEL2)
+                                                                .addGap(47, 47, 47))
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SignIn_BUTTON, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE)
+                                                                .addGap(99, 99, 99))
+                                                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                                                .addGroup(Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(Password_LABEL)
+                                                                        .addComponent(Password_PASSWORDFIELD, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(Username_TEXTFIELD, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(Username_LABEL)
+                                                                        .addComponent(UsernameLoginFailed_LABEL, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(PasswordLoginFailed_LABEL, GroupLayout.PREFERRED_SIZE, 250, GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(48, 48, 48))))
+                                        .addGroup(GroupLayout.Alignment.TRAILING, Main_PANELLayout.createSequentialGroup()
+                                                .addComponent(BottomSeperator_PANEL, GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                                                .addContainerGap())))
+                        .addComponent(Top_GRADIENTPANEL, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         );
         Main_PANELLayout.setVerticalGroup(
-            Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(Main_PANELLayout.createSequentialGroup()
-                .addComponent(Top_GRADIENTPANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                .addComponent(Username_LABEL)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Username_TEXTFIELD, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(UsernameLoginFailed_LABEL)
-                .addGap(5, 5, 5)
-                .addComponent(Password_LABEL)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Password_PASSWORDFIELD, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PasswordLoginFailed_LABEL)
-                .addGap(46, 46, 46)
-                .addComponent(SignIn_BUTTON, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(68, 68, 68)
-                .addComponent(BottomSeperator_PANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
-                .addComponent(SocialSquadTitle_LABEL2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(SignUp_BUTTON, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51))
+                Main_PANELLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                .addComponent(Top_GRADIENTPANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                                .addComponent(Username_LABEL)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Username_TEXTFIELD, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(UsernameLoginFailed_LABEL)
+                                .addGap(5, 5, 5)
+                                .addComponent(Password_LABEL)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Password_PASSWORDFIELD, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(PasswordLoginFailed_LABEL)
+                                .addGap(46, 46, 46)
+                                .addComponent(SignIn_BUTTON, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(68, 68, 68)
+                                .addComponent(BottomSeperator_PANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(44, 44, 44)
+                                .addComponent(SocialSquadTitle_LABEL2, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(SignUp_BUTTON, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(51, 51, 51))
         );
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(Main_PANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(Main_PANEL, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(Main_PANEL, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(Main_PANEL, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
-
-
     /** work from old loginView
-        try {
-            Scanner in = new Scanner(new File("USERDATA.txt"));
-            while (in.hasNextLine())
-            {
-                String S=in.nextLine();
-                String[] Sa= S.split(",");
+     try {
+     Scanner in = new Scanner(new File("USERDATA.txt"));
+     while (in.hasNextLine())
+     {
+     String S=in.nextLine();
+     String[] Sa= S.split(",");
 
-                boolean hasUppercase = !txtPass.equals(txtPass.getText().toLowerCase()); //
-                boolean hasSpecial   = !Sa[1].matches("[A-Za-z0-9 ]*");
-                boolean hasSpace = Sa[1].matches(" ");
+     boolean hasUppercase = !txtPass.equals(txtPass.getText().toLowerCase()); //
+     boolean hasSpecial   = !Sa[1].matches("[A-Za-z0-9 ]*");
+     boolean hasSpace = Sa[1].matches(" ");
 
-                if ((Sa[1].length() < 10))
-                {
-                    JOptionPane.showMessageDialog(null,
-                            "Password must have a minimum of 10 characters", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-
-
-                }
-
-                else if (hasSpace)
-                {
-                    JOptionPane.showMessageDialog(null,
-                            "Password must not have a space", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+     if ((Sa[1].length() < 10))
+     {
+     JOptionPane.showMessageDialog(null,
+     "Password must have a minimum of 10 characters", "Error",
+     JOptionPane.ERROR_MESSAGE);
 
 
+     }
 
-                else if (!hasUppercase)
-                {
-                    JOptionPane.showMessageDialog(null,
-                            "Password must have at least 1 uppercase letter", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+     else if (hasSpace)
+     {
+     JOptionPane.showMessageDialog(null,
+     "Password must not have a space", "Error",
+     JOptionPane.ERROR_MESSAGE);
+     }
 
 
-                else if (!hasSpecial)
-                {
-                    JOptionPane.showMessageDialog(null,
-                            "Password must have at least 1 number", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
 
-                else
-                {
-                    JOptionPane.showMessageDialog(null,
-                            "Invalid Username / Password Combo", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-                in.close();
+     else if (!hasUppercase)
+     {
+     JOptionPane.showMessageDialog(null,
+     "Password must have at least 1 uppercase letter", "Error",
+     JOptionPane.ERROR_MESSAGE);
+     }
 
-            }
-            in.close();
-        }
-        catch(IOException e)
-        {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-    */
 
-    private void SignUp_BUTTONActionPerformed(ActionEvent evt) {
-        if(evt.getSource().equals(SignUp_BUTTON)){
-            LoginState currentState = loginViewModel.getState();
+     else if (!hasSpecial)
+     {
+     JOptionPane.showMessageDialog(null,
+     "Password must have at least 1 number", "Error",
+     JOptionPane.ERROR_MESSAGE);
+     }
 
-            LoginView.this.loginController.execute(
-                    currentState.getUsername(),
-                    currentState.getPassword());
-    }
-    }
+     else
+     {
+     JOptionPane.showMessageDialog(null,
+     "Invalid Username / Password Combo", "Error",
+     JOptionPane.ERROR_MESSAGE);
+     }
+     in.close();
+
+     }
+     in.close();
+     }
+     catch(IOException e)
+     {
+     JOptionPane.showMessageDialog(null, e.getMessage());
+     }
+     */
+
+
+
     @Override
     public void actionPerformed(ActionEvent e) {System.out.println("Click " + e.getActionCommand());
     }
@@ -463,7 +459,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         LoginController loginController  = new LoginController(interactor);
         CreateAccountInputBoundary createAccountInputBoundary = new CreateAccountInteractor(createAccountOutputBoundary);
         CreateAccountController createAccountController = new CreateAccountController(createAccountInputBoundary);
-        LoginView loginView = new LoginView(loginViewModel,loginController, createAccountController);
+        LoginView loginView = new LoginView(loginViewModel,loginController, signupViewModel);
         loginViewModel.addPropertyChangeListener(loginView);
 
 

@@ -9,17 +9,17 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.generate_static_map.GenerateStaticMapController;
-import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
 import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
-import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import use_case.generate_static_map.GSMInteractor;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
@@ -29,6 +29,7 @@ import use_case.loggedIn.LoggedInOutputBoundary;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.search_nearby.SearchNearbyDataAccessInterface;
 import use_case.search_nearby.SearchNearbyInteractor;
+import use_case.search_nearby.SearchNearbyDataAccessInterface;
 import view.HomeView;
 
 
@@ -48,9 +49,10 @@ public class LoggedInUseCaseFactory {
             SearchNearbyDataAccessInterface searchNearbyDataAccessObject,
             CreateEventController createEventController,
             CreateEventViewModel createEventViewModel,
+            MyEventViewModel myEventViewModel,
             GetCurrentUserViewModel getCurrentUserViewModel) {
         try{
-            LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,userDataAccessInterface);
+            LoggedInController loggedInController = createLoggedInUseCase(viewManagerModel,loggedInViewModel, loginViewModel,myEventViewModel,userDataAccessInterface);
             SearchNearbyController searchNearbyController = SearchNearbyUseCaseFactory.createSearchNearbyUseCase(viewManagerModel, searchNearbyViewModel, searchNearbyDataAccessObject);
 
             GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
@@ -59,7 +61,7 @@ public class LoggedInUseCaseFactory {
                     new InMemoryEventsDataAccessObject(), generateStaticMapPresenter);
             GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
             return new HomeView(loggedInViewModel,loggedInController, searchNearbyController,
-                    createEventController, createEventViewModel, getCurrentUserViewModel,generateStaticMapController, generateStaticMapViewModel);
+                    createEventController, createEventViewModel, getCurrentUserViewModel,generateStaticMapController, generateStaticMapViewModel,myEventViewModel);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not open user data file.");
         }
@@ -71,9 +73,10 @@ public class LoggedInUseCaseFactory {
             ViewManagerModel viewManagerModel,
             LoggedInViewModel loggedInViewModel,
             LoginViewModel loginViewModel,
+            MyEventViewModel myEventViewModel,
             LoggedInUserDataAccessInterface userDataAccessInterface
     ) throws IOException{
-        LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        LoggedInOutputBoundary loggedInOutputBoundary = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel,myEventViewModel);
         UserFactory userFactory = new CommonUserFactory();
 
         LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(userDataAccessInterface, loggedInOutputBoundary);

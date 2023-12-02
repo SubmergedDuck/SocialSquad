@@ -5,6 +5,7 @@ import entity.Users.CommonUser;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
 import use_case.signup.*;
@@ -23,7 +24,10 @@ public class LoginInteractor implements LoginInputBoundary {
     public void execute(LoginInputData loginInputData) {
         String username = loginInputData.getUsername();
         String password = loginInputData.getPassword();
-        if (!userDataAccessObject.existsByName(username)) {
+        ViewModel viewModel = loginInputData.getViewModel();
+        if (viewModel != null && viewModel.getViewName() !=null && !viewModel.getViewName().isEmpty()) {
+            loginPresenter.prepareLinkView(viewModel);
+        } else if (!userDataAccessObject.existsByName(username)) {
             loginPresenter.prepareFailView(username + ": Account does not exist.");
         } else {
             String pwd = userDataAccessObject.get(username).getPassword();
@@ -39,11 +43,7 @@ public class LoginInteractor implements LoginInputBoundary {
         }
     }
 
-    @Override
-    public void linkTo(String viewname) {
-        loginPresenter.prepareLinkView(viewname);
 
-    }
 
     public static void main(String[] args) {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
@@ -56,7 +56,7 @@ public class LoginInteractor implements LoginInputBoundary {
             }
 
             @Override
-            public void prepareLinkView(String viewname) {
+            public void prepareLinkView(ViewModel viewModel) {
 
             }
 
@@ -70,11 +70,11 @@ public class LoginInteractor implements LoginInputBoundary {
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         LoginInputBoundary interactor = new LoginInteractor(inMemoryUserDAO, presenter);
         inMemoryUserDAO.save(new CommonUser("user1","aa",2,"",""));
-        LoginInputData inputData = new LoginInputData("user1", "aa");
+        LoginInputData inputData = new LoginInputData("user1", "aa",null);
         interactor.execute(inputData);
-        LoginInputData inputData2 = new LoginInputData("user1", "bb");
+        LoginInputData inputData2 = new LoginInputData("user1", "bb",null);
         interactor.execute(inputData2);
-        LoginInputData inputData3 = new LoginInputData("user2", "aa");
+        LoginInputData inputData3 = new LoginInputData("user2", "aa",null);
         interactor.execute(inputData3);
 
     }

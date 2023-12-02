@@ -10,6 +10,7 @@ import use_case.get_event_details.GetEventDetailsDataAccessInterface;
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
 import use_case.leave_event.LeaveEventEventDataAccessInterface;
 import use_case.join_event.JoinEventEventDataAccessInterface;
+import use_case.my_event.MyEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
         GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
-        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface,LeaveEventEventDataAccessInterface {
+        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface,LeaveEventEventDataAccessInterface,MyEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -155,6 +156,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         return event.getLocation().getCoordinates();
     }
 
+
     @Override
     public Integer generateEventID() {
         Integer currentID = 0;
@@ -173,7 +175,7 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         ArrayList<String> joinedUsers = event.getPeopleJoined();
         joinedUsers.remove(username);
     }
-    
+
     @Override
     public void userJoinEvent(String username, Integer eventID) {
         Event event = eventsToID.get(eventID);
@@ -191,9 +193,20 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         Event event = eventsToID.get(eventID);
         return event.getPeopleJoined();
     }
-          
+
     @Override
     public Event getEvent(Integer eventID) {
         return eventsToID.get(eventID);
+    }
+
+    //TODO:fix later
+    @Override
+    public List<Event> getJoinedEvents(String username) {
+        return null;
+    }
+
+    @Override
+    public List<Event> getCreatedEvents(String username) {
+        return null;
     }
 }

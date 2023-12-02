@@ -18,9 +18,7 @@ import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventViewModel;
-import interface_adapter.get_current_user.GetCurrentUserViewModel;
-import interface_adapter.get_current_user.GetCurrentUserController;
-import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.*;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
@@ -31,11 +29,16 @@ import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.get_event_details.OnlyGetEventDetailsPresenter;
+import interface_adapter.get_ids.GetIDsController;
+import interface_adapter.get_ids.GetIDsPresenter;
+import interface_adapter.get_ids.GetIDsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
@@ -47,11 +50,10 @@ import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_direction.GetDirectionInteractor;
 import use_case.generate_static_map.GSMInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.get_ids.GetIDsInteractor;
 import use_case.join_event.JoinEventInputBoundary;
-import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.search_nearby.SearchNearbyInteractor;
-import use_case.search_nearby.SearchNearbyOutputData;
 import view.*;
 
 import javax.swing.*;
@@ -88,6 +90,7 @@ public class Main {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
+        MyEventViewModel myEventViewModel = new MyEventViewModel();
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
@@ -95,15 +98,19 @@ public class Main {
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
+        InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
         InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
-        InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
         User testUser = new CommonUser("aa", "123", 1, "f", "contact");
         currentUserDAO.changeUser(testUser);
+        GetCurrentUserState testState = getCurrentUserViewModel.getState();
+        testState.setUsername(testState.getUsername());
+        getCurrentUserViewModel.setState(testState);
         // Instantiate all factories
         EventFactory eventFactory = new CommonEventFactory();
 
         LocationFactory locationFactory = new CommonLocationFactory();
+        InMemoryEventsDataAccessObject myeventDataAccessObject = new InMemoryEventsDataAccessObject();
 
         // Create sample entities
         userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
@@ -140,6 +147,7 @@ public class Main {
         // Instantiate BackOut use case
         BackOutController backOutController = BackOutUseCaseFactory.createBackOutUseCase(viewManagerModel);
 
+
         // Instantiate EventDetails use case
         GetEventDetailsController getEventDetailsController =
                 GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel, viewManagerModel, eventDataAccessObject);
@@ -168,11 +176,6 @@ public class Main {
 
         // Build Home view
 
-        /*
-        LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController,
-                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel
-         */
         GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
         GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(generateStaticMapViewModel);
         GSMInteractor gsmInteractor = new GSMInteractor(new GenerateStaticMapURL(),userDataAccessObject,eventDataAccessObject,generateStaticMapPresenter);
@@ -180,14 +183,57 @@ public class Main {
         SearchNearbyPresenter searchNearbyPresenter = new SearchNearbyPresenter(searchNearbyViewModel,viewManagerModel);
         SearchNearbyInteractor searchNearbyInteractor = new SearchNearbyInteractor(eventDataAccessObject,searchNearbyPresenter);
         SearchNearbyController searchNearbyController = new SearchNearbyController(searchNearbyInteractor);
-        LoggedInPresenter loggedInPresenter = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel);
+        LoggedInPresenter loggedInPresenter = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel,myEventViewModel);
         LoggedInInteractor loggedInInteractor = new LoggedInInteractor(userDataAccessObject,loggedInPresenter);
         LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
         HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
-                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel);
+                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,myEventViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
+        //Build MyEvents View
+        CommonUserFactory userFactory = new CommonUserFactory();
+        User newUser = userFactory.create("username","123",20,"m","test contact");
+        currentUserDAO.changeUser(newUser);
+        userDataAccessObject.save(newUser);
+        ArrayList<String> peopledJoined = new ArrayList<>();
+        peopledJoined.add(newUser.getUsername());
+        Location location = null;
+        Location location2 = null;
+        try {
+            location = locationFactory.makeLocation("(43.665510,-79.387280)");
+            location2 = locationFactory.makeLocation("(43.4669381322,-79.6857955901)");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Event newEvent = eventFactory.create(0,"test event","another user",location,peopledJoined,
+                new ArrayList<String>(), LocalDateTime.now(),"test event", "test", false, 10);
+        eventDataAccessObject.save(newEvent);
+        ArrayList<Event> userJoinedEvents = newUser.getJoinedEvents();
+        userJoinedEvents.add(newEvent);
+        newUser.setLocation(location2);
+
+        //TODO:fix
+
+        GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
+
+        //Creating the controllers,presenters, and interactors for each use case in this view.
+        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel);
+        GetIDsPresenter getIDsPresenter = new GetIDsPresenter(getIDsViewModel);
+        GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel,viewManagerModel);
+
+        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter, currentUserDAO);
+        GetIDsInteractor getIDsInteractor = new GetIDsInteractor(userDataAccessObject, getIDsPresenter);
+        GetEventDetailsInteractor getEventDetailsInteractor = new GetEventDetailsInteractor(getEventDetailsPresenter,eventDataAccessObject);
+
+        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+        GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
+        GetEventDetailsController onlyGetEventDetailsController = new GetEventDetailsController(getEventDetailsInteractor);
+
+        MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,myeventDataAccessObject,getIDsController1,getIDsViewModel,getCurrentUserController1,getCurrentUserViewModel,
+                onlyGetEventDetailsController,getEventDetailsViewModel);
+        views.add(myEventsView.getRootPane(),myEventsView.viewName);
+        myEventViewModel.addPropertyChangeListener(myEventsView);
 
         // Build SearchNearby view
         SearchNearbyView searchNearbyView = SearchNearbyUseCaseFactory.create(viewManagerModel, searchNearbyViewModel,
@@ -201,13 +247,8 @@ public class Main {
                 new GenerateRoute());
         GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
-        GetCurrentUserViewModel getCurrentUserViewModel1 = new GetCurrentUserViewModel();
-        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
-        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,currentUserDAO);
-        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
-
         EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
-                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1,getCurrentUserController1);
+                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController1);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);
