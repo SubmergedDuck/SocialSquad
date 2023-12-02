@@ -1,12 +1,14 @@
 package data_access;
 
 import entity.Events.Event;
+import use_case.create_event.CreateEventEventDataAccessInterface;
 import use_case.generate_static_map.GSMEventDataAccessInterface;
 import entity.Location.DistanceCalculator;
 import entity.Location.DistanceCalculatorInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_event_details.GetEventDetailsDataAccessInterface;
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
+import use_case.join_event.JoinEventEventDataAccessInterface;
 import use_case.my_event.MyEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
@@ -22,6 +24,9 @@ import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
+        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
+        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface {
+
         GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface, MyEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
@@ -29,17 +34,6 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     private final Map<String, Event> nameToEvents = new HashMap<>();
     private final Map<Integer, Event> eventsToID = new HashMap<>();
 
-    @Override
-    public Integer generateEventID() {
-        Integer currentID = 0;
-        for (Integer eventID : eventsToID.keySet()){
-            //The new eventID will be the highest event ID.
-            if (currentID < eventID){
-                currentID = eventID + 1;
-            }
-        }
-        return currentID;
-    }
 
     /**
      * A public method that saves an event to the nameToEvent hashmap directory
@@ -117,8 +111,6 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
                 returnList.remove(event);
             }
         }
-
-
         return returnList;
     }
 
@@ -174,5 +166,40 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     @Override
     public List<Event> getCreatedEvents(String username) {
         return null;
+    }
+
+    @Override
+    public Integer generateEventID() {
+        Integer currentID = 0;
+        for (Integer eventID : eventsToID.keySet()){
+            //The new eventID will be the highest event ID.
+            if (currentID < eventID){
+                currentID = eventID + 1;
+            }
+        }
+        return currentID;
+    }
+
+    @Override
+    public void userJoinEvent(String username, Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        event.getPeopleJoined().add(username);
+    }
+
+    @Override
+    public String getCapacity(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return String.valueOf(event.getCapacity());
+    }
+
+    @Override
+    public ArrayList<String> getPeopleJoined(Integer eventID) {
+        Event event = eventsToID.get(eventID);
+        return event.getPeopleJoined();
+    }
+
+    @Override
+    public Event getEvent(Integer eventID) {
+        return eventsToID.get(eventID);
     }
 }

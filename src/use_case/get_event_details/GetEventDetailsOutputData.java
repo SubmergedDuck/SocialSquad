@@ -13,6 +13,8 @@ public class GetEventDetailsOutputData {
     private final String description;
     private final String capacity;
 
+    private final int eventID;
+
     /**
      * Constructor for GetEventDetailsOutputData
      * @param ownerUser the username of the event organizer
@@ -21,13 +23,15 @@ public class GetEventDetailsOutputData {
      * @param date the date when the event occurs
      * @param description the event description.
      */
-    public GetEventDetailsOutputData(String ownerUser, String eventName, String eventAddress, String date, String description, String capacity){
+    public GetEventDetailsOutputData(String ownerUser, String eventName, String eventAddress, String date, String description,
+                                     String capacity, int eventID){
         this.ownerUser = ownerUser;
         this.eventName = eventName;
         this.eventAddress = eventAddress;
         this.date = date;
         this.description = description;
         this.capacity = capacity;
+        this.eventID = eventID;
     }
 
     /**
@@ -61,8 +65,14 @@ public class GetEventDetailsOutputData {
     public String getDescription(){return this.description;}
 
     /**
-     * The capacity of the event (Ex. 4/10)
+     * The capacity of the event
      * @return returns the total participants out of the max capacity
      */
     public String getCapacity(){return this.capacity;}
+
+    /**
+     * The ID of the event
+     * @return returns the ID of the event.
+     */
+    public int getEventID(){return this.eventID;}
 }

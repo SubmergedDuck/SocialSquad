@@ -32,7 +32,8 @@ public class GetEventDetailsInteractor implements GetEventDetailsInputBoundary{
         String eventDate = chosenEvent.getTime().toString();
         String eventDescription = chosenEvent.getDescription();
         String eventCapacity = (chosenEvent.getPeopleJoined().size()) + "/" + chosenEvent.getCapacity().toString();
-        GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(ownerUser, eventName, eventAddress, eventDate, eventDescription, eventCapacity);
+        GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(ownerUser, eventName, eventAddress, eventDate,
+                eventDescription, eventCapacity, eventID);
         getEventDetailsPresenter.prepareView(outputData);
     }
 }

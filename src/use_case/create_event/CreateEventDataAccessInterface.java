@@ -6,6 +6,5 @@ import entity.Events.Event;
  * The data access interface for the create event use case.
  */
 public interface CreateEventDataAccessInterface {
-    Integer generateEventID();
     void save(Event event);
 }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * created or not.
  */
 public class CreateEventInteractor {
-    final CreateEventDataAccessInterface eventDataAccessObject;
+    final CreateEventEventDataAccessInterface eventDataAccessObject;
     final CreateEventDataAccessInterface userDataAccessObject;
     final CreateEventOutputBoundary createEventPresenter;
     final EventFactory eventFactory;
@@ -36,7 +36,7 @@ public class CreateEventInteractor {
      * @param restrictedEventFactory a restricted event factory
      * @param locationFactory a location factory
      */
-    public CreateEventInteractor(CreateEventDataAccessInterface eventDataAccessObject,
+    public CreateEventInteractor(CreateEventEventDataAccessInterface eventDataAccessObject,
                                  CreateEventDataAccessInterface userDataAccessObject,CreateEventOutputBoundary createEventPresenter,
                                  EventFactory eventFactory, InviteOnlyEventFactory inviteEventFactory,
                                  RestrictedEventFactory restrictedEventFactory, LocationFactory locationFactory){
@@ -66,23 +66,10 @@ public class CreateEventInteractor {
             //No errors with input.
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime date = LocalDateTime.parse(input.getTime(), formatter);
-            if (!input.getAgeRestriction().equals(0) || !input.getSexRestriction().equals("")) {
-                //Restricted event.
-                currentEvent = (Event) restrictedEventFactory.create(eventID, input.getEventName(), input.getOwner(),
-                        eventLocation, new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
-                        input.getDescription(), input.getPrivacy(), input.getCapacity(), input.getAgeRestriction(),
-                        input.getSexRestriction());
-            } else if (input.getInviteStatus()) {
-                //Invite only event
-                currentEvent = (Event) inviteEventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
-                        new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
-                        input.getDescription(), input.getPrivacy(), input.getCapacity(), input.getInvitedPeople());
-            } else {
-                //Normal event
-                currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
+            //Normal event
+            currentEvent = (Event) eventFactory.create(eventID, input.getEventName(), input.getOwner(), eventLocation,
                         new ArrayList<String>(), new ArrayList<String>(), date, input.getType(),
                         input.getDescription(), input.getPrivacy(), input.getCapacity());
-            }
             eventDataAccessObject.save(currentEvent);
             userDataAccessObject.save(currentEvent);
 
