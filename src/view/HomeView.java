@@ -28,12 +28,12 @@ import interface_adapter.join_event.JoinEventPresenter;
 import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
+import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.my_event.MyEventController;
 import interface_adapter.my_event.MyEventPresenter;
 import interface_adapter.my_event.MyEventViewModel;
-import interface_adapter.search_event.SearchEventController;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
@@ -53,6 +53,7 @@ import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -60,7 +61,6 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -68,7 +68,7 @@ import java.util.Arrays;
  */
 
 // TODO: Fix Compiler Errors
-public class HomeView extends javax.swing.JFrame implements PropertyChangeListener {
+public class HomeView extends javax.swing.JFrame implements PropertyChangeListener,ActionListener {
     /**
      * Creates new form HomeView
      */
@@ -80,7 +80,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     private final GenerateStaticMapController generateStaticMapController;
     private final GenerateStaticMapViewModel generateStaticMapViewModel;
 
-    private final MyEventController myEventController;
+//    private final MyEventController myEventController;
     private final MyEventViewModel myEventViewModel;
 
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -93,20 +93,20 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel Title_LABEL;
     private javax.swing.JPanel TopSeperator_PANEL;
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
+    private view.ButtonGradient MyEvents_BUTTON;
+
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
                     SearchNearbyController searchNearbyController, CreateEventController createEventController,
-                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController, MyEventController myEventController, MyEventViewModel myEventViewModel) {
-        this.loggedInViewModel = loggedInViewModel;
+                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel, MyEventViewModel myEventViewModel) throws IOException {
         this.loggedInController = loggedInController;
+        this.loggedInViewModel = loggedInViewModel;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
         this.generateStaticMapController = generateStaticMapController;
         this.generateStaticMapViewModel = generateStaticMapViewModel;
-        this.generateStaticMapViewModel.addPropertyChangeListener(this);
-        this.myEventController = myEventController;
         this.myEventViewModel = myEventViewModel;
+        this.generateStaticMapViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
@@ -122,6 +122,8 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         MapImage_LABEL = new javax.swing.JLabel();
         LogoutIcon_LABEL = new javax.swing.JLabel();
         Logout_BUTTON = new javax.swing.JButton();
+        MyEvents_BUTTON = new ButtonGradient();
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -214,6 +216,16 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         CoordinatesFromIP coordinatesFromIP = new CoordinatesFromIP();
         String[] currentCoordinates = coordinatesFromIP.getCoordinates();
         generateStaticMapController.execute(currentCoordinates, 100,350, 504);
+        MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
+        MyEvents_BUTTON.setText("My Events");
+        MyEvents_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
+        MyEvents_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
+        MyEvents_BUTTON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MyEvents_BUTTONActionPerformed(evt);
+            }
+        });
+
 
 
 
@@ -241,6 +253,10 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
 
                         }
                     }
+
+
+
+
                 }
         );
 
@@ -255,17 +271,22 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                                         .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(0, 0, Short.MAX_VALUE))
                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(Logout_BUTTON))
-                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(14, 14, 14)
+                                                .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(LogoutIcon_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(Logout_BUTTON))
+                                                        .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(Main_PANELLayout.createSequentialGroup()
+                                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                         .addGroup(Main_PANELLayout.createSequentialGroup()
-                                                .addComponent(SearchEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(CreateEvent_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(95, 95, 95)
+                                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Main_PANELLayout.setVerticalGroup(
@@ -273,8 +294,10 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                         .addGroup(Main_PANELLayout.createSequentialGroup()
                                 .addComponent(Top_GRADIENTPANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 504, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MapImage_LABEL, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(MyEvents_BUTTON, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BottomSeperator_PANEL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(Main_PANELLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -300,7 +323,18 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(Main_PANEL, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+
         pack();
+    }
+    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        if (evt.getSource().equals(MyEvents_BUTTON)){
+            LoggedInState currentState = loggedInViewModel.getState();
+            loggedInController.execute(
+                    currentState.getUsername(),myEventViewModel
+            );
+
+        }
+        // TODO add your handling code here:
     }
 
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
@@ -333,20 +367,11 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getNewValue() instanceof GenerateStaticMapState){
-            GenerateStaticMapState state = (GenerateStaticMapState)evt.getNewValue();
+        if (evt.getNewValue() instanceof GenerateStaticMapState) {
+            GenerateStaticMapState state = (GenerateStaticMapState) evt.getNewValue();
             BufferedImage generatedMap = state.getGeneratedMap();
             MapImage_LABEL.setIcon(new javax.swing.ImageIcon(generatedMap));
         }
-    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        if (evt.getSource().equals(MyEvents_BUTTON)){
-            LoggedInState currentState = loggedInViewModel.getState();
-            loggedInController.execute(
-                    currentState.getUsername(),myEventViewModel
-            );
-
-        }
-        // TODO add your handling code here:
     }
 
     /**
@@ -467,7 +492,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 HomeView homeView = null;
                 try {
                     homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,
-                            generateStaticMapController, gsmViewModel);
+                            generateStaticMapController, gsmViewModel, myEventViewModel);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -501,5 +526,10 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 application.setVisible(true);
             }
         });
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

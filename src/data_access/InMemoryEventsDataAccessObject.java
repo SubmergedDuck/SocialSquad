@@ -25,9 +25,7 @@ import java.util.Map;
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
         GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
-        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface {
-
-        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface, MyEventDataAccessInterface {
+        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface,MyEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -158,15 +156,6 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     }
     //TODO:fix later
 
-    @Override
-    public List<Event> getJoinedEvents(String username) {
-        return null;
-    }
-
-    @Override
-    public List<Event> getCreatedEvents(String username) {
-        return null;
-    }
 
     @Override
     public Integer generateEventID() {
@@ -201,5 +190,16 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     @Override
     public Event getEvent(Integer eventID) {
         return eventsToID.get(eventID);
+    }
+
+    //TODO:fix later
+    @Override
+    public List<Event> getJoinedEvents(String username) {
+        return null;
+    }
+
+    @Override
+    public List<Event> getCreatedEvents(String username) {
+        return null;
     }
 }
