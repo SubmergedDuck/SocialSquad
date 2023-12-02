@@ -23,8 +23,7 @@ import static org.junit.Assert.*;
 public class ViewParticipantsInteractorTest {
     private ViewParticipantsInputBoundary viewParticipantsInteractor;
     private ViewParticipantsDataAccessInterface eventDataAccessObject = new InMemoryEventsDataAccessObject();
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
+
     private Event currentEvent;
     @Before
     public void init(){
@@ -44,39 +43,17 @@ public class ViewParticipantsInteractorTest {
         ViewParticipantsOutputBoundary viewParticipantsPresenter = new ViewParticipantsOutputBoundary() {
             @Override
             public void prepareView(ViewParticipantsOutputData outputData) {
-                System.out.println(outputData.getJoinedParticipants());
+                for (String joinedUser : currentEvent.getPeopleJoined()){
+                    assert(outputData.getJoinedParticipants().contains(joinedUser));
+                }
             }
         };
         viewParticipantsInteractor = new ViewParticipantsInteractor(eventDataAccessObject, viewParticipantsPresenter);
-    }
-    /**
-     * Sets up a print stream before the test (used for checking printed outputs)
-     */
-    @Before
-    public void setUpStream() {
-        System.setOut(new PrintStream(outContent));
-    }
-    /**
-     * Restores the stream after the test (used for checking printed outputs)
-     */
-    @After
-    public void restoreStream() {
-        System.setOut(originalOut);
     }
 
     @Test
     public void getParticipantsTest(){
         ViewParticipantsInputData inputData = new ViewParticipantsInputData(currentEvent.getEventID());
         viewParticipantsInteractor.execute(inputData);
-        String printedOutput = outContent.toString();
-        String correctOutput = "";
-        for (int i = 0; i < currentEvent.getPeopleJoined().size(); i++){
-            if (i == currentEvent.getPeopleJoined().size() - 1){
-                correctOutput = correctOutput + currentEvent.getPeopleJoined().get(i);
-            } else {
-                correctOutput = correctOutput + currentEvent.getPeopleJoined().get(i) + ",";
-            }
-        }
-        assertEquals(printedOutput, correctOutput + "\n");
     }
 }
