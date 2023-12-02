@@ -1,8 +1,8 @@
-package use_case.my_event;
+package unused_usecases___.usecases.search_event;
 
-public interface MyEventOutputBoundary {
+public interface SearchEventOutputBoundary {
     /**
-     * The output boundary interface for the MyEvent use case, used by the interactor and presenter.
+     * The output boundary interface for the SearchEvent use case, used by the interactor and presenter.
      */
 
     /**
@@ -12,7 +12,7 @@ public interface MyEventOutputBoundary {
      * @param outputData The result returned by the interactor, it contains events that are fully or partially matched
      *                   with the search request.
      */
-    public void prepareSuccessView(MyEventOutputData outputData);
+    public void prepareSuccessView(SearchEventOutputData outputData);
 
     /**
      * A public method that lets the presenter generates a fail view after the interactor is unable to return any matching

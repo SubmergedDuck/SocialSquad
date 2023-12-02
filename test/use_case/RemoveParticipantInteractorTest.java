@@ -11,11 +11,11 @@ import entity.Location.LocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
-import interface_adapter.remove_participant.MockRemoveParticipantPresenter;
+import unused_usecases___.interface_adapter.remove_participant.MockRemoveParticipantPresenter;
 
-import use_case.remove_participant.RemoveParticipantDataAccessInterface;
-import use_case.remove_participant.RemoveParticipantInputData;
-import use_case.remove_participant.RemoveParticipantInteractor;
+import unused_usecases___.usecases.remove_participant.RemoveParticipantDataAccessInterface;
+import unused_usecases___.usecases.remove_participant.RemoveParticipantInputData;
+import unused_usecases___.usecases.remove_participant.RemoveParticipantInteractor;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

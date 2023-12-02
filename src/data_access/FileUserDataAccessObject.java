@@ -11,7 +11,7 @@ import use_case.leave_event.LeaveEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.my_event.MyEventDataAccessInterface;
-import use_case.remove_participant.RemoveParticipantDataAccessInterface;
+import unused_usecases___.usecases.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;

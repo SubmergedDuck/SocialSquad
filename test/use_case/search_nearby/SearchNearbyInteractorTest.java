@@ -6,12 +6,8 @@ import entity.Events.Event;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
 import org.junit.jupiter.api.Test;
-import use_case.search_event.SearchEventInputData;
-import use_case.search_event.SearchEventOutputBoundary;
-import use_case.search_event.SearchEventOutputData;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 

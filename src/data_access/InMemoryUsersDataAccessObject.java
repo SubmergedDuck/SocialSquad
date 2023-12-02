@@ -9,12 +9,10 @@ import use_case.leave_event.LeaveEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.join_event.JoinEventUserDataAccessInterface;
-import use_case.remove_participant.RemoveParticipantDataAccessInterface;
+import unused_usecases___.usecases.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
-import data_access.InMemoryEventsDataAccessObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 public class InMemoryUsersDataAccessObject implements
