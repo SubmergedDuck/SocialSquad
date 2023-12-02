@@ -6,16 +6,16 @@ import entity.Events.Event;
  * Input data for the join event use case.
  */
 public class JoinEventInputData {
-    private final int eventID;
+    private final Event event;
     private final String username;
 
     /**
      * Constructor for JoinEventInputData.
-     * @param eventID the ID of the event that the user is trying to join
+     * @param event the event that we are trying to have the user join
      * @param username the username of the user that we are trying to have join the event
      */
-    public JoinEventInputData(int eventID, String username){
-        this.eventID = eventID;
+    public JoinEventInputData(Event event, String username){
+        this.event = event;
         this.username = username;
     }
 
@@ -23,7 +23,7 @@ public class JoinEventInputData {
      * Getter for the event ID.
      * @return the event ID
      */
-    int getEvent(){return this.eventID;}
+    Event getEvent(){return this.event;}
 
     /**
      * Getter for the username.

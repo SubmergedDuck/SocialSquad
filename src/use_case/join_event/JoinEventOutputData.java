@@ -9,27 +9,25 @@ import interface_adapter.join_event.JoinEventState;
 
 public class JoinEventOutputData {
     private final ArrayList<String> getPeopleJoined;
+    private String failureReason;
 
     /**
      * Constructor for JoinEventOutputData.
      * @param getPeopleJoined the people joined
      */
 
-    public JoinEventOutputData(ArrayList<String> getPeopleJoined) {
+    public JoinEventOutputData(ArrayList<String> getPeopleJoined, String errorMessage) {
         this.getPeopleJoined = getPeopleJoined;
+        this.failureReason = errorMessage;
     }
 
-// TODO:
+    public ArrayList<String> getPeopleJoined() {
+        return getPeopleJoined;
+    }
 
-//    public final boolean usecaseSuccess = false; // Output Data is only needed when the use case failed
-//    private final String failureReason;
-//
-//    public JoinEventOutputData(String failureReason) {
-//        this.failureReason = failureReason;
-//    }
-//
-//    public String getFailureReason() {
-//        return failureReason;
-//    }
+    // If string is null, then there are no errors
+    public String getFailureReason() {
+        return failureReason;
+    }
 
 }

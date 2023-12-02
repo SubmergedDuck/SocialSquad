@@ -47,6 +47,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     private final GetEventDetailsController getEventDetailsController;
     private String currentUser;
     private ArrayList<Integer> joinedEvents;
+    private ArrayList<Integer> createdEvents;
     private ArrayList<String> eventDescriptions = new ArrayList<>();
     private view.ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -150,7 +151,6 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         EventNameCreateFailed_LABEL.setFont(new java.awt.Font("Gotham Medium", 3, 10)); // NOI18N
         EventNameCreateFailed_LABEL.setForeground(new java.awt.Color(255, 102, 197));
         EventNameCreateFailed_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        EventNameCreateFailed_LABEL.setText("*View Event Details Failed: no event selected");
 
         Events_SCROLLPANE.setBackground(new java.awt.Color(255, 255, 255));
         Events_SCROLLPANE.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(229, 222, 233)));
@@ -160,10 +160,6 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         Events_LIST.setFont(new java.awt.Font("Gotham Medium", 1, 12)); // NOI18N
         Events_LIST.setForeground(new java.awt.Color(196, 182, 206));
 
-
-
-//TODO:FIX
-//
         getCurrentUserController.execute();
         getIDsController.execute(currentUser, false);
 
@@ -197,6 +193,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             }
         });
 
+        Joined_BUTTON.setForeground(new java.awt.Color(255, 255, 255));
         Joined_BUTTON.setText("Joined");
         Joined_BUTTON.setToolTipText("");
         Joined_BUTTON.setColor1(new java.awt.Color(140, 100, 255));
@@ -206,11 +203,10 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             }
         });
 
-        Owned_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
+        Owned_BUTTON.setForeground(new java.awt.Color(255, 255, 255));
         Owned_BUTTON.setText("Owned");
         Owned_BUTTON.setToolTipText("");
-        Owned_BUTTON.setColor1(new java.awt.Color(251, 247, 255));
-        Owned_BUTTON.setColor2(new java.awt.Color(247, 239, 255));
+        Owned_BUTTON.setColor1(new java.awt.Color(140, 100, 255));
         Owned_BUTTON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Owned_BUTTONActionPerformed(evt);
@@ -288,25 +284,29 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     }
 
     private void Joined_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        if (evt.getSource().equals(Joined_BUTTON)){
-        getCurrentUserController.execute();
+        Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = new String[0];
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         getIDsController.execute(currentUser, false);
 
         for (Integer eventID: joinedEvents){
             getEventDetailsController.execute(eventID);
         }
-//        // TODO add your handling code here:
-    }}
+    }
 
     private void Owned_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        if(evt.getSource().equals(Owned_BUTTON)){
-        getCurrentUserController.execute();
+        Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = new String[0];
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         getIDsController.execute(currentUser, true);
 
-        for (Integer eventID: joinedEvents){
+        for (Integer eventID: createdEvents){
             getEventDetailsController.execute(eventID);
-        }}
-//        // TODO add your handling code here:
+        }
     }
 
     /**
@@ -355,6 +355,11 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
                 peopledJoined.add(newUser.getUsername());
                 Event newEvent = eventFactory.create(0,"test event","another user",location,peopledJoined,
                         new ArrayList<String>(), LocalDateTime.now(),"test event", "test", false, 10);
+                Event newEvent2 = eventFactory.create(1, "another event", newEvent.getOwnerUser(), location,
+                        peopledJoined, new ArrayList<String>(), LocalDateTime.now(), "another event", "testt", false, 5);
+                ArrayList<Event> createdEvents = newUser.getCreatedEvents();
+                createdEvents.add(newEvent2);
+                inMemoryEventsDataAccessObject.save(newEvent2);
                 inMemoryEventsDataAccessObject.save(newEvent);
                 ArrayList<Event> userJoinedEvents = newUser.getJoinedEvents();
                 userJoinedEvents.add(newEvent);
@@ -390,12 +395,27 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             GetIDsState state = (GetIDsState)evt.getNewValue();
             if (!state.getIsCreated()){
                 joinedEvents = state.getAllIDs();
+                for (Integer eventID: joinedEvents){
+                    getEventDetailsController.execute(eventID);
+                }
+            } else {
+                createdEvents = state.getAllIDs();
+                for (Integer eventID: createdEvents){
+                    getEventDetailsController.execute(eventID);
+                }
             }
+            eventDescriptions = new ArrayList<>();
+            state.setAllIDs(new ArrayList<>());
         } else if (evt.getNewValue() instanceof GetEventDetailsState){
             GetEventDetailsState state = (GetEventDetailsState)evt.getNewValue();
-            String formattedString = String.format("%s (%s). Address: %s. Owner: %s",
-                    state.getEventName(), state.getEventDate(), state.getEventAddress(), state.getOwnerUser());
+            String formattedString = String.format("(Event ID: %s) %s (%s). Address: %s. Owner: %s",
+                    state.getEventID(), state.getEventName(), state.getEventDate(), state.getEventAddress(), state.getOwnerUser());
             eventDescriptions.add(formattedString);
+            Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
+                String[] strings = eventDescriptions.toArray(new String[eventDescriptions.size()]);
+                public int getSize() { return strings.length; }
+                public String getElementAt(int i) { return strings[i]; }
+            });
         }
     }
 }

@@ -44,11 +44,10 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
 
     public void execute(JoinEventInputData joinEventInputData) {
         String username = joinEventInputData.getUsername();
-        int eventID = joinEventInputData.getEvent();
-        String capacity = eventsDataAccessObject.getCapacity(eventID);
-        Event event = eventsDataAccessObject.getEvent(eventID);
+        Event event = joinEventInputData.getEvent();
+        String capacity = eventsDataAccessObject.getCapacity(event.getEventID());
 
-        ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(eventID);
+        ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
 
         // Count number of people already joined
         int current_number_joined = 0;
@@ -56,21 +55,24 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
             current_number_joined++;
         }
 
-
-        // If current_number_joined is equal to capacity then prepareFailView else join event and prepareSuccessView
-        if (current_number_joined == Integer.parseInt(capacity)) {
-            joinEventPresenter.prepareFailView();
+        if (current_number_joined == Integer.parseInt(capacity)) { // If event is at full capacity
+            JoinEventOutputData joinEventOutputDataFail = new JoinEventOutputData(getPeopleJoined, "Note: Event is at full capacity!");
+            joinEventPresenter.prepareFailView(joinEventOutputDataFail);
+        } else if (getPeopleJoined.contains(username)) { // If user has already joined the event
+            JoinEventOutputData joinEventOutputDataFail = new JoinEventOutputData(getPeopleJoined, "Note: You have already joined this event!");
+            joinEventPresenter.prepareFailView(joinEventOutputDataFail);
         } else {
             // Updates DAOs
             userDataAccessObject.userJoinEvent(username, event);
-            eventsDataAccessObject.userJoinEvent(username, eventID);
+            eventsDataAccessObject.userJoinEvent(username, event.getEventID());
             currentUserDataAccessObject.currentUserJoinEvent(event.getEventID());
 
             // Update getPeopleJoined from eventsDataAccessObject
             getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
 
             // Output data will be used for getting the # of people joined to update #/capacity text
-            joinEventPresenter.prepareSuccessView();
+            JoinEventOutputData joinEventOutputData = new JoinEventOutputData(getPeopleJoined, null);
+            joinEventPresenter.prepareSuccessView(joinEventOutputData);
         }
 
     }
