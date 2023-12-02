@@ -286,7 +286,7 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
 
     @Override
     public Event getEvent(Integer eventID) {
-        return null;
+        return eventsToID.get(eventID);
     }
 
     @Override

@@ -1,2 +1,0 @@
-owner,eventID,eventName,coordinates,peopleJoined,peopleWaitlisted,time,type,description,privacy,capacity
-testOwner,0,testEvent,(43.536903 -79.867244),,,2019-03-27T10:15,test,description,false,10
