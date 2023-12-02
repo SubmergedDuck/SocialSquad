@@ -15,6 +15,7 @@ import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventState;
 import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
@@ -381,6 +382,11 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 inMemoryCurrentUserDAO.changeUser(testUser);
                 inMemoryUsersDataAccessObject.save(testUser);
 
+                // put the test user as the user logged in
+                GetCurrentUserState getCurrentUserState = getCurrentUserViewModel.getState();
+                getCurrentUserState.setUsername(testUser.getUsername());
+                getCurrentUserViewModel.setState(getCurrentUserState);
+
                 EventFactory eventFactory = new CommonEventFactory();
 
                 LocationFactory locationFactory = new CommonLocationFactory();
@@ -493,6 +499,6 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        LoggedInState state = (LoggedInState) evt.getNewValue();
+        //LoggedInState state = (LoggedInState) evt.getNewValue();
     }
 }
