@@ -1,8 +1,6 @@
 package interface_adapter.back_out;
 
-import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewManagerModelAdapter;
-import interface_adapter.ViewModel;
 import use_case.back_out.BackOutOutputBoundary;
 
 public class BackOutPresenter implements BackOutOutputBoundary {
@@ -12,10 +10,10 @@ public class BackOutPresenter implements BackOutOutputBoundary {
         this.viewManagerModelAdapter = viewManagerModelAdapter;
     }
     @Override
-    public void prepareSuccessView() {
-        System.out.println("Presenter\nprepare success view\n");
-        String lastViewName = viewManagerModelAdapter.getLastViewName();
-        viewManagerModelAdapter.setActiveView(lastViewName);
+    public void prepareSuccessView(String viewName) {
+        System.out.println("Presenter\nprepare success view, bringing up " + viewName);
+        //String lastViewName = viewManagerModelAdapter.getLastViewName();
+        viewManagerModelAdapter.setActiveView(viewName);
 
 
     }

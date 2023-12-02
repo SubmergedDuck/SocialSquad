@@ -425,8 +425,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         System.out.println("You just joined this event!");
     }
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO change this later
-        System.out.println("Go back");
+        backOutController.execute("search nearby");
     }
     private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         int eventID = getEventDetailsViewModel.getState().getEventID();

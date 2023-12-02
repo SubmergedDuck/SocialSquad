@@ -10,9 +10,8 @@ public class BackOutController {
         this.interactor = interactor;
     }
 
-    public void execute() {
-        System.out.println("Controller\n execute\n");
-
-        this.interactor.execute();
+    public void execute(String viewName) {
+        System.out.println("Controller\n execute to " + viewName);
+        this.interactor.execute(viewName);
     }
 }

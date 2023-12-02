@@ -31,19 +31,19 @@ public class ViewManagerModelAdapter implements PropertyChangeListener {
      * @param lastViewName the last active view
      */
     public void setActiveView(String lastViewName) {
-        System.out.println("VMM adapter\nsetActiveView\n");
-        System.out.println("last views: " + String.valueOf(lastViews));
-        if (!lastViews.isEmpty()) {
-            previousViewName = lastViews.pop(); // the most top last view is now active, so pop
-            System.out.println("previous view name: " + previousViewName);
-            if (previousViewName.equals(lastViewName)) { // we are going back now
-                previousViewName = lastViews.pop();
-            }
-            viewManagerModel.setActiveView(lastViewName, "going back");
-            viewManagerModel.firePropertyChanged();
-        } else { // no views to go back
-            previousViewName = "";
-        }
+        System.out.println("VMM adapter\nsetActiveView to " + lastViewName);
+        viewManagerModel.setActiveView(lastViewName);
+//        if (!lastViews.isEmpty()) {
+//            previousViewName = lastViews.pop(); // the most top last view is now active, so pop
+//            System.out.println("previous view name: " + previousViewName);
+//            if (previousViewName.equals(lastViewName)) { // we are going back now
+//                previousViewName = lastViews.pop();
+//            }
+//            viewManagerModel.setActiveView(lastViewName, "going back");
+//            viewManagerModel.firePropertyChanged();
+//        } else { // no views to go back
+//            previousViewName = "";
+//        }
     }
 
     // The Adapter listens to property change at the ViewManagerModel whenever the ViewManagerModel
