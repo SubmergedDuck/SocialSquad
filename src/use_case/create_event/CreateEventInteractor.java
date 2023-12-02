@@ -77,7 +77,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
         //Helps to detect if there are any invalid inputs
         ArrayList<String> allErrors = new ArrayList<>();
         String[] allStrings = {input.getEventName(), input.getType(), input.getEventName(), input.getCapacity(),
-        input.getTime(), input.getDescription()};
+                input.getTime(), input.getDescription()};
         if (input.getEventName().isEmpty()){
             allErrors.add("no event name");
         }
