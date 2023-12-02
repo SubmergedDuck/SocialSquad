@@ -2,8 +2,6 @@ package use_case.create_event;
 
 import entity.Events.Event;
 import entity.Events.EventFactory;
-import entity.Events.InviteOnlyEventFactory;
-import entity.Events.RestrictedEventFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 

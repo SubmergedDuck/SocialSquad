@@ -107,6 +107,7 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
      * @param event the event that is being saved
      */
     public void save(Event event){
+        System.out.println("temp point");
         eventsToID.put(event.getEventID(), event);
         save();
     }
@@ -131,10 +132,16 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
             writer.newLine();
             for (Event event : eventsToID.values()){
                 String[] coordinates = event.getLocation().getCoordinates();
-                String formattedCoordinates = String.format("(%s%s%s)", coordinates[0], elementSeperator, coordinates[1]);
+                String formattedCoordinates = String.format("%s%s%s", coordinates[0], elementSeperator, coordinates[1]);
                 String peopleJoined = FormatStringList.formatStringList(event.getPeopleJoined(),elementSeperator);
                 String peopleWaitlisted = FormatStringList.formatStringList(event.getPeopleWaitlisted(),elementSeperator);
                 String eventTime = event.getTime().format(formatter);
+                if (peopleJoined.equals("")){
+                    peopleJoined = " "; //adding a space so that we can load from the csv without any error
+                }
+                if (peopleWaitlisted.equals("")){
+                    peopleWaitlisted = " ";
+                }
                 String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", event.getOwnerUser(), event.getEventID(),
                         event.getEventName(), formattedCoordinates, peopleJoined, peopleWaitlisted, eventTime,
                         event.getType(), event.getDescription(), event.getPrivacy().toString(),event.getCapacity().toString());
@@ -245,8 +252,8 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
         Integer currentID = 0;
         for (Integer eventID : eventsToID.keySet()){
             //The new eventID will be the highest event ID.
-            if (currentID < eventID){
-                currentID = eventID + 1;
+            if (currentID <= eventID){
+                currentID = currentID + 1;
             }
         }
         return currentID;
