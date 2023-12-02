@@ -48,16 +48,15 @@ public class CreateEventInteractorTest {
             }
 
             @Override
-            public void prepareSuccessView(CreateEventOutputData output) {
+            public void prepareSuccessView() {
                 fail();
             }
         };
         //Creates regular event with an invalid input. Here, there is no owner.
         CreateEventInputData testInput = new CreateEventInputData("Bob", "", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10");
+                "Movie night", "Have fun!", "10");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
-                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonInviteOnlyEventFactory(),
-                new CommonRestrictedEventFactory(), new CommonLocationFactory());
+                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
         createEventInteractor.execute(testInput);
     }
 
@@ -73,15 +72,13 @@ public class CreateEventInteractorTest {
             }
 
             @Override
-            public void prepareSuccessView(CreateEventOutputData output) {
-
+            public void prepareSuccessView() {
             }
         };
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10", "5", "");
+                "Movie night", "Have fun!", "10");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
-                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonInviteOnlyEventFactory(),
-                new CommonRestrictedEventFactory(), new CommonLocationFactory());
+                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
     }
 
     /**
@@ -97,15 +94,14 @@ public class CreateEventInteractorTest {
             }
 
             @Override
-            public void prepareSuccessView(CreateEventOutputData output) {
+            public void prepareSuccessView() {
                 assertEquals(1, inMemoryEventsDataAccessObject.getEventMap().size());
             }
         };
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10", "5", "");
+                "Movie night", "Have fun!", "10");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
-                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonInviteOnlyEventFactory(),
-                new CommonRestrictedEventFactory(), new CommonLocationFactory());
+                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
         createEventInteractor.execute(testInput);
     }
 
@@ -121,16 +117,15 @@ public class CreateEventInteractorTest {
             }
 
             @Override
-            public void prepareSuccessView(CreateEventOutputData output) {
+            public void prepareSuccessView() {
                 User userTest = inMemoryUsersDataAccessObject.getUser("Bob");
                 assertEquals(1, userTest.getCreatedEvents().size());
             }
         };
         CreateEventInputData testInput = new CreateEventInputData("Bob", "Movie", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", false, "10", "5", "");
+                "Movie night", "Have fun!", "10");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
-                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonInviteOnlyEventFactory(),
-                new CommonRestrictedEventFactory(), new CommonLocationFactory());
+                inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
         createEventInteractor.execute(testInput);
         InMemoryUsersDataAccessObject userDAO =  (InMemoryUsersDataAccessObject)inMemoryUsersDataAccessObject;
 

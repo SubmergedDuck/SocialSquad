@@ -117,9 +117,5 @@ public class InMemoryUsersDataAccessObject implements
         return user.getJoinedEvents();
     }
 
-    @Override
-    public HashMap<String, User> getUsernameToUser() {
-        return usernameToUser;
-    }
 }
 
