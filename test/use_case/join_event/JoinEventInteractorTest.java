@@ -33,7 +33,6 @@ public class JoinEventInteractorTest {
     @Test
     public void testExecute() throws IOException {
 
-        // @Before
         ArrayList<String> testPeopleJoined = new ArrayList<>();
 
         User testUser =  new CommonUser("Anna", "123", 20, "m", "test@gmail.com");
@@ -52,7 +51,7 @@ public class JoinEventInteractorTest {
             }
 
             @Override // Mock Presenter
-            public void prepareFailView() {
+            public void prepareFailView(JoinEventOutputData outputData) {
             }
 
         };
@@ -87,6 +86,23 @@ public class JoinEventInteractorTest {
 
         // get the first event in the user's joinedEvents list
         Event evtInArray = inMemoryUsersDataAccessObject.getUserJoinedEvents("Anna").get(0);
+
+    }
+
+
+    @Test
+    public void testExecuteUserAlreadyJoined() throws IOException{
+        ArrayList<String> testPeopleJoined = new ArrayList<>();
+
+        User testUser =  new CommonUser("Anna", "123", 20, "m", "test@gmail.com");
+        Event testEvent = new CommonEvent(12345, "test event", "OrganizerBobTheBuilder",
+                null, testPeopleJoined, null, null, "type", "description",
+                false, 10);
+
+        inMemoryEventsDataAccessObject.save(testEvent);
+        inMemoryCurrentUserDAO.loginCurrentUser(testUser);
+        inMemoryUsersDataAccessObject.save(testUser);
+
 
     }
 

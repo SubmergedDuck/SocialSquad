@@ -55,10 +55,12 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
             current_number_joined++;
         }
 
-
-        // If current_number_joined is equal to capacity then prepareFailView else join event and prepareSuccessView
-        if (current_number_joined == Integer.parseInt(capacity)) {
-            joinEventPresenter.prepareFailView();
+        if (current_number_joined == Integer.parseInt(capacity)) { // If event is at full capacity
+            JoinEventOutputData joinEventOutputDataFail = new JoinEventOutputData(getPeopleJoined, "Note: Event is at full capacity!");
+            joinEventPresenter.prepareFailView(joinEventOutputDataFail);
+        } else if (getPeopleJoined.contains(username)) { // If user has already joined the event
+            JoinEventOutputData joinEventOutputDataFail = new JoinEventOutputData(getPeopleJoined, "Note: You have already joined this event!");
+            joinEventPresenter.prepareFailView(joinEventOutputDataFail);
         } else {
             // Updates DAOs
             userDataAccessObject.userJoinEvent(username, event);
@@ -69,7 +71,7 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
             getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
 
             // Output data will be used for getting the # of people joined to update #/capacity text
-            JoinEventOutputData joinEventOutputData = new JoinEventOutputData(getPeopleJoined);
+            JoinEventOutputData joinEventOutputData = new JoinEventOutputData(getPeopleJoined, null);
             joinEventPresenter.prepareSuccessView(joinEventOutputData);
         }
 
