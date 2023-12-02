@@ -11,7 +11,7 @@ public class JoinEventController {
     public JoinEventController(JoinEventInputBoundary interactor) {
         this.interactor = interactor;
     }
-    public void execute(Event event, User user) {
+    public void execute(Event event, String user) {
         JoinEventInputData inputData = new JoinEventInputData(event, user);
 
     }
