@@ -71,8 +71,8 @@ public class MainFile {
 
         //Create DAOs
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        FileUserDataAccessObject fileUserDataAccessObject = new FileUserDataAccessObject("users.csv", new CommonUserFactory());
         FileEventDataAccessObject fileEventDataAccessObject = new FileEventDataAccessObject("events.csv",new CommonEventFactory(),new CommonLocationFactory(),formatter);
+        FileUserDataAccessObject fileUserDataAccessObject = new FileUserDataAccessObject("users.csv", new CommonUserFactory(), fileEventDataAccessObject);
         InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
         CommonUserFactory userFactory = new CommonUserFactory();
         User temporaryUser = userFactory.create("username","123",5,"m","contact");
@@ -135,7 +135,7 @@ public class MainFile {
                 onlyGetEventDetailsController,getEventDetailsViewModel);
         views.add(myEventsView.getRootPane(),myEventsView.viewName);
         myEventViewModel.addPropertyChangeListener(myEventsView);
-
+        getCurrentUserViewModel.addPropertyChangeListener(myEventsView);
 
         // Build SearchNearby view
         SearchNearbyView searchNearbyView = SearchNearbyUseCaseFactory.create(viewManagerModel, searchNearbyViewModel,

@@ -1,0 +1,3 @@
+username,password,age,sex,contact,joinedEvents,createdEvents
+testuser,123,0,tempsex,tempcontact, ,0
+username,123,5,m,contact, , 

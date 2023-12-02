@@ -29,6 +29,8 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();
     private final UserFactory userFactory;
+    private final String elementSeperator = " ";
+    private final FileEventDataAccessObject fileEventDataAccessObject;
 
     /**
      * Constructor for FileUserDataAccessObject. It reads the csv file that stores the users and creates new user objects and saves them
@@ -37,11 +39,12 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
      * @param userFactory user factory
      * @throws IOException error when reading the csv file
      */
-    public FileUserDataAccessObject(String csvPath, UserFactory userFactory) throws IOException{
+    public FileUserDataAccessObject(String csvPath, UserFactory userFactory, FileEventDataAccessObject fileEventDataAccessObject) throws IOException{
         this.userDataBase = new File(csvPath);
         this.userFactory = userFactory;
+        this.fileEventDataAccessObject = fileEventDataAccessObject;
 
-        String[] labels = {"username", "password", "age", "sex", "contact"};
+        String[] labels = {"username", "password", "age", "sex", "contact", "joinedEvents", "createdEvents"};
         for (int i = 0; i < labels.length; i++){
             headers.put(labels[i], i);
         }
@@ -61,7 +64,24 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
                     Integer age = Integer.valueOf(userValues[headers.get("age")]);
                     String sex = userValues[headers.get("sex")];
                     String contact = userValues[headers.get("contact")];
+                    String joinedEvents = userValues[headers.get("joinedEvents")];
+                    String[] collectionJoinedEvents = joinedEvents.split(elementSeperator);
+                    String createdEvents = userValues[headers.get("createdEvents")];
+                    String[] collectionCreatedEvents = createdEvents.split(elementSeperator);
                     User user = userFactory.create(username,password,age,sex,contact);
+
+                    ArrayList<Event> userJoinedEvents = user.getJoinedEvents();
+                    ArrayList<Event> userCreatedEvents = user.getCreatedEvents();
+                    for (String id : collectionJoinedEvents){
+                        Integer eventID = Integer.parseInt(id);
+                        Event selectedEvent = fileEventDataAccessObject.getEvent(eventID);
+                        userJoinedEvents.add(selectedEvent);
+                    }
+                    for (String id : collectionCreatedEvents){
+                        Integer eventID = Integer.parseInt(id);
+                        Event selectedEvent = fileEventDataAccessObject.getEvent(eventID);
+                        userCreatedEvents.add(selectedEvent);
+                    }
                     usernameToUser.put(user.getUsername(), user);
                 }
             } catch (IOException e) {
@@ -96,8 +116,32 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
             writer.write(String.join(",", headers.keySet()));
             writer.newLine();
             for (User user : usernameToUser.values()){
-                String line = String.format("%s,%s,%s,%s,%s",user.getUsername(),user.getPassword(),user.getAge(),
-                        user.getSex(), user.getContact());
+                String joinedEventIDs = "";
+                for (int i = 0; i < user.getJoinedEvents().size(); i++){
+                    int eventID = user.getJoinedEvents().get(i).getEventID();
+                    if (i == user.getJoinedEvents().size() - 1){
+                        joinedEventIDs = joinedEventIDs + eventID;
+                    } else {
+                        joinedEventIDs = joinedEventIDs + eventID + elementSeperator;
+                    }
+                }
+                if (joinedEventIDs.equals("")){
+                    joinedEventIDs = elementSeperator;
+                }
+                String createdEventIDs = "";
+                for (int i = 0; i < user.getCreatedEvents().size(); i++){
+                    int eventID = user.getCreatedEvents().get(i).getEventID();
+                    if (i == user.getCreatedEvents().size() - 1){
+                        createdEventIDs = createdEventIDs + eventID;
+                    } else {
+                        createdEventIDs = createdEventIDs + eventID + elementSeperator;
+                    }
+                }
+                if (createdEventIDs.equals("")){
+                    createdEventIDs = elementSeperator;
+                }
+                String line = String.format("%s,%s,%s,%s,%s,%s,%s",user.getUsername(),user.getPassword(),user.getAge(),
+                        user.getSex(), user.getContact(), joinedEventIDs,createdEventIDs);
                 writer.write(line);
                 writer.newLine();
             }
@@ -119,6 +163,7 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
         User eventOwner = this.usernameToUser.get(ownerUser);
         ArrayList<Event> hostedEvents = eventOwner.getCreatedEvents();
         hostedEvents.add(event);
+        save();
     }
 
     @Override

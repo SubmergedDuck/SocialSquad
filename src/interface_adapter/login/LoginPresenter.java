@@ -14,10 +14,10 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     private final LoginViewModel loginViewModel;
     private final LoggedInViewModel loggedInViewModel;
+
     private final GetCurrentUserViewModel getCurrentUserViewModel;
     private ViewManagerModel viewManagerModel;
 
-    private SignupViewModel signupViewModel;
 
     public LoginPresenter(ViewManagerModel viewManagerModel,
                           LoggedInViewModel loggedInViewModel,
@@ -38,6 +38,8 @@ public class LoginPresenter implements LoginOutputBoundary {
 
         GetCurrentUserState getCurrentUserState = getCurrentUserViewModel.getState();
         getCurrentUserState.setUsername(response.getUsername()); // start tracking the user upon success login
+        getCurrentUserViewModel.setState(getCurrentUserState);
+        getCurrentUserViewModel.firePropertyChanged();
 
         this.loggedInViewModel.setState(loggedInState);
         this.loggedInViewModel.firePropertyChanged();
