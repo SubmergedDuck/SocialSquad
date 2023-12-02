@@ -47,10 +47,12 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
      */
     public final String viewName = "event details";
     private final GetEventDetailsViewModel getEventDetailsViewModel;
+    private final GetCurrentUserViewModel getCurrentUerViewModel;
     private final GetCurrentUserController getCurrentUserController;
     private final GetDirectionController getDirectionController;
     private final BackOutController backOutController;
     private final JoinEventController joinEventController;
+    private int eventID = 0;
 
     private String currentUser;
 
@@ -86,6 +88,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                             GetDirectionViewModel getDirectionViewModel, GetCurrentUserViewModel currentUserViewModel,
                             GetCurrentUserController getCurrentUserController) {
         this.getEventDetailsViewModel = getEventDetailsViewModel;
+        this.getCurrentUerViewModel = currentUserViewModel;
         this.joinEventController = joinEventController;
         this.backOutController = backOutController;
         this.getDirectionController = getDirectionController;
@@ -416,7 +419,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         pack();
     }
     private void JoinLeaveEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO change this for later
+        String username = getCurrentUerViewModel.getState().getUsername();
+        joinEventController.execute(eventID, username);
         System.out.println("You just joined this event!");
     }
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
@@ -516,6 +520,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             String time = state.getEventDate();
             String description = state.getEventDescription();
             String capacity = state.getEventCapacity();
+            this.eventID = state.getEventID();
+
             TypeByUser_LABEL.setText(name + " by " + ownerUser);
             Capacity_LABEL.setText(capacity + " People");
             Location_TEXTAREA.setText(address);
