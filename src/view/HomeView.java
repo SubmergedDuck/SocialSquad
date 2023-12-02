@@ -19,10 +19,10 @@ import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.my_event.MyEventController;
-import interface_adapter.my_event.MyEventState;
-import interface_adapter.search_event.SearchEventController;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.my_event.MyEventController;
+import interface_adapter.my_event.MyEventPresenter;
+import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
@@ -33,6 +33,7 @@ import use_case.join_event.JoinEventInteractor;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
+import use_case.my_event.MyEventInteractor;
 import use_case.search_nearby.SearchNearbyInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
@@ -62,7 +63,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private final SearchNearbyController searchNearbyController;
     private final CreateEventController createEventController;
 
-//    private final MyEventController myEventController;
+    private final MyEventController myEventController;
+    private final MyEventViewModel myEventViewModel;
 
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
@@ -77,11 +79,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private view.ButtonGradient MyEvents_BUTTON;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController) {
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController, MyEventController myEventController, MyEventViewModel myEventViewModel) {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
+        this.myEventController = myEventController;
+        this.myEventViewModel = myEventViewModel;
         initComponents();
     }
 
@@ -204,7 +208,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                             LoggedInState currentState = loggedInViewModel.getState();
 
                             HomeView.this.loggedInController.execute(
-                                    currentState.getUsername()
+                                    currentState.getUsername(),null
                             );
 
                         }
@@ -318,10 +322,13 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     }
 
     private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-//        if (evt.getSource().equals(MyEvents_BUTTON)){
-//            MyEventState currentState = new MyEventState();
-//            myEventController.execute(currentState.);
-//        }
+        if (evt.getSource().equals(MyEvents_BUTTON)){
+            LoggedInState currentState = loggedInViewModel.getState();
+            loggedInController.execute(
+                    currentState.getUsername(),myEventViewModel
+            );
+
+        }
         // TODO add your handling code here:
     }
 
@@ -357,6 +364,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
 
+
                 SearchNearbyInteractor interactor = new SearchNearbyInteractor(inMemoryEventsDataAccessObject, new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel));
                 SearchNearbyController searchNearbyController = new SearchNearbyController(interactor);
 
@@ -381,11 +389,16 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 getEventDetailsViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
 
+                MyEventViewModel myEventViewModel = new MyEventViewModel();
+                MyEventInteractor myEventInteractor = new MyEventInteractor(new MyEventPresenter(myEventViewModel),inMemoryEventsDataAccessObject);
+                MyEventController myEventController = new MyEventController(myEventInteractor);
+
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
-                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
+
+                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel(), myEventViewModel);
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController);
+                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, myEventController, myEventViewModel);
                 //homeView.setVisible(true);
 
                 homeView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

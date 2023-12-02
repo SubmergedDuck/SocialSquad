@@ -2,6 +2,7 @@ package interface_adapter.my_event;
 
 import com.sun.java.accessibility.util.EventID;
 import entity.Events.Event;
+import entity.Users.User;
 
 import java.util.ArrayList;
 
@@ -9,6 +10,8 @@ public class MyEventState {
     private ArrayList<Event> joinedEvent = null;
 
     private ArrayList<Event> createdEvent = null;
+
+    private User user = null;
 
     private String eventName = "";
 
@@ -19,8 +22,11 @@ public class MyEventState {
         createdEvent = copy.createdEvent;
         eventName = copy.eventName;
         location = copy.location;
+        user = copy.user;
     }
     public MyEventState(){}
+
+    public User getUser(){return user;}
 
     public ArrayList<Event> getJoinedEvent(){
         return joinedEvent;

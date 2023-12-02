@@ -1,5 +1,6 @@
 package app;
 
+import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
@@ -13,16 +14,26 @@ import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.get_current_user.GetCurrentUserController;
+import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.get_event_details.OnlyGetEventDetailsPresenter;
+import interface_adapter.get_ids.GetIDsController;
+import interface_adapter.get_ids.GetIDsPresenter;
+import interface_adapter.get_ids.GetIDsViewModel;
 import interface_adapter.join_event.JoinEventController;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
+import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
+import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
+import use_case.get_ids.GetIDsInteractor;
 import use_case.join_event.JoinEventInputBoundary;
 import use_case.join_event.JoinEventInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
@@ -62,13 +73,16 @@ public class Main {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
+        MyEventViewModel myEventViewModel = new MyEventViewModel();
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
+        InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
         InMemoryUsersDataAccessObject userDataAccessObject = new InMemoryUsersDataAccessObject();
         InMemoryEventsDataAccessObject eventDataAccessObject = new InMemoryEventsDataAccessObject();
+        InMemoryEventsDataAccessObject myeventDataAccessObject = new InMemoryEventsDataAccessObject();
 
         // Create sample entities
         userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
@@ -105,6 +119,7 @@ public class Main {
         // Instantiate BackOut use case
         BackOutController backOutController = BackOutUseCaseFactory.createBackOutUseCase(viewManagerModel);
 
+
         // Instantiate EventDetails use case
         GetEventDetailsController getEventDetailsController =
                 GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel, viewManagerModel, eventDataAccessObject);
@@ -130,10 +145,34 @@ public class Main {
 
         // Build Home view
         HomeView loggedInView = LoggedInUseCaseFactory.create(viewManagerModel,loggedInViewModel,searchNearbyViewModel,
-                loginViewModel, userDataAccessObject, eventDataAccessObject, createEventController);
+                loginViewModel, userDataAccessObject, eventDataAccessObject,myeventDataAccessObject, createEventController,myEventViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
+        //Build MyEvents View
+
+
+        //TODO:fix
+        GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+//        GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+        GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
+
+        //Creating the controllers,presenters, and interactors for each use case in this view.
+        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel);
+        GetIDsPresenter getIDsPresenter = new GetIDsPresenter(getIDsViewModel);
+        OnlyGetEventDetailsPresenter getEventDetailsPresenter = new OnlyGetEventDetailsPresenter(getEventDetailsViewModel);
+
+        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter, currentUserDAO);
+        GetIDsInteractor getIDsInteractor = new GetIDsInteractor(userDataAccessObject, getIDsPresenter);
+        GetEventDetailsInteractor getEventDetailsInteractor = new GetEventDetailsInteractor(getEventDetailsPresenter,eventDataAccessObject);
+
+        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
+        GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
+//        GetEventDetailsController getEventDetailsController1 = new GetEventDetailsController(getEventDetailsInteractor);
+        MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,myeventDataAccessObject,getIDsController1,getIDsViewModel,getCurrentUserController1,getCurrentUserViewModel,
+                getEventDetailsController,getEventDetailsViewModel);
+        views.add(myEventsView.getRootPane(),myEventsView.viewName);
+        myEventViewModel.addPropertyChangeListener(myEventsView);
 
         // Build SearchNearby view
         SearchNearbyView searchNearbyView = SearchNearbyUseCaseFactory.create(viewManagerModel, searchNearbyViewModel,

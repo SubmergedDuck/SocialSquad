@@ -34,6 +34,7 @@ import java.security.Key;
  * @author submergedduck
  */
 public class SignupView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
+
     public final String viewName = "sign up";
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;

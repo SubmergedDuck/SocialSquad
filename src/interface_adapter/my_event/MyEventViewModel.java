@@ -8,7 +8,7 @@ import java.beans.PropertyChangeSupport;
 public class MyEventViewModel extends ViewModel {
     private MyEventState state = new MyEventState();
 
-    public  MyEventViewModel(){super("My Event");}
+    public  MyEventViewModel(){super("My Events");}
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     public void firePropertyChanged() {
@@ -21,4 +21,8 @@ public class MyEventViewModel extends ViewModel {
         support.addPropertyChangeListener(listener);
 
     }
+
+    public MyEventState getState() { return state;
+    }
+    public void setState(MyEventState state){this.state = state;}
 }

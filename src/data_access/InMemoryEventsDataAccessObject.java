@@ -7,6 +7,7 @@ import entity.Location.DistanceCalculatorInterface;
 import use_case.create_event.CreateEventDataAccessInterface;
 import use_case.get_event_details.GetEventDetailsDataAccessInterface;
 import use_case.get_direction.GetDirectionEventDataAccessInterface;
+import use_case.my_event.MyEventDataAccessInterface;
 import use_case.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.search_event.SearchEventDataAccessInterface;
 import use_case.search_event.SearchEventInputData;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
-        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface {
+        GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface, MyEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -162,5 +163,16 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
     public String[] getEventCoordinates(int eventID) {
         Event event = eventsToID.get(eventID);
         return event.getLocation().getCoordinates();
+    }
+    //TODO:fix later
+
+    @Override
+    public List<Event> getJoinedEvents(String username) {
+        return null;
+    }
+
+    @Override
+    public List<Event> getCreatedEvents(String username) {
+        return null;
     }
 }
