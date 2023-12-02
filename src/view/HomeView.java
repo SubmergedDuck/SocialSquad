@@ -1,9 +1,5 @@
 package view;
-import data_access.GenerateRoute;
-import data_access.InMemoryCurrentUserDAO;
-import data_access.GenerateStaticMapBody;
-import data_access.InMemoryEventsDataAccessObject;
-import data_access.InMemoryUsersDataAccessObject;
+import data_access.*;
 import entity.Events.CommonEvent;
 import entity.Events.Event;
 import entity.Location.*;
@@ -28,6 +24,8 @@ import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventPresenter;
+import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -202,7 +200,8 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
 
         // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
 
-        String[] currentCoordinates = CoordinatesFromIP.getCoordinates();
+        CoordinatesFromIP coordinatesFromIP = new CoordinatesFromIP();
+        String[] currentCoordinates = coordinatesFromIP.getCoordinates();
         generateStaticMapController.execute(currentCoordinates, 100,350, 504);
 
 
@@ -350,7 +349,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 ArrayList<entity.Events.Event> eventArrayList = new ArrayList<>();
                 try {
                     User user = new CommonUser("owner", "password", 20, "f", "contact");
-
+                    inMemoryCurrentUserDAO.changeUser(user);
                     LocationFactory factory = new CommonLocationFactory();
                     Location location = factory.makeLocation("(43.665510,-79.387280)"); // Home, within 2KM
                     Location location2 = factory.makeLocation("(43.645531,-79.380348)"); // Union Station (3KM)
@@ -384,15 +383,16 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GetEventDetailsInteractor interactor1 = new GetEventDetailsInteractor(getEventDetailsPresenter, inMemoryEventsDataAccessObject);
                 GetEventDetailsController getEventDetailsController = new GetEventDetailsController(interactor1);
 
-                JoinEventInteractor joinEventInteractor = null; //TEMPORARY
-
-
-
+                JoinEventViewModel joinEventViewModel = new JoinEventViewModel("join event");
+                JoinEventPresenter joinEventPresenter = new JoinEventPresenter(joinEventViewModel);
+                JoinEventInteractor joinEventInteractor = new JoinEventInteractor(joinEventPresenter,inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject,inMemoryCurrentUserDAO);
+                JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
                 ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
                 BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
                 BackOutInteractor backOutInteractor = new BackOutInteractor(backOutPresenter);
-
+                BackOutController backOutController = new BackOutController(backOutInteractor);
 
                 GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
                 GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
@@ -406,8 +406,8 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, new JoinEventController(joinEventInteractor), backOutController,
-                        getDirectionController1, getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
+                        getDirectionController1,getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
