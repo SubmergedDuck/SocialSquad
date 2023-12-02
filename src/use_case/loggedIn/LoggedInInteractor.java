@@ -1,5 +1,7 @@
 package use_case.loggedIn;
 
+import interface_adapter.ViewModel;
+
 public class LoggedInInteractor implements LoggedInInputBoundary{
     final  LoggedInUserDataAccessInterface userDataAccessInterface;
     final LoggedInOutputBoundary loggedInPresenter;
@@ -11,8 +13,13 @@ public class LoggedInInteractor implements LoggedInInputBoundary{
 
     @Override
     public void execute(LoggedInInputData loggedInInputData){
+
         String username = loggedInInputData.getUsername();
+        ViewModel viewModel = loggedInInputData.getViewModel();
+        if (viewModel != null && viewModel.getViewName() !=null && !viewModel.getViewName().isEmpty()) {
+            loggedInPresenter.prepareLinkView(viewModel);}
+        else{
         LoggedInOutputData loggedInOutputData = new LoggedInOutputData(username,false);
-        loggedInPresenter.prepareSuccessView(loggedInOutputData);
+        loggedInPresenter.prepareLogOutView(loggedInOutputData);}
     }
 }

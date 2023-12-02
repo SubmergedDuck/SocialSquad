@@ -57,7 +57,9 @@ import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.search_event.SearchEventController;
+import interface_adapter.my_event.MyEventController;
+import interface_adapter.my_event.MyEventPresenter;
+import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyState;
@@ -82,11 +84,13 @@ import use_case.join_event.JoinEventOutputBoundary;
 import use_case.loggedIn.LoggedInInputBoundary;
 import use_case.loggedIn.LoggedInInteractor;
 import use_case.loggedIn.LoggedInOutputBoundary;
+import use_case.my_event.MyEventInteractor;
 import use_case.search_nearby.SearchNearbyInteractor;
 import use_case.search_nearby.SearchNearbyOutputData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -99,18 +103,18 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
  * @author submergedduck
  */
 
-public class HomeView extends javax.swing.JFrame implements ActionListener, PropertyChangeListener {
+// TODO: Fix Compiler Errors
+public class HomeView extends javax.swing.JFrame implements PropertyChangeListener,ActionListener {
     /**
      * Creates new form HomeView
      */
-    public final String viewName = "home";
+    public final String viewName = "Home";
     private final LoggedInViewModel loggedInViewModel;
     private final LoggedInController loggedInController;
     private final SearchNearbyController searchNearbyController;
@@ -120,6 +124,10 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
     private final GenerateStaticMapController generateStaticMapController;
     private final GenerateStaticMapViewModel generateStaticMapViewModel;
+
+//    private final MyEventController myEventController;
+    private final MyEventViewModel myEventViewModel;
+
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
     private javax.swing.JLabel LogoutIcon_LABEL;
@@ -135,9 +143,11 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
                     SearchNearbyController searchNearbyController, CreateEventController createEventController, CreateEventViewModel createEventViewModel,
                     GetCurrentUserViewModel getCurrentUserViewModel,
-                    GenerateStaticMapController generateStaticMapController, GenerateStaticMapViewModel generateStaticMapViewModel) throws IOException {
-        this.loggedInViewModel = loggedInViewModel;
+                    GenerateStaticMapController generateStaticMapController,
+                    GenerateStaticMapViewModel generateStaticMapViewModel,
+                    MyEventViewModel myEventViewModel) throws IOException {
         this.loggedInController = loggedInController;
+        this.loggedInViewModel = loggedInViewModel;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
         this.createEventViewModel = createEventViewModel;
@@ -145,6 +155,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         createEventViewModel.addPropertyChangeListener(this);
         this.generateStaticMapController = generateStaticMapController;
         this.generateStaticMapViewModel = generateStaticMapViewModel;
+        this.myEventViewModel = myEventViewModel;
         this.generateStaticMapViewModel.addPropertyChangeListener(this);
         initComponents();
     }
@@ -162,6 +173,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         LogoutIcon_LABEL = new javax.swing.JLabel();
         Logout_BUTTON = new javax.swing.JButton();
         MyEvents_BUTTON = new ButtonGradient();
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -273,6 +285,26 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
         Logout_BUTTON.setForeground(new java.awt.Color(229, 222, 233));
         Logout_BUTTON.setText("Logout");
         Logout_BUTTON.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        Logout_BUTTON.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(e.getSource().equals(Logout_BUTTON)){
+                            LoggedInState currentState = loggedInViewModel.getState();
+
+                            HomeView.this.loggedInController.execute(
+                                    currentState.getUsername(),null
+                            );
+
+                        }
+                    }
+
+
+
+
+                }
+        );
+
 
         MyEvents_BUTTON.setForeground(new java.awt.Color(196, 182, 206));
         MyEvents_BUTTON.setText("My Events");
@@ -348,8 +380,15 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
 
         pack();
     }
+    private void MyEvents_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
+        if (evt.getSource().equals(MyEvents_BUTTON)){
+            LoggedInState currentState = loggedInViewModel.getState();
+            loggedInController.execute(
+                    currentState.getUsername(),myEventViewModel
+            );
 
-    private void MyEvents_BUTTONActionPerformed(ActionEvent evt) {
+        }
+        // TODO add your handling code here:
     }
 
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
@@ -506,8 +545,12 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 getEventDetailsViewModel.addPropertyChangeListener(eventDetailsView);
                 createEventViewModel.addPropertyChangeListener(view);
 
+                MyEventViewModel myEventViewModel = new MyEventViewModel();
+                MyEventInteractor myEventInteractor = new MyEventInteractor(new MyEventPresenter(myEventViewModel),inMemoryEventsDataAccessObject);
+                MyEventController myEventController = new MyEventController(myEventInteractor);
+
                 LoggedInViewModel loggedInViewModel1 = new LoggedInViewModel();
-                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
+                LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel(),myEventViewModel);
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
                 GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
@@ -517,8 +560,8 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
                 HomeView homeView = null;
                 try {
-                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, createEventViewModel,getCurrentUserViewModel,
-                            generateStaticMapController, gsmViewModel);
+                    homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,createEventViewModel,getCurrentUserViewModel,
+                            generateStaticMapController, gsmViewModel, myEventViewModel);
                 } catch (IOException e) {
                     System.out.println("IO Exception occurred");;
                     e.printStackTrace();

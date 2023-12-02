@@ -40,6 +40,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     /**
      * Creates new form MyEventsView
      */
+    public final String viewName = "My Events";
 
     private final GetIDsController getIDsController;
     private final GetCurrentUserController getCurrentUserController;
