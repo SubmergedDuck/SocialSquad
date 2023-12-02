@@ -272,11 +272,6 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         String[] currentCoordinates = coordinatesFromIP.getCoordinates();
         generateStaticMapController.execute(currentCoordinates, 100,350, 504);
 
-
-
-
-
-
         // TODO: Import logout image icon to src/view
         LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
         LogoutIcon_LABEL.setText("jLabel2");
@@ -632,9 +627,4 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         }
 
     }
-
-//    @Override
-//    public void propertyChange(PropertyChangeEvent evt) {
-//        //LoggedInState state = (LoggedInState) evt.getNewValue();
-//    }
 }
