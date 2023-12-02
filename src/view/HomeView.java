@@ -66,6 +66,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private final SearchNearbyController searchNearbyController;
     private final CreateEventController createEventController;
     private final CreateEventViewModel createEventViewModel;
+    private final GetCurrentUserViewModel getCurrentUserViewModel;
 
     private javax.swing.JPanel BottomSeperator_PANEL;
     private view.ButtonGradient CreateEvent_BUTTON;
@@ -80,12 +81,15 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private view.ButtonGradient MyEvents_BUTTON;
 
     public HomeView(LoggedInViewModel loggedInViewModel, LoggedInController loggedInController,
-                    SearchNearbyController searchNearbyController, CreateEventController createEventController, CreateEventViewModel createEventViewModel) {
+                    SearchNearbyController searchNearbyController, CreateEventController createEventController, CreateEventViewModel createEventViewModel,
+                    GetCurrentUserViewModel getCurrentUserViewModel) {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInController = loggedInController;
         this.searchNearbyController = searchNearbyController;
         this.createEventController = createEventController;
         this.createEventViewModel = createEventViewModel;
+        this.getCurrentUserViewModel = getCurrentUserViewModel;
+        createEventViewModel.addPropertyChangeListener(this);
         initComponents();
     }
 
@@ -284,10 +288,27 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
     private void CreateEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(CreateEvent_BUTTON)) {
             CreateEventState state = createEventViewModel.getState();
-            state.setDisplayed(true);
-            createEventViewModel.setState(state);
-            createEventViewModel.firePropertyChanged();
-            //createEventController.execute();
+            System.out.println("display state: " + String.valueOf(state.getIsDisplayed() + "\n")); // currently false
+            if (state.getIsDisplayed()) { // the page is already on display
+                System.out.println("you are on create event view.");
+                String eventOwner = getCurrentUserViewModel.getState().getUsername();
+                String eventName = state.getEventName();
+                String eventType = state.getEventType();
+                String coordinates = state.getCoordinates();
+                String capacity = state.getCapacity();
+                String date = state.getDate();
+                String eventTime = state.getEventTime();
+                String description = state.getDescription();
+                String formattedDate = String.format("%s %s", date, eventTime);
+
+                createEventController.execute(eventOwner, eventName, eventType, coordinates, capacity, description, formattedDate);
+
+            } else { // the button is pressed to set create event page active
+                state.setIsDisplayed(true);
+                createEventViewModel.setState(state);
+                createEventViewModel.firePropertyChanged();
+                System.out.println("create event view will be set active.");
+            }
         }
     }
 
@@ -349,6 +370,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
                 GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
 
+
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
 
@@ -403,7 +425,7 @@ public class HomeView extends javax.swing.JFrame implements ActionListener, Prop
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel());
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, createEventViewModel);
+                HomeView homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController, createEventViewModel, getCurrentUserViewModel);
                 //homeView.setVisible(true);
 
                 homeView.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
