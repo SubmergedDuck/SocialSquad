@@ -69,7 +69,7 @@ public class GSMInteractorTest {
                 assert!(outputData.getGeneratedMap() == null);
             }
         };
-        GSMInputData inputData = new GSMInputData(testUser.getUsername(),3,300,300);
+        GSMInputData inputData = new GSMInputData(testUser.getLocation().getCoordinates(), 3,300,300);
         GSMInteractor testInteractor = new GSMInteractor(apiDataAccessObject,usersDataAccessObject,
                 eventsDataAccessObject,mockPresenter);
         testInteractor.execute(inputData);
@@ -92,7 +92,7 @@ public class GSMInteractorTest {
                 frame.setVisible(true);
             }
         };
-        GSMInputData inputData = new GSMInputData(testUser.getUsername(),3,300,300);
+        GSMInputData inputData = new GSMInputData(testUser.getLocation().getCoordinates(), 3,300,300);
         GSMInteractor testInteractor = new GSMInteractor(apiDataAccessObject,usersDataAccessObject,
                 eventsDataAccessObject,mockPresenter);
         testInteractor.execute(inputData);
