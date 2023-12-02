@@ -298,10 +298,6 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
 
                         }
                     }
-
-
-
-
                 }
         );
 

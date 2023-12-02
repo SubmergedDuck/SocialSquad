@@ -19,21 +19,16 @@ import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
 import interface_adapter.get_direction.GetDirectionState;
 import interface_adapter.get_direction.GetDirectionViewModel;
-import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
-import interface_adapter.search_nearby.SearchNearbyPresenter;
 import use_case.back_out.BackOutInteractor;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_direction.GetDirectionInteractor;
 import use_case.get_event_details.GetEventDetailsOutputData;
 import use_case.join_event.JoinEventInteractor;
-import use_case.search_nearby.SearchNearbyOutputData;
 import javax.swing.*;
-import javax.swing.text.View;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -95,6 +90,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         this.backOutController = backOutController;
         this.getDirectionController = getDirectionController;
         this.getCurrentUserController = getCurrentUserController;
+        currentUser = currentUserViewModel.getState().getUsername();
         currentUserViewModel.addPropertyChangeListener(this);
         getDirectionViewModel.addPropertyChangeListener(this);
         this.getEventDetailsViewModel.addPropertyChangeListener(this);
@@ -106,7 +102,6 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 //        this.getEventDetailsViewModel = getEventDetailsViewModel;
 //    }
     private void initComponents() {
-        getCurrentUserController.execute();
         Main_PANEL = new javax.swing.JPanel();
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
         Title_LABEL = new javax.swing.JLabel();
@@ -499,7 +494,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                     GetEventDetailsPresenter presenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
                     GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(event.getOwnerUser(),
                             event.getEventName(), event.getEventAddress(), event.getEventDate(), event.getDescription(),
-                            String.valueOf(event.getCapacity()), event.getEventID());
+                            String.valueOf(event.getCapacity()), event.getEventID(), true);
                     presenter.prepareView(outputData);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -538,7 +533,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             }
         } else if (evt.getNewValue() instanceof GetCurrentUserState){
             GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
-            currentUser = state.getUsername();
+            this.currentUser = state.getUsername();
         }
     }
 }
