@@ -16,6 +16,9 @@ import entity.Users.User;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
+import interface_adapter.create_event.CreateEventPresenter;
+import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_current_user.GetCurrentUserController;
 import interface_adapter.get_current_user.GetCurrentUserPresenter;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
@@ -37,6 +40,9 @@ import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
+import use_case.create_event.CreateEventInputBoundary;
+import use_case.create_event.CreateEventInteractor;
+import use_case.create_event.CreateEventOutputBoundary;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_direction.GetDirectionInteractor;
 import use_case.generate_static_map.GSMInteractor;
@@ -84,6 +90,8 @@ public class Main {
         SignupViewModel signupViewModel = new SignupViewModel();
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+        CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
+        GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
@@ -92,9 +100,13 @@ public class Main {
         InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
         User testUser = new CommonUser("aa", "123", 1, "f", "contact");
         currentUserDAO.changeUser(testUser);
+        // Instantiate all factories
+        EventFactory eventFactory = new CommonEventFactory();
+
+        LocationFactory locationFactory = new CommonLocationFactory();
 
         // Create sample entities
-        userDataAccessObject.save(testUser);
+        userDataAccessObject.save(new CommonUser("aa", "123", 1, "f", "contact"));
 
         try {
             User user = new CommonUser("owner", "password", 20, "f", "contact");
@@ -133,8 +145,11 @@ public class Main {
                 GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel, viewManagerModel, eventDataAccessObject);
 
         // Instantiate CreateEvent use case
-        // TODO replace with factory later
-        CreateEventController createEventController = new CreateEventController();
+        CreateEventController createEventController =
+                CreateEventUseCaseFactory.createEventUseCase(createEventViewModel, eventDataAccessObject,
+                        userDataAccessObject, eventFactory, locationFactory);
+        CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
+        views.add(createEventView.getRootPane(), createEventView.viewName);
 
         // Instantiate JoinEvent use case
         // TODO replace with factory later
@@ -143,7 +158,7 @@ public class Main {
 
         // Build Login view
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
-                signupViewModel, userDataAccessObject);
+                signupViewModel, userDataAccessObject, getCurrentUserViewModel);
         views.add(loginView.getRootPane(), loginView.viewName);
 
         // Build Signup view
@@ -169,7 +184,7 @@ public class Main {
         LoggedInInteractor loggedInInteractor = new LoggedInInteractor(userDataAccessObject,loggedInPresenter);
         LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
         HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
-                createEventController,generateStaticMapController,generateStaticMapViewModel);
+                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
