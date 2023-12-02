@@ -2,6 +2,8 @@ package use_case.back_out;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewManagerModelAdapter;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +17,7 @@ class BackOutInteractorTest {
         //ViewManager viewManager = new ViewManager(new JPanel(), new CardLayout(), viewManagermodel);
         ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagermodel);
         viewManagermodel.addPropertyChangeListener(viewManagerModelAdapter); // The Adapter listens to the ViewMangaerModel
+        BackOutInteractor interactor = new BackOutInteractor(new BackOutPresenter(viewManagerModelAdapter));
 
         // test when a view switch is performed outside of the GoBack use case
         viewManagermodel.setActiveView("view 1");
@@ -38,15 +41,17 @@ class BackOutInteractorTest {
         System.out.println("\nbacking out to the last view...\n");
 
         // Go back through the adapter
-        viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
+        //viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
+        interactor.execute();
         System.out.println("the current active view is " + viewManagermodel.getActiveView()); // should be view 2
         assert viewManagermodel.getActiveView().equals("view 2");
 
         System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName() + "\n"); // should be view 1
         assert viewManagerModelAdapter.getLastViewName().equals("view 1");
 
-        viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
-        assert viewManagerModelAdapter.getLastViewName().equals(""); // no view is before "view 1"
+        //viewManagerModelAdapter.setActiveView(viewManagerModelAdapter.getLastViewName());
+        interactor.execute();
+        assert viewManagerModelAdapter.getLastViewName().equals("home"); // home view is at default before "view 1"
         System.out.println("the last active view is " + viewManagerModelAdapter.getLastViewName() + "\n");
 
         // Go in again
