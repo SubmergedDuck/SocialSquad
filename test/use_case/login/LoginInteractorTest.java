@@ -1,7 +1,10 @@
 package use_case.login;
 
+import data_access.CoordinatesFromIP;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Location.CommonLocation;
+import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
 import entity.Location.LocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
@@ -9,6 +12,7 @@ import entity.Users.UserFactory;
 import interface_adapter.ViewModel;
 import org.junit.Before;
 import org.junit.Test;
+import use_case.common_interfaces.GetCoordinatesIP;
 import use_case.get_current_user.CurrentUserDataAccessInterface;
 
 import java.io.IOException;
@@ -22,17 +26,21 @@ public class LoginInteractorTest {
     private InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject;
     private LoginCurrentUserDataAccessInterface currentUserDataAccessInterface;
 
-    private LocationFactory locationFactory;
+    private LocationFactory locationFactory = new CommonLocationFactory();
+
+    private GetCoordinatesIP getCoordinatesIP = new CoordinatesFromIP();
 
     /**
      * Initialize the test environment.
      */
     @Before
-    public void init() {
+    public void init() throws IOException {
+
         UserFactory userFactory = new CommonUserFactory();
         inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
         User testCreator = userFactory.create("aa", "123", 2, "", "");
         inMemoryUsersDataAccessObject.save(testCreator);
+
 
     }
 
@@ -44,7 +52,8 @@ public class LoginInteractorTest {
     @Test
     public void testValidLogin() throws IOException {
         LoginOutputBoundaryMock presenter = new LoginOutputBoundaryMock();
-        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject,presenter,currentUserDataAccessInterface,locationFactory);
+
+        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject,presenter,currentUserDataAccessInterface,locationFactory,getCoordinatesIP);
 
         LoginInputData inputData = new LoginInputData("aa", "123", null);
         interactor.execute(inputData);
@@ -60,7 +69,7 @@ public class LoginInteractorTest {
     @Test
     public void testInvalidPassword() throws IOException {
         LoginOutputBoundaryMock presenter = new LoginOutputBoundaryMock();
-        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter,currentUserDataAccessInterface,locationFactory);
+        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter,currentUserDataAccessInterface,locationFactory,getCoordinatesIP);
 
         LoginInputData inputData = new LoginInputData("aa", "wrong_password", null);
         interactor.execute(inputData);
@@ -76,7 +85,7 @@ public class LoginInteractorTest {
     @Test
     public void testNonexistentUser() throws IOException {
         LoginOutputBoundaryMock presenter = new LoginOutputBoundaryMock();
-        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter,currentUserDataAccessInterface,locationFactory);
+        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter,currentUserDataAccessInterface,locationFactory,getCoordinatesIP);
 
         LoginInputData inputData = new LoginInputData("nonexistent_user", "password", null);
         interactor.execute(inputData);
