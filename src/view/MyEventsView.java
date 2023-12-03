@@ -434,7 +434,10 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             GetEventDetailsState state = (GetEventDetailsState)evt.getNewValue();
             String formattedString = String.format("(Event ID: %s) %s (%s). Address: %s. Owner: %s",
                     state.getEventID(), state.getEventName(), state.getEventDate(), state.getEventAddress(), state.getOwnerUser());
-            eventDescriptions.add(formattedString);
+            if (!state.hasChangedView()){
+                System.out.println("test");
+                eventDescriptions.add(formattedString);
+            }
             Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
                 String[] strings = eventDescriptions.toArray(new String[eventDescriptions.size()]);
                 public int getSize() { return strings.length; }
