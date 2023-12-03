@@ -207,7 +207,7 @@ public class Main {
             throw new RuntimeException(e);
         }
         Event newEvent = eventFactory.create(0,"test event","another user",location,peopledJoined,
-                new ArrayList<String>(), LocalDateTime.now(),"test event", "test", false, 10);
+                new ArrayList<String>(), LocalDateTime.now(),"test event", "test", false, 1);
         eventDataAccessObject.save(newEvent);
         ArrayList<Event> userJoinedEvents = newUser.getJoinedEvents();
         userJoinedEvents.add(newEvent);
