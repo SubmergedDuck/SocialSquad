@@ -5,6 +5,7 @@
 package view;
 
 
+import data_access.CoordinatesFromIP;
 import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Location.CommonLocationFactory;
@@ -459,7 +460,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         inMemoryUserDAO.save(new CommonUser("aa","aaa",1,"",""));
 
-        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter, new InMemoryCurrentUserDAO(),new CommonLocationFactory());
+        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter, new InMemoryCurrentUserDAO(),new CommonLocationFactory(), new CoordinatesFromIP());
         LoginController loginController  = new LoginController(interactor);
         LoginView loginView = new LoginView(loginViewModel,loginController, signupViewModel);
         loginViewModel.addPropertyChangeListener(loginView);

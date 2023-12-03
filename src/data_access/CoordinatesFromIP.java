@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.Location.CoordinatesToAddress;
+import use_case.common_interfaces.GetCoordinatesIP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,13 +14,14 @@ import java.util.Arrays;
 /**
  * This class is responsible for gathering the location information from one's ip using an API call.
  */
-public class CoordinatesFromIP {
+public class CoordinatesFromIP implements GetCoordinatesIP {
     /**
      * Uses a user's ip and finds the coordinates from the ip.
      * @return returns the coordinates of the location given by the user's ip.
      * @throws IOException error occurs with the api call. Here, empty coordinates would be returned.
      */
-    public static String[] getCoordinates() throws IOException {
+    @Override
+    public  String[] getCoordinates() throws IOException {
         String[] result = {};
         try {
             URL url = new URL("http://ip-api.com/csv/");

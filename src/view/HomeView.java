@@ -84,6 +84,8 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
      * Creates new form HomeView
      */
     public final String viewName = "Home";
+    private final int height = 504;
+    private final int width = 350;
     private final LoggedInViewModel loggedInViewModel;
     private final LoggedInController loggedInController;
     private final SearchNearbyController searchNearbyController;
@@ -235,11 +237,9 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
         MapImage_LABEL.setBackground(new java.awt.Color(204, 204, 255));
         MapImage_LABEL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        // TODO: This image is a placeholder, replace with Bing Maps API png # Mikee?
 
-        CoordinatesFromIP coordinatesFromIP = new CoordinatesFromIP();
-        String[] currentCoordinates = coordinatesFromIP.getCoordinates();
-        generateStaticMapController.execute(currentCoordinates, 100,350, 504);
+        String[] currentCoordinates = getCurrentUserViewModel.getState().getUserCoordinates();
+        generateStaticMapController.execute(currentCoordinates, 100,width, height);
 
         // TODO: Import logout image icon to src/view
         LogoutIcon_LABEL.setIcon(new javax.swing.ImageIcon("/Users/submergedduck/Desktop/CSC207/LogOutIcon.png"));
@@ -382,12 +382,6 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     private void SearchEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(SearchEvent_BUTTON)) {
             try {
-                // TODO right now the IP API is not working, so I will fake a location. The code commented out should be the right code to call.
-//                String[] coordinates = CoordinatesFromIP.getCoordinates();
-//                CoordinatesToAddress coordinatesToAddress = new CoordinatesToAddress(coordinates);
-//                String address = coordinatesToAddress.getAddress();
-//                LocationFactory factory = new CommonLocationFactory();
-//                Location  userLocation = factory.create(coordinates, address, "Canada");
                 LocationFactory factory = new CommonLocationFactory();
                 Location userLocation = factory.makeLocation("(43.665510,-79.387280)");
                 searchNearbyController.execute(userLocation);
@@ -407,6 +401,12 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
             GenerateStaticMapState state = (GenerateStaticMapState)evt.getNewValue();
             BufferedImage generatedMap = state.getGeneratedMap();
             MapImage_LABEL.setIcon(new javax.swing.ImageIcon(generatedMap));
+        } else if (evt.getNewValue() instanceof GetCurrentUserState){
+            GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
+            try {
+                generateStaticMapController.execute(state.getUserCoordinates(),100,width,height);
+            } catch (IOException e) {
+            }
         }
     }
 
