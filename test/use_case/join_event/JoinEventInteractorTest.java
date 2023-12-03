@@ -155,6 +155,8 @@ public class JoinEventInteractorTest {
             public void prepareFailView(JoinEventOutputData outputData) {
                 String failReason = outputData.getFailureReason();
                 assert (failReason.equals("Note: Event is at full capacity!"));
+                assert outputData.getPeopleJoined().contains("Anna");
+                assert !outputData.getPeopleJoined().contains("another user");
             }
 
         };
@@ -165,7 +167,6 @@ public class JoinEventInteractorTest {
                 inMemoryEventsDataAccessObject, inMemoryCurrentUserDAO);
 
         joinEventInteractor.execute(inputData);
-        assert !testEvent.getPeopleJoined().contains("another user");
 
     }
 }
