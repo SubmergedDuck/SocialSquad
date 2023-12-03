@@ -147,7 +147,7 @@ public class MainFile {
                                GetCurrentUserViewModel getCurrentUserViewModel) throws IOException {
         CommonUserFactory userFactory = new CommonUserFactory();
         CommonLocationFactory locationFactory = new CommonLocationFactory();
-        Location temporaryLocation = locationFactory.makeLocation("(50,-75)");
+        Location temporaryLocation = locationFactory.makeLocation("(43.664486,-79.399689)");
         User temporaryUser = userFactory.create("username","123",5,"m","contact");
         temporaryUser.setLocation(temporaryLocation);
         currentUserDAO.changeUser(temporaryUser);

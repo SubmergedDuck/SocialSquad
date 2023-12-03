@@ -21,7 +21,7 @@ public class CoordinatesFromIP implements GetCoordinatesIP {
      * @throws IOException error occurs with the api call. Here, empty coordinates would be returned.
      */
     @Override
-    public  String[] getCoordinates() throws IOException {
+    public String[] getCoordinates() throws IOException {
         String[] result = {};
         try {
             URL url = new URL("http://ip-api.com/csv/");
