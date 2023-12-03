@@ -101,7 +101,7 @@ public class MainFile {
 
         CreateEventController createEventController = CreateEventUseCaseFactory.createEventUseCase(createEventViewModel, fileEventDataAccessObject,
                 fileUserDataAccessObject, new CommonEventFactory(), new CommonLocationFactory());
-        CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
+        CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel,generateStaticMapController);
         views.add(createEventView.getRootPane(), createEventView.viewName);
 
 
@@ -133,15 +133,9 @@ public class MainFile {
         views.add(searchNearbyView.getRootPane(), searchNearbyView.viewName);
 
         // Build GetEventDetails view
-        GetDirectionViewModel getDirectionViewModel1 = new GetDirectionViewModel();
-        GetDirectionPresenter getDirectionPresenter = new GetDirectionPresenter(getDirectionViewModel1);
-        GetDirectionInteractor getDirectionInteractor = new GetDirectionInteractor(getDirectionPresenter,fileEventDataAccessObject,fileUserDataAccessObject,
-                new GenerateRoute());
-        GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
-
         EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,
                 joinEventViewModel,backOutController,
-                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController);
+                getDirectionController,getDirectionViewModel,getCurrentUserViewModel,getCurrentUserController);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);
