@@ -189,6 +189,7 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
     public void userJoinEvent(String username, Event event) {
         User user = usernameToUser.get(username);
         user.getJoinedEvents().add(event);
+        save();
     }
 
     @Override
