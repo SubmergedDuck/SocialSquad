@@ -7,6 +7,7 @@ public class GetEventDetailsState {
     private String eventDate = "";
     private String eventDescription = "";
     private String eventCapacity = "";
+    private boolean changeView;
 
     private int eventID;
 
@@ -72,5 +73,11 @@ public class GetEventDetailsState {
     public void setEventID(int eventID){this.eventID = eventID;}
 
     public int getEventID(){return eventID;}
+
+    public boolean hasChangedView(){return this.changeView;}
+
+    public void setChangeView(boolean changeView){
+        this.changeView = changeView;
+    }
 
 }
