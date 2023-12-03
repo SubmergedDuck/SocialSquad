@@ -142,7 +142,7 @@ public class JoinEventInteractorTest {
         inMemoryCurrentUserDAO.loginCurrentUser(testUser);
         inMemoryUsersDataAccessObject.save(testUser);
         testEvent.getPeopleJoined().add(testUser.getUsername()); // Make the user join the event
-        assert testEvent.getCapacity() == 0; // Event is full.
+        assert testEvent.getCapacity() == testEvent.getPeopleJoined().size(); // Event is full.
 
 
         JoinEventOutputBoundary joinEventPresenter = new JoinEventOutputBoundary() {
@@ -154,18 +154,18 @@ public class JoinEventInteractorTest {
             @Override // Mock Presenter
             public void prepareFailView(JoinEventOutputData outputData) {
                 String failReason = outputData.getFailureReason();
-                assert (failReason.equals("Note: You have already joined this event!"));
+                assert (failReason.equals("Note: Event is at full capacity!"));
             }
 
         };
 
-        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent.getEventID(), "another user");
+        JoinEventInputData inputData= new JoinEventInputData(testEvent.getEventID(), "another user");
 
         joinEventInteractor = new JoinEventInteractor(joinEventPresenter, inMemoryUsersDataAccessObject,
                 inMemoryEventsDataAccessObject, inMemoryCurrentUserDAO);
 
-        joinEventInteractor.execute(joinEventInputDataAnna);
-        assert testEvent.getPeopleJoined().contains("another user");
+        joinEventInteractor.execute(inputData);
+        assert !testEvent.getPeopleJoined().contains("another user");
 
     }
 }
