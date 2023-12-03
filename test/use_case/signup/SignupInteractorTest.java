@@ -76,7 +76,7 @@ public class SignupInteractorTest {
         };
 
         SignupInteractor signupInteractor = new SignupInteractor(inMemoryUsersDataAccessObject, mockPresenter, new CommonUserFactory());
-        SignupInputData testInput = new SignupInputData("aa", "password", "123", "123", "1", "f", "contact", false);
+        SignupInputData testInput = new SignupInputData("aa", "password", "123", "123", "wrong number", "f", "contact", false);
         signupInteractor.execute(testInput);
 
 //        // Attempting to signup with the same username again
