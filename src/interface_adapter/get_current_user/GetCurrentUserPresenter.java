@@ -17,6 +17,7 @@ public class GetCurrentUserPresenter implements GetCurrentUserOutputBoundary {
     public void prepareView(GetCurrentUserOutputData outputData) {
         GetCurrentUserState state = getCurrentUserViewModel.getState();
         state.setUsername(outputData.getCurrentUser());
+        state.setUserCoordinates(outputData.getUserCoordinates());
         getCurrentUserViewModel.setState(state);
         getCurrentUserViewModel.firePropertyChanged();
     }

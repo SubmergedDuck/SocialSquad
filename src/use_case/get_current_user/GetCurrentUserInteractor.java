@@ -26,9 +26,10 @@ public class GetCurrentUserInteractor implements GetCurrentUserInputBoundary {
     @Override
     public void execute() {
         User user = currentUserDataAccessObject.getCurrentUser();
+        String[] userCoordinates = user.getLocation().getCoordinates();
         if (user != null){
             String username = user.getUsername();
-            GetCurrentUserOutputData outputData = new GetCurrentUserOutputData(username);
+            GetCurrentUserOutputData outputData = new GetCurrentUserOutputData(username, userCoordinates);
             presenter.prepareView(outputData);
         }
     }
