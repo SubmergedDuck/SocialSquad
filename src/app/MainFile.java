@@ -139,7 +139,8 @@ public class MainFile {
                 new GenerateRoute());
         GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
-        EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
+        EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,
+                joinEventViewModel,backOutController,
                 getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
