@@ -49,7 +49,7 @@ public class LoginPresenter implements LoginOutputBoundary {
     }
 
     @Override
-    public void prepareLinkView(LoginOutputData outputData, ViewModel viewModel) {
+    public void prepareLinkView(ViewModel viewModel) {
         // jump to another view, set its previous view name to current one
         viewModel.setPreviousViewName(loginViewModel.getViewName());
         this.viewManagerModel.setActiveView(viewModel.getViewName());
@@ -58,7 +58,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
 
     @Override
-    public void prepareFailView(LoginOutputData outputData, String error) {
+    public void prepareFailView(String error) {
         LoginState loginState = loginViewModel.getState();
         loginState.setUsernameError(error);
         loginViewModel.firePropertyChanged();

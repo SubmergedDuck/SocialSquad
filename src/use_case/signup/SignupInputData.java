@@ -40,12 +40,22 @@ public class SignupInputData {
 
     String getRepeatPassword(){return repeatPassword;}
 
-    Integer getAge() {
+    Integer getAge() throws NumberFormatException{
         //In case the user inputs an invalid input for age.
-        return Integer.parseInt(age);
+        try {
+            return Integer.parseInt(age);
+        } catch (Exception NumberFormatException) {
+            return -1;
+        }
     }
+    String getAGE(){return age;}
 
     String getSex(){return sex;}
 
     String getContact(){return contact;}
+
+    boolean inputsEmpty(){
+        return (username != "") && (realName != "") && (password != "") &&
+                (repeatPassword != "") && (age != "") && (sex != "");
+    }
 }

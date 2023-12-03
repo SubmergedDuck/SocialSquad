@@ -13,8 +13,4 @@ public class LoginOutputData{
         return username;
     }
 
-    public boolean getUseCaseFailed(){
-        return useCaseFailed;
-    }
-
 }
