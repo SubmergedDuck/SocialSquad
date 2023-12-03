@@ -75,7 +75,7 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
                     Integer eventID = Integer.valueOf(eventValues[headers.get("eventID")]);
                     String eventName = eventValues[headers.get("eventName")];
                     String[] coordinates = eventValues[headers.get("coordinates")].split(elementSeperator);
-                    Location eventLocation = locationFactory.makeLocation(String.format("(%s,%s)", coordinates[0], coordinates[1]));
+                    Location eventLocation = this.locationFactory.makeLocation(String.format("(%s,%s)", coordinates[0], coordinates[1]));
                     String[] usernamesJoined = eventValues[headers.get("peopleJoined")].split(elementSeperator);
                     ArrayList<String> participantsJoined = new ArrayList<>(Arrays.asList(usernamesJoined));
                     String[] usernamesWaitlisted = eventValues[headers.get("peopleWaitlisted")].split(elementSeperator);
@@ -90,7 +90,7 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
                     Integer capacity = Integer.valueOf(eventValues[headers.get("capacity")]);
 
                     //Creating the event object
-                    Event createdEvent = eventFactory.create(eventID,eventName,ownerUser,eventLocation,participantsJoined,
+                    Event createdEvent = this.eventFactory.create(eventID,eventName,ownerUser,eventLocation,participantsJoined,
                             participantsWaitlisted,eventTime,eventType,description,privacy,capacity);
 
                     //Saving the created event to the arraylist

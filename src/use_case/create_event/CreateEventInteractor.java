@@ -4,6 +4,7 @@ import entity.Events.Event;
 import entity.Events.EventFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -98,7 +99,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
 
         try {
             Location location = locationFactory.makeLocation(input.getLocation());
-        } catch (IOException | IndexOutOfBoundsException e){
+        } catch (IOException | IndexOutOfBoundsException | JSONException e){
             allErrors.add("invalid coordinates");
         }
 

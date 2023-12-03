@@ -7,8 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
-
 public class GenerateStaticMapURLTest {
     @Test
     public void getMap() throws IOException {
