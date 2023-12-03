@@ -22,6 +22,7 @@ import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.get_event_details.OnlyGetEventDetailsPresenter;
 import interface_adapter.get_ids.GetIDsController;
 import interface_adapter.get_ids.GetIDsPresenter;
 import interface_adapter.get_ids.GetIDsViewModel;
@@ -31,7 +32,6 @@ import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
@@ -66,7 +66,6 @@ public class MainFile {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
-        MyEventViewModel myEventViewModel = new MyEventViewModel();
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
@@ -95,7 +94,7 @@ public class MainFile {
                 fileEventDataAccessObject,fileUserDataAccessObject);
         GetDirectionController getDirectionController = GetDirectionUseCaseFactory.createGetDirectionUseCase(getDirectionViewModel,fileEventDataAccessObject,
                 fileUserDataAccessObject);
-        LoggedInController loggedInController = LoggedInUseCaseFactory.createLoggedInUseCase(viewManagerModel,loggedInViewModel,loginViewModel,myEventViewModel,fileUserDataAccessObject);
+        LoggedInController loggedInController = LoggedInUseCaseFactory.createLoggedInUseCase(viewManagerModel,loggedInViewModel,loginViewModel,getIDsViewModel,fileUserDataAccessObject);
         JoinEventController joinEventController = JoinEventUseCaseFactory.joinEventUseCase(joinEventViewModel, fileEventDataAccessObject, fileUserDataAccessObject, currentUserDAO);
 
 
@@ -116,15 +115,13 @@ public class MainFile {
         views.add(signupView.getRootPane(), signupView.viewName);
 
         HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
-                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,myEventViewModel);
+                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,getIDsViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
-        MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,fileUserDataAccessObject,
-                getIDsController,getIDsViewModel,getCurrentUserController,backOutController,getCurrentUserViewModel,
-                onlyGetEventDetailsController,getEventDetailsViewModel);
+        MyEventsView myEventsView = new MyEventsView(getIDsController,getIDsViewModel,getCurrentUserController,getCurrentUserViewModel, onlyGetEventDetailsController,backOutController,getEventDetailsViewModel);
         views.add(myEventsView.getRootPane(),myEventsView.viewName);
-        myEventViewModel.addPropertyChangeListener(myEventsView);
+        getIDsViewModel.addPropertyChangeListener(myEventsView);
         getCurrentUserViewModel.addPropertyChangeListener(myEventsView);
 
         // Build SearchNearby view

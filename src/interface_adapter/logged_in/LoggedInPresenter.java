@@ -2,10 +2,10 @@ package interface_adapter.logged_in;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
+import interface_adapter.get_ids.GetIDsState;
+import interface_adapter.get_ids.GetIDsViewModel;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.my_event.MyEventState;
-import interface_adapter.my_event.MyEventViewModel;
 import use_case.loggedIn.LoggedInOutputBoundary;
 import use_case.loggedIn.LoggedInOutputData;
 
@@ -14,26 +14,26 @@ public class LoggedInPresenter implements LoggedInOutputBoundary {
 
     private final LoginViewModel loginViewModel;
 
-    private final MyEventViewModel myEventViewModel;
+    private final GetIDsViewModel getIDsViewModel;
 
     private ViewManagerModel viewManagerModel;
 
     public LoggedInPresenter(ViewManagerModel viewManagerModel,
                              LoggedInViewModel loggedInViewModel,
-                             LoginViewModel loginViewModel, MyEventViewModel myEventViewModel){
+                             LoginViewModel loginViewModel, GetIDsViewModel getIDsViewModel){
         this.viewManagerModel = viewManagerModel;
         this.loggedInViewModel = loggedInViewModel;
         this.loginViewModel = loginViewModel;
-        this.myEventViewModel = myEventViewModel;
+        this.getIDsViewModel = getIDsViewModel;
     }
 
     @Override
     public void prepareSuccessView(LoggedInOutputData user) {
-        MyEventState myEventState = myEventViewModel.getState();
-        this.myEventViewModel.setState(myEventState);
-        myEventViewModel.firePropertyChanged();
+        GetIDsState getIDsState = getIDsViewModel.getState();
+        this.getIDsViewModel.setState(getIDsState);
+        getIDsViewModel.firePropertyChanged();
 
-        viewManagerModel.setActiveView(myEventViewModel.getViewName());
+        viewManagerModel.setActiveView(getIDsViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 

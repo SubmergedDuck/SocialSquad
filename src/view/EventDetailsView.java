@@ -537,11 +537,15 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         } else if (evt.getNewValue() instanceof GetDirectionState){
             GetDirectionState state = (GetDirectionState)evt.getNewValue();
             BufferedImage generatedMap = state.getGeneratedImage();
-            getDirectionLabel = new JLabel(new ImageIcon(generatedMap));
-            getDirectionFrame.getContentPane().add(getDirectionLabel);
-            getDirectionFrame.pack();
-            if (!getDirectionFrame.isVisible()){
-                getDirectionFrame.setVisible(true);
+            if (generatedMap != null){
+                getDirectionLabel = new JLabel(new ImageIcon(generatedMap));
+                getDirectionFrame.getContentPane().add(getDirectionLabel);
+                getDirectionFrame.pack();
+                if (!getDirectionFrame.isVisible()){
+                    getDirectionFrame.setVisible(true);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,"No direct route available");
             }
         } else if (evt.getNewValue() instanceof GetCurrentUserState){
             GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();

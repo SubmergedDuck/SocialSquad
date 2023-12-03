@@ -14,7 +14,7 @@ public class GetIDsViewModel extends ViewModel {
 
     private final PropertyChangeSupport observable = new PropertyChangeSupport(this);
 
-    public GetIDsViewModel(){super("get ids");}
+    public GetIDsViewModel(){super("My Events");}
 
     public GetIDsState getState(){return this.state;}
 

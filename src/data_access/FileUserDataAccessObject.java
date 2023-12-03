@@ -10,7 +10,6 @@ import use_case.join_event.JoinEventUserDataAccessInterface;
 import use_case.leave_event.LeaveEventUserDataAccessInterface;
 import use_case.loggedIn.LoggedInUserDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
-import use_case.my_event.MyEventDataAccessInterface;
 import unused_usecases___.usecases.remove_participant.RemoveParticipantDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
@@ -23,8 +22,7 @@ import java.util.*;
 
 public class FileUserDataAccessObject implements RemoveParticipantDataAccessInterface, SignupUserDataAccessInterface,
         CreateEventDataAccessInterface, MapUserDataAccessInterface,LoggedInUserDataAccessInterface,
-        LoginUserDataAccessInterface, GetIDsDataAccessInterface, JoinEventUserDataAccessInterface, LeaveEventUserDataAccessInterface,
-        MyEventDataAccessInterface {
+        LoginUserDataAccessInterface, GetIDsDataAccessInterface, JoinEventUserDataAccessInterface, LeaveEventUserDataAccessInterface{
     private final File userDataBase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<String, User> usernameToUser = new HashMap<>();
@@ -220,17 +218,5 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
     public ArrayList<Event> getUserJoinedEvents(String username) {
         User user = usernameToUser.get(username);
         return user.getJoinedEvents();
-    }
-
-    @Override
-    public List<Event> getJoinedEvents(String username) {
-        User user = usernameToUser.get(username);
-        return user.getJoinedEvents();
-    }
-
-    @Override
-    public List<Event> getCreatedEvents(String username) {
-        User user = usernameToUser.get(username);
-        return user.getCreatedEvents();
     }
 }
