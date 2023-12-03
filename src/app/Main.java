@@ -34,6 +34,7 @@ import interface_adapter.get_ids.GetIDsController;
 import interface_adapter.get_ids.GetIDsPresenter;
 import interface_adapter.get_ids.GetIDsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -95,6 +96,7 @@ public class Main {
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
         GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+        JoinEventViewModel joinEventViewModel = new JoinEventViewModel("join event");
 
         // Instantiate all Data Access Objects
         // TODO: change this to the real DAOs later
@@ -160,9 +162,7 @@ public class Main {
         views.add(createEventView.getRootPane(), createEventView.viewName);
 
         // Instantiate JoinEvent use case
-        // TODO replace with factory later
-        JoinEventInputBoundary joinEventInteractor = null; //TEMPORARY
-        JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
+        JoinEventController joinEventController = JoinEventUseCaseFactory.joinEventUseCase(joinEventViewModel, eventDataAccessObject, userDataAccessObject, currentUserDAO);
 
         // Build Login view
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
@@ -247,7 +247,7 @@ public class Main {
                 new GenerateRoute());
         GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
-        EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
+        EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,joinEventViewModel,backOutController,
                 getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController1);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 

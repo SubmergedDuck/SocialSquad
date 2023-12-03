@@ -56,7 +56,7 @@ public class JoinEventInteractorTest {
 
         };
 
-        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent, "Anna");
+        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent.getEventID(), "Anna");
         JoinEventUserDataAccessInterface joinEventUsersDataAccessObject = inMemoryUsersDataAccessObject;
         JoinEventEventDataAccessInterface joinEventEventsDataAccessObject = inMemoryEventsDataAccessObject;
 

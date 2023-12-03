@@ -336,7 +336,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,inMemoryCurrentUserDAO);
                 GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
 
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,joinEventViewModel,backOutController,
                         getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);

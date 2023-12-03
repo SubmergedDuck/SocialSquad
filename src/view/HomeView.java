@@ -500,8 +500,8 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
                 createEventViewModel.addPropertyChangeListener(createEventView);
                 createEventViewModel.addPropertyChangeListener(view);
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
-                        getDirectionController1,getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, joinEventViewModel,
+                        backOutController, getDirectionController1,getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
                 getEventDetailsViewModel.addPropertyChangeListener(view);

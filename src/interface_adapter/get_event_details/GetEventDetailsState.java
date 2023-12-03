@@ -17,6 +17,7 @@ public class GetEventDetailsState {
         eventAddress = copy.eventAddress;
         eventDate= copy.eventDate;
         eventDescription = copy.eventDescription;
+        eventID = copy.getEventID();
     }
 
     public GetEventDetailsState() {
