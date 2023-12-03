@@ -553,7 +553,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                 JOptionPane.showMessageDialog(this,"You have successfully joined this event!\nYou will see this event under My Event page.");
             } else {
                 String errors = state.getError();
-                JOptionPane.showMessageDialog(this, "Sorry, you may not join this event because " + errors);
+                JOptionPane.showMessageDialog(this, "Sorry, you may not join this event.\n" + errors);
             }
         }
     }
