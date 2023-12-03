@@ -159,17 +159,6 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
      * @return the element seperator
      */
     public String getElementSeperator(){return this.elementSeperator;}
-    private String formatStringList(ArrayList<String> stringList){
-        String currentString = "";
-        for (int i = 0; i < stringList.size(); i++){
-            if (i == stringList.size() - 1){
-                currentString = currentString + stringList.get(i);
-            } else {
-                currentString = currentString + stringList.get(i) + elementSeperator;
-            }
-        }
-        return currentString;
-    }
 
     @Override
     public HashMap<Integer, Event> getEvents(int amount) {
@@ -263,6 +252,7 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
     public void userJoinEvent(String username, Integer eventID) {
         Event event = eventsToID.get(eventID);
         event.getPeopleJoined().add(username);
+        save();
     }
 
     @Override
