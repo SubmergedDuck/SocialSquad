@@ -22,7 +22,6 @@ public class InMemoryUsersDataAccessObject implements
 
     private final HashMap<String, User> usernameToUser = new HashMap();
 
-
     @Override
     public void removeUser(String username, Integer eventID) {
         User deletedUser = usernameToUser.get(username);
@@ -70,10 +69,6 @@ public class InMemoryUsersDataAccessObject implements
         hostedEvents.add(event);
     }
 
-    @Override
-    public Integer generateEventID() {
-        return null;
-    }
 
     @Override
     public ArrayList<Integer> getIds(String username, boolean isCreatedEvent) {

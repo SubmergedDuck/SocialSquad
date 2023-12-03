@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * created or not.
  */
 public class CreateEventInteractor implements CreateEventInputBoundary{
-    final CreateEventDataAccessInterface eventDataAccessObject;
+    final CreateEventEventDataAccessInterface eventDataAccessObject;
     final CreateEventDataAccessInterface userDataAccessObject;
     final CreateEventOutputBoundary createEventPresenter;
     final EventFactory eventFactory;
@@ -32,7 +32,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
      * @param eventFactory an event factory
      * @param locationFactory a location factory
      */
-    public CreateEventInteractor(CreateEventDataAccessInterface eventDataAccessObject,
+    public CreateEventInteractor(CreateEventEventDataAccessInterface eventDataAccessObject,
                                  CreateEventDataAccessInterface userDataAccessObject,CreateEventOutputBoundary createEventPresenter,
                                  EventFactory eventFactory, LocationFactory locationFactory){
         this.eventDataAccessObject = eventDataAccessObject;

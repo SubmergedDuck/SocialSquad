@@ -74,7 +74,7 @@ public class FileEventDataAccessObjectTest {
             reader.readLine();
             String userLine = reader.readLine();
             String[] eventOneCoordinates = testEvent1.getLocation().getCoordinates();
-            String formattedCoordinates = String.format("(%s%s%s)",eventOneCoordinates[0],
+            String formattedCoordinates = String.format("%s%s%s",eventOneCoordinates[0],
                     eventDataAccessObject.getElementSeperator(),eventOneCoordinates[1]);
             String elementSeperator = eventDataAccessObject.getElementSeperator();
             String peopleJoined = FormatStringList.formatStringList(testEvent1.getPeopleJoined(), elementSeperator);

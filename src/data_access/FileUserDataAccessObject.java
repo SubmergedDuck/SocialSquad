@@ -167,11 +167,6 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
     }
 
     @Override
-    public Integer generateEventID() {
-        return null;
-    }
-
-    @Override
     public void removeUser(String username, Integer eventID) {
         User deletedUser = usernameToUser.get(username);
         ArrayList<Event> joinedEvents = deletedUser.getJoinedEvents();
