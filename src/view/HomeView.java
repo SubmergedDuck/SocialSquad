@@ -537,7 +537,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
 
                 views.add(view.getRootPane(), "search nearby");
                 views.add(eventDetailsView.getRootPane(), "event details");
-                views.add(homeView.getRootPane(), "home");
+                views.add(homeView.getRootPane(), "Home");
                 views.add(createEventView.getRootPane(), "create event");
 
                 ViewManager viewManager = new ViewManager(views, cardLayout, viewManagerModel);

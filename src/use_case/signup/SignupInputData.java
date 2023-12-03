@@ -34,7 +34,7 @@ public class SignupInputData {
 
     String getUsername(){return username;}
 
-    String getRealName(){return realName;}
+
 
     String getPassword(){return password;}
 
@@ -48,7 +48,6 @@ public class SignupInputData {
             return -1;
         }
     }
-    String getAGE(){return age;}
 
     String getSex(){return sex;}
 
