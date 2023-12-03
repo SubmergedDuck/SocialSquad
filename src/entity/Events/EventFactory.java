@@ -1,7 +1,6 @@
 package entity.Events;
 
 import entity.Location.Location;
-import entity.Users.Organizer;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
