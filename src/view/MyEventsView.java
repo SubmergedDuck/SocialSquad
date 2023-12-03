@@ -443,7 +443,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
                 public int getSize() { return strings.length; }
                 public String getElementAt(int i) { return strings[i]; }
             });
-        } else if (evt.getNewValue() instanceof  GetCurrentUserState){
+        } else if (evt.getNewValue() instanceof GetCurrentUserState){
             GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
             currentUser = state.getUsername();
         }
