@@ -6,9 +6,10 @@ import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.signup.SignupViewModel;
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
+
+import java.io.IOException;
 
 public class LoginPresenter implements LoginOutputBoundary {
 
@@ -30,16 +31,18 @@ public class LoginPresenter implements LoginOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(LoginOutputData response) {
+    public void prepareSuccessView(LoginOutputData response) throws IOException {
         // On success, switch to the logged in view.
 
         LoggedInState loggedInState = loggedInViewModel.getState();
         loggedInState.setUsername(response.getUsername());
 
         GetCurrentUserState getCurrentUserState = getCurrentUserViewModel.getState();
-        getCurrentUserState.setUsername(response.getUsername()); // start tracking the user upon success login
+        getCurrentUserState.setUsername(response.getUsername());
+        getCurrentUserState.setUserCoordinates(response.getUserCoordinates());
         getCurrentUserViewModel.setState(getCurrentUserState);
         getCurrentUserViewModel.firePropertyChanged();
+
 
         this.loggedInViewModel.setState(loggedInState);
         this.loggedInViewModel.firePropertyChanged();

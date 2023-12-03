@@ -3,14 +3,16 @@ package use_case.login;
 public class LoginOutputData{
     private final String username;
 
-    private boolean useCaseFailed;
+    private final String[] userCoordinates;
 
-    public LoginOutputData(String username,boolean useCaseFailed){
+    public LoginOutputData(String username, String[] userCoordinates){
+        this.userCoordinates = userCoordinates;
         this.username=username;
-        this.useCaseFailed = useCaseFailed;
     }
     public String getUsername(){
         return username;
     }
+
+    public String[] getUserCoordinates(){return userCoordinates;}
 
 }
