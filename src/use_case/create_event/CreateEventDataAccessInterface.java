@@ -8,5 +8,4 @@ import entity.Events.Event;
 public interface CreateEventDataAccessInterface {
     void save(Event event);
 
-    Integer generateEventID();
 }
