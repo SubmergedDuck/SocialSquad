@@ -6,6 +6,7 @@ import interface_adapter.create_event.CreateEventViewModel;
 import interface_adapter.generate_static_map.GenerateStaticMapController;
 import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
+import interface_adapter.get_ids.GetIDsViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
@@ -44,9 +45,9 @@ public class HomeViewTest {
         GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
         GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(gsmInputBoundary);
         GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
-        MyEventViewModel myEventViewModel = new MyEventViewModel();
+        GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
 
-        JFrame homeView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController, createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController, generateStaticMapViewModel, myEventViewModel);
+        JFrame homeView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController, createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController, generateStaticMapViewModel, getIDsViewModel);
         homeView.setVisible(true);
     }
 }
