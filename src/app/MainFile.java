@@ -3,6 +3,7 @@ package app;
 import data_access.*;
 import entity.Events.CommonEventFactory;
 import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
@@ -15,6 +16,7 @@ import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
 import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_current_user.GetCurrentUserController;
 import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
@@ -22,6 +24,7 @@ import interface_adapter.get_direction.GetDirectionViewModel;
 import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
+import interface_adapter.get_event_details.OnlyGetEventDetailsPresenter;
 import interface_adapter.get_ids.GetIDsController;
 import interface_adapter.get_ids.GetIDsPresenter;
 import interface_adapter.get_ids.GetIDsViewModel;
@@ -31,7 +34,6 @@ import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
@@ -66,7 +68,6 @@ public class MainFile {
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
-        MyEventViewModel myEventViewModel = new MyEventViewModel();
         SearchNearbyViewModel searchNearbyViewModel = new SearchNearbyViewModel();
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
@@ -80,10 +81,8 @@ public class MainFile {
         FileEventDataAccessObject fileEventDataAccessObject = new FileEventDataAccessObject("events.csv",new CommonEventFactory(),new CommonLocationFactory(),formatter);
         FileUserDataAccessObject fileUserDataAccessObject = new FileUserDataAccessObject("users.csv", new CommonUserFactory(), fileEventDataAccessObject);
         InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
-        CommonUserFactory userFactory = new CommonUserFactory();
-        User temporaryUser = userFactory.create("username","123",5,"m","contact");
-        currentUserDAO.changeUser(temporaryUser);
-        fileUserDataAccessObject.save(temporaryUser);
+
+        setUpTempUser(currentUserDAO,fileUserDataAccessObject,getCurrentUserViewModel);
 
         //Create controllers
         BackOutController backOutController = BackOutUseCaseFactory.createBackOutUseCase(viewManagerModel);
@@ -95,7 +94,7 @@ public class MainFile {
                 fileEventDataAccessObject,fileUserDataAccessObject);
         GetDirectionController getDirectionController = GetDirectionUseCaseFactory.createGetDirectionUseCase(getDirectionViewModel,fileEventDataAccessObject,
                 fileUserDataAccessObject);
-        LoggedInController loggedInController = LoggedInUseCaseFactory.createLoggedInUseCase(viewManagerModel,loggedInViewModel,loginViewModel,myEventViewModel,fileUserDataAccessObject);
+        LoggedInController loggedInController = LoggedInUseCaseFactory.createLoggedInUseCase(viewManagerModel,loggedInViewModel,loginViewModel,getIDsViewModel,fileUserDataAccessObject);
         JoinEventController joinEventController = JoinEventUseCaseFactory.joinEventUseCase(joinEventViewModel, fileEventDataAccessObject, fileUserDataAccessObject, currentUserDAO);
 
 
@@ -116,15 +115,14 @@ public class MainFile {
         views.add(signupView.getRootPane(), signupView.viewName);
 
         HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
-                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,myEventViewModel);
+                createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,getIDsViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
+        getCurrentUserViewModel.addPropertyChangeListener(loggedInView);
 
-        MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,fileUserDataAccessObject,
-                getIDsController,getIDsViewModel,getCurrentUserController,backOutController,getCurrentUserViewModel,
-                onlyGetEventDetailsController,getEventDetailsViewModel);
+        MyEventsView myEventsView = new MyEventsView(getIDsController,getIDsViewModel,getCurrentUserController,getCurrentUserViewModel, onlyGetEventDetailsController,backOutController,getEventDetailsViewModel);
         views.add(myEventsView.getRootPane(),myEventsView.viewName);
-        myEventViewModel.addPropertyChangeListener(myEventsView);
+        getIDsViewModel.addPropertyChangeListener(myEventsView);
         getCurrentUserViewModel.addPropertyChangeListener(myEventsView);
 
         // Build SearchNearby view
@@ -143,5 +141,19 @@ public class MainFile {
 
         application.pack();
         application.setVisible(true);
+    }
+
+    private static void setUpTempUser(InMemoryCurrentUserDAO currentUserDAO, FileUserDataAccessObject fileUserDataAccessObject,
+                               GetCurrentUserViewModel getCurrentUserViewModel) throws IOException {
+        CommonUserFactory userFactory = new CommonUserFactory();
+        CommonLocationFactory locationFactory = new CommonLocationFactory();
+        Location temporaryLocation = locationFactory.makeLocation("(50,-75)");
+        User temporaryUser = userFactory.create("username","123",5,"m","contact");
+        temporaryUser.setLocation(temporaryLocation);
+        currentUserDAO.changeUser(temporaryUser);
+        GetCurrentUserState tempState = getCurrentUserViewModel.getState();
+        tempState.setUserCoordinates(temporaryUser.getLocation().getCoordinates());
+        tempState.setUsername(temporaryUser.getUsername());
+        fileUserDataAccessObject.save(temporaryUser);
     }
 }
