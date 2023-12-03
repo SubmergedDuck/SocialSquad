@@ -45,12 +45,4 @@ public class CoordinatesFromIP {
         }
         return result;
     }
-
-    public static void main(String[] args) throws IOException {
-        String[] coordinates = CoordinatesFromIP.getCoordinates();
-        System.out.println("IP Coordinates: " + Arrays.toString(coordinates));
-        CoordinatesToAddress coordinatesToAddress = new CoordinatesToAddress(coordinates);
-        String address = coordinatesToAddress.getAddress();
-        System.out.println("The equivalent address is: " + address); // TODO: the return address is not correct.
-    }
 }
