@@ -5,7 +5,7 @@ import interface_adapter.ViewModel;
 public interface LoginOutputBoundary  {
     void prepareSuccessView(LoginOutputData user);
 
-    void prepareLinkView(ViewModel viewModel);
+    void prepareLinkView(LoginOutputData outputData, ViewModel viewModel);
 
-    void prepareFailView(String error);
+    void prepareFailView(LoginOutputData outputData, String error);
 }

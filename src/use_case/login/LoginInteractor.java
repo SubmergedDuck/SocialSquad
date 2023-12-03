@@ -37,13 +37,16 @@ public class LoginInteractor implements LoginInputBoundary {
         String password = loginInputData.getPassword();
         ViewModel viewModel = loginInputData.getViewModel();
         if (viewModel != null && viewModel.getViewName() !=null && !viewModel.getViewName().isEmpty()) {
-            loginPresenter.prepareLinkView(viewModel);
+            LoginOutputData outputData = new LoginOutputData(null, true);
+            loginPresenter.prepareLinkView(outputData, viewModel);
         } else if (!userDataAccessObject.existsByName(username)) {
-            loginPresenter.prepareFailView(username + ": Account does not exist.");
+            LoginOutputData outputData = new LoginOutputData(null, false);
+            loginPresenter.prepareFailView(outputData, username + ": Account does not exist.");
         } else {
             String pwd = userDataAccessObject.get(username).getPassword();
             if (!password.equals(pwd)) {
-                loginPresenter.prepareFailView("Incorrect password for " + username + ".");
+                LoginOutputData outputData = new LoginOutputData(null, false);
+                loginPresenter.prepareFailView(outputData, "Incorrect password for " + username + ".");
 //            } else {
 //                User user = userDataAccessObject.get(loginInputData.getUsername());
 //                String[] currentCoordinates = CoordinatesFromIP.getCoordinates();

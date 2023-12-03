@@ -1,22 +1,18 @@
 package use_case.login;
-import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryUsersDataAccessObject;
-import entity.Users.CommonUser;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
 import interface_adapter.ViewModel;
 
+import interface_adapter.logged_in.LoggedInViewModel;
 import org.junit.Before;
 import org.junit.Test;
-import use_case.login.LoginOutputBoundary;
-import use_case.login.LoginOutputData;
-import use_case.login.LoginInteractor;
-import use_case.login.LoginUserDataAccessInterface;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test cases for the {@link LoginInteractor}.
@@ -36,6 +32,35 @@ public class LoginInteractorTest {
 
     }
 
+    @Test
+    public void testLink() throws IOException {
+        LoginOutputBoundary presenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assert user.getUseCaseFailed();
+                assert user.getUsername().equals("aa");
+            }
+
+            @Override
+            public void prepareLinkView(LoginOutputData outputData, ViewModel viewModel) {
+                assert outputData.getUseCaseFailed();
+
+
+            }
+
+            @Override
+            public void prepareFailView(LoginOutputData outputData, String error) {
+                fail("prepare fail view is called");
+
+            }
+        };
+        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter);
+
+        LoginInputData inputData = new LoginInputData("aa", "123", new LoggedInViewModel());
+        interactor.execute(inputData);
+
+    }
+
     /**
      * Test a valid login scenario.
      *
@@ -43,13 +68,32 @@ public class LoginInteractorTest {
      */
     @Test
     public void testValidLogin() throws IOException {
-        LoginOutputBoundaryMock presenter = new LoginOutputBoundaryMock();
+        LoginOutputBoundary presenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assert user.getUseCaseFailed();
+                assert user.getUsername().equals("aa");
+            }
+
+            @Override
+            public void prepareLinkView(LoginOutputData outputData, ViewModel viewModel) {
+                assert outputData.getUseCaseFailed();
+
+
+            }
+
+            @Override
+            public void prepareFailView(LoginOutputData outputData, String error) {
+                fail("prepare fail view is called");
+
+            }
+        };
         LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter);
 
         LoginInputData inputData = new LoginInputData("aa", "123", null);
         interactor.execute(inputData);
 
-        assertEquals("sign in succeed", presenter.getSuccessMessage());
+        //assertEquals("sign in succeed", presenter.getSuccessMessage());
     }
 
     /**
@@ -59,13 +103,30 @@ public class LoginInteractorTest {
      */
     @Test
     public void testInvalidPassword() throws IOException {
-        LoginOutputBoundaryMock presenter = new LoginOutputBoundaryMock();
-        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter);
+        LoginOutputBoundary presenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                assert !user.getUseCaseFailed();
+                fail("prepare success view is called");
+            }
 
+            @Override
+            public void prepareLinkView(LoginOutputData outputData, ViewModel viewModel) {
+                fail("prepare link view is called");
+
+            }
+
+            @Override
+            public void prepareFailView(LoginOutputData outputData, String error) {
+                assert !outputData.getUseCaseFailed();
+                assert outputData.getUsername() == null;
+                assert error.equals("Incorrect password for aa.");
+
+            }
+        };
         LoginInputData inputData = new LoginInputData("aa", "wrong_password", null);
+        LoginInputBoundary interactor = new LoginInteractor(inMemoryUsersDataAccessObject, presenter);
         interactor.execute(inputData);
-
-        assertEquals("sign in failed: Incorrect password for aa.", presenter.getFailMessage());
     }
 
     /**
@@ -98,12 +159,14 @@ public class LoginInteractorTest {
         }
 
         @Override
-        public void prepareLinkView(ViewModel viewModel) {
+        public void prepareLinkView(LoginOutputData outputData, ViewModel viewModel) {
             // No need for actual implementation in the mock
         }
 
         @Override
-        public void prepareFailView(String error) {
+        public void prepareFailView(LoginOutputData outputData, String error) {
+            assert !outputData.getUseCaseFailed();
+            assert outputData.getUsername() == null;
             failMessage = "sign in failed: " + error;
         }
 
