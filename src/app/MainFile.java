@@ -6,6 +6,7 @@ import entity.Location.CommonLocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventViewModel;
@@ -25,6 +26,7 @@ import interface_adapter.get_ids.GetIDsController;
 import interface_adapter.get_ids.GetIDsPresenter;
 import interface_adapter.get_ids.GetIDsViewModel;
 import interface_adapter.join_event.JoinEventController;
+import interface_adapter.join_event.JoinEventViewModel;
 import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -60,6 +62,7 @@ public class MainFile {
         new ViewManager(views, cardLayout, viewManagerModel);
 
         //Create view models
+        JoinEventViewModel joinEventViewModel = new JoinEventViewModel("join event");
         LoginViewModel loginViewModel = new LoginViewModel();
         LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         SignupViewModel signupViewModel = new SignupViewModel();
@@ -68,6 +71,9 @@ public class MainFile {
         GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
         CreateEventViewModel createEventViewModel = new CreateEventViewModel(viewManagerModel);
         GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
+        GetDirectionViewModel getDirectionViewModel = new GetDirectionViewModel();
+        GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
+        GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
 
         //Create DAOs
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -81,14 +87,23 @@ public class MainFile {
 
         //Create controllers
         BackOutController backOutController = BackOutUseCaseFactory.createBackOutUseCase(viewManagerModel);
+        GetIDsController getIDsController = GetIDsUseCaseFactory.createGetIDsUseCase(getIDsViewModel,fileUserDataAccessObject);
+        GetEventDetailsController onlyGetEventDetailsController = GetEventDetailsUseCaseFactory.createGetEventDetailsUseCase(getEventDetailsViewModel,viewManagerModel,fileEventDataAccessObject);
+        GetCurrentUserController getCurrentUserController = GetCurrentUserUseCaseFactory.createGetCurrentUserUseCase(getCurrentUserViewModel,currentUserDAO);
+        SearchNearbyController searchNearbyController = SearchNearbyUseCaseFactory.createSearchNearbyUseCase(viewManagerModel,searchNearbyViewModel,fileEventDataAccessObject);
+        GenerateStaticMapController generateStaticMapController = GenerateStaticMapUseCaseFactory.createGenerateStaticMapUseCase(generateStaticMapViewModel,
+                fileEventDataAccessObject,fileUserDataAccessObject);
+        GetDirectionController getDirectionController = GetDirectionUseCaseFactory.createGetDirectionUseCase(getDirectionViewModel,fileEventDataAccessObject,
+                fileUserDataAccessObject);
+        LoggedInController loggedInController = LoggedInUseCaseFactory.createLoggedInUseCase(viewManagerModel,loggedInViewModel,loginViewModel,myEventViewModel,fileUserDataAccessObject);
+        JoinEventController joinEventController = JoinEventUseCaseFactory.joinEventUseCase(joinEventViewModel, fileEventDataAccessObject, fileUserDataAccessObject, currentUserDAO);
+
 
         CreateEventController createEventController = CreateEventUseCaseFactory.createEventUseCase(createEventViewModel, fileEventDataAccessObject,
-                        fileUserDataAccessObject, new CommonEventFactory(), new CommonLocationFactory());
+                fileUserDataAccessObject, new CommonEventFactory(), new CommonLocationFactory());
         CreateEventView createEventView = CreateEventUseCaseFactory.create(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
         views.add(createEventView.getRootPane(), createEventView.viewName);
 
-        JoinEventInputBoundary joinEventInteractor = null; //TEMPORARY
-        JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
 
         //Build login view
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel,
@@ -100,38 +115,13 @@ public class MainFile {
                 fileUserDataAccessObject);
         views.add(signupView.getRootPane(), signupView.viewName);
 
-        GenerateStaticMapViewModel generateStaticMapViewModel = new GenerateStaticMapViewModel();
-        GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(generateStaticMapViewModel);
-        GSMInteractor gsmInteractor = new GSMInteractor(new GenerateStaticMapURL(),fileUserDataAccessObject,fileEventDataAccessObject,generateStaticMapPresenter);
-        GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(gsmInteractor);
-        SearchNearbyPresenter searchNearbyPresenter = new SearchNearbyPresenter(searchNearbyViewModel,viewManagerModel);
-        SearchNearbyInteractor searchNearbyInteractor = new SearchNearbyInteractor(fileEventDataAccessObject,searchNearbyPresenter);
-        SearchNearbyController searchNearbyController = new SearchNearbyController(searchNearbyInteractor);
-        LoggedInPresenter loggedInPresenter = new LoggedInPresenter(viewManagerModel,loggedInViewModel,loginViewModel,myEventViewModel);
-        LoggedInInteractor loggedInInteractor = new LoggedInInteractor(fileUserDataAccessObject,loggedInPresenter);
-        LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
         HomeView loggedInView = new HomeView(loggedInViewModel, loggedInController, searchNearbyController,
                 createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,myEventViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
 
-        GetIDsViewModel getIDsViewModel = new GetIDsViewModel();
-
-        //Creating the controllers,presenters, and interactors for each use case in this view.
-        GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel);
-        GetIDsPresenter getIDsPresenter = new GetIDsPresenter(getIDsViewModel);
-        GetEventDetailsPresenter getEventDetailsPresenter = new GetEventDetailsPresenter(getEventDetailsViewModel,viewManagerModel);
-
-        GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter, currentUserDAO);
-        GetIDsInteractor getIDsInteractor = new GetIDsInteractor(fileUserDataAccessObject, getIDsPresenter);
-        GetEventDetailsInteractor getEventDetailsInteractor = new GetEventDetailsInteractor(getEventDetailsPresenter,fileEventDataAccessObject);
-
-        GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
-        GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
-        GetEventDetailsController onlyGetEventDetailsController = new GetEventDetailsController(getEventDetailsInteractor);
-
         MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,fileUserDataAccessObject,
-                getIDsController1,getIDsViewModel,getCurrentUserController1,backOutController,getCurrentUserViewModel,
+                getIDsController,getIDsViewModel,getCurrentUserController,backOutController,getCurrentUserViewModel,
                 onlyGetEventDetailsController,getEventDetailsViewModel);
         views.add(myEventsView.getRootPane(),myEventsView.viewName);
         myEventViewModel.addPropertyChangeListener(myEventsView);
@@ -150,7 +140,7 @@ public class MainFile {
         GetDirectionController getDirectionController1 = new GetDirectionController(getDirectionInteractor);
 
         EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
-                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController1);
+                getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel,getCurrentUserController);
         views.add(eventDetailsView.getRootPane(), eventDetailsView.viewName);
 
         viewManagerModel.setActiveView(loginView.viewName);
