@@ -33,6 +33,8 @@ public class CreateEventState {
         this.isDisplayed = displayed;
     }
 
+    public void setHasBeenDisplayed(boolean hasBeenDisplayed){this.hasBeenDisplayed = hasBeenDisplayed;}
+
     public String getEventName(){return this.eventName;}
 
     public boolean isEventCreated(){return eventCreated;}
