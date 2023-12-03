@@ -465,7 +465,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         inMemoryUserDAO.save(new CommonUser("aa","aaa",1,"",""));
 
-        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter, new InMemoryCurrentUserDAO(),new CommonLocationFactory());
+        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter);
         LoginController loginController  = new LoginController(interactor);
         CreateAccountInputBoundary createAccountInputBoundary = new CreateAccountInteractor(createAccountOutputBoundary);
         CreateAccountController createAccountController = new CreateAccountController(createAccountInputBoundary);
