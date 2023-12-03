@@ -253,7 +253,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 Event eventSelected = eventArrayList.get(Events_LIST.getSelectedIndex());
                 System.out.println(eventSelected.getEventName() + " is selected to view details.");// someething is selected
 
-                getEventDetailsController.execute(eventSelected.getEventID());
+                getEventDetailsController.execute(eventSelected.getEventID(),true);
             } else {
                 JOptionPane.showMessageDialog(this, "Please select an event first.");
             }
@@ -262,7 +262,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
         if (evt.getSource().equals(Back_BUTTON)) {
-            backOutController.execute();
+            backOutController.execute("Home");
         }
     }
 
@@ -336,7 +336,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                 GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,inMemoryCurrentUserDAO);
                 GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
 
-                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,backOutController,
+                EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController,joinEventViewModel,backOutController,
                         getDirectionController1,getDirectionViewModel1,getCurrentUserViewModel1, getCurrentUserController1);
 
                 searchNearbyViewModel.addPropertyChangeListener(view);
@@ -384,7 +384,7 @@ public class SearchNearbyView extends javax.swing.JFrame implements ActionListen
                     SearchNearbyPresenter presenter = new SearchNearbyPresenter(searchNearbyViewModel, viewManagerModel);
                     presenter.prepareSuccessView(new SearchNearbyOutputData(false, eventArrayList));
 
-                    getEventDetailsController.execute(event.getEventID());
+                    getEventDetailsController.execute(event.getEventID(),true);
                     viewManagerModel.setActiveView(view.viewName);
                     viewManagerModel.firePropertyChanged();
 

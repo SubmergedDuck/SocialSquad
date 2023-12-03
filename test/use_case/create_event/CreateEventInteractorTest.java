@@ -4,21 +4,15 @@ import data_access.InMemoryEventsDataAccessObject;
 import data_access.InMemoryUsersDataAccessObject;
 import entity.Events.*;
 import entity.Location.CommonLocationFactory;
-import entity.Location.LocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import entity.Users.UserFactory;
-import interface_adapter.create_event.MockCreateEventPresenter;
-import use_case.create_event.*;
 
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
 /**
  * Used for testing the create event interactor.
@@ -53,8 +47,8 @@ public class CreateEventInteractorTest {
             }
         };
         //Creates regular event with an invalid input. Here, there is no owner.
-        CreateEventInputData testInput = new CreateEventInputData("Bob", "", "(47.64054,-122.12934)", "2016-03-04 11:30",
-                "Movie night", "Have fun!", "10");
+        CreateEventInputData testInput = new CreateEventInputData("Bob", "", "fake coordinates", "2004 11:30",
+                "", "Have fun!", "abc");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
                 inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
         createEventInteractor.execute(testInput);
@@ -79,6 +73,7 @@ public class CreateEventInteractorTest {
                 "Movie night", "Have fun!", "10");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
                 inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
+        createEventInteractor.execute(testInput);
     }
 
     /**

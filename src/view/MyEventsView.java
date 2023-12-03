@@ -12,6 +12,10 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.ViewManagerModelAdapter;
+import interface_adapter.back_out.BackOutController;
+import interface_adapter.back_out.BackOutPresenter;
 import interface_adapter.get_current_user.GetCurrentUserController;
 import interface_adapter.get_current_user.GetCurrentUserPresenter;
 import interface_adapter.get_current_user.GetCurrentUserState;
@@ -21,6 +25,8 @@ import interface_adapter.get_ids.GetIDsController;
 import interface_adapter.get_ids.GetIDsPresenter;
 import interface_adapter.get_ids.GetIDsState;
 import interface_adapter.get_ids.GetIDsViewModel;
+import use_case.back_out.BackOutInputBoundary;
+import use_case.back_out.BackOutInteractor;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_event_details.GetEventDetailsInteractor;
 import use_case.get_ids.GetIDsInteractor;
@@ -30,6 +36,8 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -44,7 +52,8 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
 
     private final GetIDsController getIDsController;
     private final GetCurrentUserController getCurrentUserController;
-    private final GetEventDetailsController getEventDetailsController;
+    private final GetEventDetailsController eventDetailsController;
+    private final BackOutController backOutController;
     private String currentUser;
     private ArrayList<Integer> joinedEvents;
     private ArrayList<Integer> createdEvents;
@@ -63,10 +72,11 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     private keeptoo.KGradientPanel Top_GRADIENTPANEL;
     public MyEventsView(GetIDsController getIDsController, GetIDsViewModel getIDsViewModel,
                         GetCurrentUserController getCurrentUserController, GetCurrentUserViewModel getCurrentUserViewModel,
-                        GetEventDetailsController getEventDetailsController, GetEventDetailsViewModel getEventDetailsViewModel) {
+                        GetEventDetailsController eventDetailsController, BackOutController backOutController,GetEventDetailsViewModel getEventDetailsViewModel) {
         this.getIDsController = getIDsController;
         this.getCurrentUserController = getCurrentUserController;
-        this.getEventDetailsController = getEventDetailsController;
+        this.eventDetailsController = eventDetailsController;
+        this.backOutController = backOutController;
         getIDsViewModel.addPropertyChangeListener(this);
         getCurrentUserViewModel.addPropertyChangeListener(this);
         getEventDetailsViewModel.addPropertyChangeListener(this);
@@ -164,7 +174,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         getIDsController.execute(currentUser, false);
 
         for (Integer eventID: joinedEvents){
-            getEventDetailsController.execute(eventID);
+            eventDetailsController.execute(eventID, false);
         }
 
         Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
@@ -276,11 +286,19 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
     }// </editor-fold>//GEN-END:initComponents
 
     private void EventDetails_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (evt.getSource().equals(EventDetails_BUTTON)){
+            if (Events_LIST.getSelectedIndex() != -1){
+                String value = Events_LIST.getSelectedValue();
+                Matcher matcher = Pattern.compile("\\d+").matcher(value);
+                matcher.find();
+                int eventID = Integer.valueOf(matcher.group());
+                eventDetailsController.execute(eventID,true);
+            }
+        }
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        backOutController.execute("Home");
     }
 
     private void Joined_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
@@ -292,7 +310,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         getIDsController.execute(currentUser, false);
 
         for (Integer eventID: joinedEvents){
-            getEventDetailsController.execute(eventID);
+            eventDetailsController.execute(eventID, false);
         }
     }
 
@@ -305,7 +323,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         getIDsController.execute(currentUser, true);
 
         for (Integer eventID: createdEvents){
-            getEventDetailsController.execute(eventID);
+            eventDetailsController.execute(eventID, false);
         }
     }
 
@@ -336,6 +354,7 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 //Test
+                ViewManagerModel viewManagerModel = new ViewManagerModel();
                 InMemoryEventsDataAccessObject inMemoryEventsDataAccessObject = new InMemoryEventsDataAccessObject();
                 InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject = new InMemoryUsersDataAccessObject();
                 InMemoryCurrentUserDAO inMemoryCurrentUserDAO = new InMemoryCurrentUserDAO();
@@ -380,8 +399,13 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
                 GetIDsController getIDsController1 = new GetIDsController(getIDsInteractor);
                 GetEventDetailsController getEventDetailsController1 = new GetEventDetailsController(getEventDetailsInteractor);
 
+                ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
+                BackOutPresenter backOutPresenter = new BackOutPresenter(viewManagerModelAdapter);
+                BackOutInputBoundary backOutInterator = new BackOutInteractor(backOutPresenter);
+                BackOutController backOutController = new BackOutController(backOutInterator);
+
                 new MyEventsView(getIDsController1, getIDsViewModel, getCurrentUserController1,getCurrentUserViewModel,
-                        getEventDetailsController1,getEventDetailsViewModel).setVisible(true);
+                        getEventDetailsController1, backOutController, getEventDetailsViewModel).setVisible(true);
             }
         });
     }
@@ -396,12 +420,12 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             if (!state.getIsCreated()){
                 joinedEvents = state.getAllIDs();
                 for (Integer eventID: joinedEvents){
-                    getEventDetailsController.execute(eventID);
+                    eventDetailsController.execute(eventID,false);
                 }
             } else {
                 createdEvents = state.getAllIDs();
                 for (Integer eventID: createdEvents){
-                    getEventDetailsController.execute(eventID);
+                    eventDetailsController.execute(eventID,false);
                 }
             }
             eventDescriptions = new ArrayList<>();
@@ -410,12 +434,18 @@ public class MyEventsView extends javax.swing.JFrame implements PropertyChangeLi
             GetEventDetailsState state = (GetEventDetailsState)evt.getNewValue();
             String formattedString = String.format("(Event ID: %s) %s (%s). Address: %s. Owner: %s",
                     state.getEventID(), state.getEventName(), state.getEventDate(), state.getEventAddress(), state.getOwnerUser());
-            eventDescriptions.add(formattedString);
+            if (!state.hasChangedView()){
+                System.out.println("test");
+                eventDescriptions.add(formattedString);
+            }
             Events_LIST.setModel(new javax.swing.AbstractListModel<String>() {
                 String[] strings = eventDescriptions.toArray(new String[eventDescriptions.size()]);
                 public int getSize() { return strings.length; }
                 public String getElementAt(int i) { return strings[i]; }
             });
+        } else if (evt.getNewValue() instanceof  GetCurrentUserState){
+            GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
+            currentUser = state.getUsername();
         }
     }
 }

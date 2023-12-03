@@ -19,21 +19,18 @@ import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
 import interface_adapter.get_direction.GetDirectionState;
 import interface_adapter.get_direction.GetDirectionViewModel;
-import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsPresenter;
 import interface_adapter.get_event_details.GetEventDetailsState;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.join_event.JoinEventController;
-import interface_adapter.search_nearby.SearchNearbyPresenter;
+import interface_adapter.join_event.JoinEventState;
+import interface_adapter.join_event.JoinEventViewModel;
 import use_case.back_out.BackOutInteractor;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_direction.GetDirectionInteractor;
 import use_case.get_event_details.GetEventDetailsOutputData;
 import use_case.join_event.JoinEventInteractor;
-import use_case.search_nearby.SearchNearbyOutputData;
 import javax.swing.*;
-import javax.swing.text.View;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -52,10 +49,13 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
      */
     public final String viewName = "event details";
     private final GetEventDetailsViewModel getEventDetailsViewModel;
+    private final GetCurrentUserViewModel getCurrentUerViewModel;
+    private final JoinEventViewModel joinEventViewModel;
     private final GetCurrentUserController getCurrentUserController;
     private final GetDirectionController getDirectionController;
     private final BackOutController backOutController;
     private final JoinEventController joinEventController;
+    private int eventID = 0;
 
     private String currentUser;
 
@@ -87,17 +87,22 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
     private javax.swing.JLabel TypeByUser_LABEL;
     private javax.swing.JLabel EventAlreadyJoinedWarning_LABEL;
     public EventDetailsView(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
+                            JoinEventViewModel joinEventViewModel,
                             BackOutController backOutController, GetDirectionController getDirectionController,
                             GetDirectionViewModel getDirectionViewModel, GetCurrentUserViewModel currentUserViewModel,
                             GetCurrentUserController getCurrentUserController) {
         this.getEventDetailsViewModel = getEventDetailsViewModel;
+        this.getCurrentUerViewModel = currentUserViewModel;
+        this.joinEventViewModel = joinEventViewModel;
         this.joinEventController = joinEventController;
         this.backOutController = backOutController;
         this.getDirectionController = getDirectionController;
         this.getCurrentUserController = getCurrentUserController;
+        currentUser = currentUserViewModel.getState().getUsername();
         currentUserViewModel.addPropertyChangeListener(this);
         getDirectionViewModel.addPropertyChangeListener(this);
-        this.getEventDetailsViewModel.addPropertyChangeListener(this);
+        getEventDetailsViewModel.addPropertyChangeListener(this);
+        joinEventViewModel.addPropertyChangeListener(this);
         initComponents();
     }
     //    // A constructor just for testing
@@ -106,7 +111,6 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
 //        this.getEventDetailsViewModel = getEventDetailsViewModel;
 //    }
     private void initComponents() {
-        getCurrentUserController.execute();
         Main_PANEL = new javax.swing.JPanel();
         Top_GRADIENTPANEL = new keeptoo.KGradientPanel();
         Title_LABEL = new javax.swing.JLabel();
@@ -421,12 +425,12 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         pack();
     }
     private void JoinLeaveEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO change this for later
+        joinEventController.execute(eventID, currentUser);
         System.out.println("You just joined this event!");
     }
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO change this later
         System.out.println("Go back");
+        backOutController.execute("search nearby");
     }
     private void GetDirection_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         int eventID = getEventDetailsViewModel.getState().getEventID();
@@ -477,6 +481,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                 }
                 ViewManagerModel viewManagerModel = new ViewManagerModel();
                 GetEventDetailsViewModel getEventDetailsViewModel = new GetEventDetailsViewModel();
+                JoinEventViewModel joinEventViewModel1 = new JoinEventViewModel("join event");
                 JoinEventInteractor joinEventInteractor = null; //TEMPORARY UNTIL IMPLEMENTED
                 JoinEventController joinEventController = new JoinEventController(joinEventInteractor);
                 ViewManagerModelAdapter viewManagerModelAdapter = new ViewManagerModelAdapter(viewManagerModel);
@@ -492,14 +497,14 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
                 GetCurrentUserPresenter getCurrentUserPresenter = new GetCurrentUserPresenter(getCurrentUserViewModel1);
                 GetCurrentUserInteractor getCurrentUserInteractor = new GetCurrentUserInteractor(getCurrentUserPresenter,currentUserDAO);
                 GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
-                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController,
-                        getDirectionController1, getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
+                EventDetailsView view = new EventDetailsView(getEventDetailsViewModel, joinEventController, joinEventViewModel1,
+                        backOutController, getDirectionController1, getDirectionViewModel1, getCurrentUserViewModel1, getCurrentUserController1);
                 getEventDetailsViewModel.addPropertyChangeListener(view);
                 try {
                     GetEventDetailsPresenter presenter = new GetEventDetailsPresenter(getEventDetailsViewModel, viewManagerModel);
                     GetEventDetailsOutputData outputData = new GetEventDetailsOutputData(event.getOwnerUser(),
                             event.getEventName(), event.getEventAddress(), event.getEventDate(), event.getDescription(),
-                            String.valueOf(event.getCapacity()), event.getEventID());
+                            String.valueOf(event.getCapacity()), event.getEventID(), true);
                     presenter.prepareView(outputData);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -521,6 +526,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             String time = state.getEventDate();
             String description = state.getEventDescription();
             String capacity = state.getEventCapacity();
+            this.eventID = state.getEventID();
+
             TypeByUser_LABEL.setText(name + " by " + ownerUser);
             Capacity_LABEL.setText(capacity + " People");
             Location_TEXTAREA.setText(address);
@@ -538,7 +545,16 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             }
         } else if (evt.getNewValue() instanceof GetCurrentUserState){
             GetCurrentUserState state = (GetCurrentUserState)evt.getNewValue();
-            currentUser = state.getUsername();
+            this.currentUser = state.getUsername();
+        } else if (evt.getPropertyName().equals("join event")) {
+            System.out.println("View listened to property change");
+            JoinEventState state = (JoinEventState) evt.getNewValue();
+            if (state.isSuccess()) {
+                JOptionPane.showMessageDialog(this,"You have successfully joined this event!\nYou will see this event under My Event page.");
+            } else {
+                String errors = state.getError();
+                JOptionPane.showMessageDialog(this, "Sorry, you may not join this event.\n" + errors);
+            }
         }
     }
 }

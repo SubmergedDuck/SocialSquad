@@ -5,11 +5,11 @@
 package view;
 
 
+import data_access.InMemoryCurrentUserDAO;
 import data_access.InMemoryUsersDataAccessObject;
+import entity.Location.CommonLocationFactory;
 import entity.Users.CommonUser;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_account.CreateAccountController;
-import interface_adapter.create_account.CreateAccountPresesnter;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
@@ -17,9 +17,6 @@ import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
-import use_case.create_account.CreateAccountInputBoundary;
-import use_case.create_account.CreateAccountInteractor;
-import use_case.create_account.CreateAccountOutputBoundary;
 import use_case.login.*;
 
 import javax.swing.*;
@@ -29,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 /**
  *
@@ -146,11 +144,15 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
                 if (evt.getSource().equals(SignIn_BUTTON)) {
                     LoginState currentState = loginViewModel.getState();
 
-                    loginController.execute(
-                            Username_TEXTFIELD.getText(),
-                            String.valueOf(Password_PASSWORDFIELD.getPassword()),
-                            null
-                    );
+                    try {
+                        loginController.execute(
+                                Username_TEXTFIELD.getText(),
+                                String.valueOf(Password_PASSWORDFIELD.getPassword()),
+                                null
+                        );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         });
@@ -161,11 +163,14 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource().equals(SignUp_BUTTON)) {
                     LoginState currentState = loginViewModel.getState();
-//
-                    loginController.execute(
-                            currentState.getUsername(),
-                            currentState.getPassword(),
-                            signupViewModel);
+                    try {
+                        loginController.execute(
+                                currentState.getUsername(),
+                                currentState.getPassword(),
+                                signupViewModel);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
 
 
                 }
@@ -449,16 +454,13 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignupViewModel signupViewModel = new SignupViewModel();
         GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
         LoginOutputBoundary presenter = new LoginPresenter(viewManagerModel,loggedInViewModel,loginViewModel, getCurrentUserViewModel);
-        CreateAccountOutputBoundary createAccountOutputBoundary = new CreateAccountPresesnter(viewManagerModel,signupViewModel,loginViewModel);
 
 
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         inMemoryUserDAO.save(new CommonUser("aa","aaa",1,"",""));
 
-        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter);
+        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter, new InMemoryCurrentUserDAO(),new CommonLocationFactory());
         LoginController loginController  = new LoginController(interactor);
-        CreateAccountInputBoundary createAccountInputBoundary = new CreateAccountInteractor(createAccountOutputBoundary);
-        CreateAccountController createAccountController = new CreateAccountController(createAccountInputBoundary);
         LoginView loginView = new LoginView(loginViewModel,loginController, signupViewModel);
         loginViewModel.addPropertyChangeListener(loginView);
 

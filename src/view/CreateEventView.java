@@ -1,8 +1,7 @@
 package view;
 // TODO: add imports
 
-import data_access.InMemoryEventsDataAccessObject;
-import data_access.InMemoryUsersDataAccessObject;
+import data_access.*;
 import entity.Events.*;
 import entity.Location.CommonLocationFactory;
 import entity.Location.Location;
@@ -16,6 +15,7 @@ import interface_adapter.create_event.CreateEventController;
 import interface_adapter.create_event.CreateEventPresenter;
 import interface_adapter.create_event.CreateEventState;
 import interface_adapter.create_event.CreateEventViewModel;
+import interface_adapter.generate_static_map.GenerateStaticMapController;
 import use_case.back_out.BackOutInputBoundary;
 import use_case.back_out.BackOutInteractor;
 import use_case.back_out.BackOutOutputBoundary;
@@ -50,6 +50,7 @@ import interface_adapter.get_current_user.GetCurrentUserController;
 import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import use_case.create_event.CreateEventInteractor;
+import use_case.generate_static_map.GSMInteractor;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -73,7 +74,7 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     private final CreateEventViewModel createEventViewModel;
     private final CreateEventController createEventController;
     private final BackOutController backOutController;
-
+    private final GenerateStaticMapController generateStaticMapController;
     private final GetCurrentUserViewModel getCurrentUserViewModel;
     private view.ButtonGradient Back_BUTTON;
     private javax.swing.JPanel BottomSeperator_PANEL;
@@ -86,7 +87,6 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
     private javax.swing.JLabel Description_LABEL;
     private javax.swing.JTextArea Description_TEXTAREA;
     private javax.swing.JTextField Description_TEXTFIELD;
-    private javax.swing.JTextField EndTime_TEXTFIELD;
     private javax.swing.JLabel EventNameCreateFailed_LABEL;
     private javax.swing.JLabel EventName_LABEL;
     private javax.swing.JTextField EventName_TEXTFIELD;
@@ -106,11 +106,12 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
 
     public CreateEventView(CreateEventViewModel createEventViewModel, CreateEventController createEventController,
                            BackOutController backOutController,
-                           GetCurrentUserViewModel getCurrentUserViewModel) {
+                           GetCurrentUserViewModel getCurrentUserViewModel, GenerateStaticMapController generateStaticMapController) {
         this.createEventController = createEventController;
         this.backOutController = backOutController;
         this.createEventViewModel = createEventViewModel;
         this.getCurrentUserViewModel = getCurrentUserViewModel;
+        this.generateStaticMapController = generateStaticMapController;
         createEventViewModel.addPropertyChangeListener(this);
         initComponents();
     }
@@ -590,12 +591,14 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
             createEventController.execute(eventOwner, eventName, eventType, coordinates, capacity, description, formattedDate);
         } catch (IOException ex) {
             System.out.println("create event controller has api call error.\n");
-
         }
+        CoordinatesFromIP coordinatesFromIP = new CoordinatesFromIP();
+        String[] currentCoordinates = coordinatesFromIP.getCoordinates();
+        generateStaticMapController.execute(currentCoordinates, 100,350, 504);
     }
 
     private void Back_BUTTONActionPerformed(java.awt.event.ActionEvent evt) {
-        backOutController.execute();
+        backOutController.execute("Home");
     }
 
     /**
@@ -646,7 +649,9 @@ public class CreateEventView extends javax.swing.JFrame implements PropertyChang
                 BackOutInputBoundary backOutInteractor = new BackOutInteractor(backOutPresenter);
                 BackOutController backOutController = new BackOutController(backOutInteractor);
 
-                new CreateEventView(createEventViewModel1,createEventController1,backOutController, currentUserViewModel).setVisible(true);
+                GSMInteractor gsmInteractor = null;
+
+                new CreateEventView(createEventViewModel1,createEventController1,backOutController, currentUserViewModel, new GenerateStaticMapController(null)).setVisible(true);
             }
         });
     }

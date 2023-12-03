@@ -1,7 +1,5 @@
 package use_case.my_event;
 
-import use_case.search_event.SearchEventOutputData;
-
 public interface MyEventOutputBoundary {
     /**
      * The output boundary interface for the MyEvent use case, used by the interactor and presenter.

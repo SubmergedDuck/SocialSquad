@@ -11,12 +11,12 @@ import use_case.get_direction.GetDirectionEventDataAccessInterface;
 import use_case.leave_event.LeaveEventEventDataAccessInterface;
 import use_case.join_event.JoinEventEventDataAccessInterface;
 import use_case.my_event.MyEventDataAccessInterface;
-import use_case.remove_participant.RemoveParticipantDataAccessInterface;
-import use_case.search_event.SearchEventDataAccessInterface;
-import use_case.search_event.SearchEventInputData;
+import unused_usecases___.usecases.remove_participant.RemoveParticipantDataAccessInterface;
+import unused_usecases___.usecases.search_event.SearchEventDataAccessInterface;
+import unused_usecases___.usecases.search_event.SearchEventInputData;
 import use_case.search_nearby.SearchNearbyDataAccessInterface;
 import use_case.search_nearby.SearchNearbyInputData;
-import use_case.view_participants.ViewParticipantsDataAccessInterface;
+import unused_usecases___.usecases.view_participants.ViewParticipantsDataAccessInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
         GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
-        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface,LeaveEventEventDataAccessInterface,MyEventDataAccessInterface {
+        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface,LeaveEventEventDataAccessInterface, MyEventDataAccessInterface {
     /**
      * This is an in-memory event DAO to allow testing with the SearchEvent use case interactor.
      */
@@ -199,7 +199,6 @@ public class InMemoryEventsDataAccessObject implements SearchEventDataAccessInte
         return eventsToID.get(eventID);
     }
 
-    //TODO:fix later
     @Override
     public List<Event> getJoinedEvents(String username) {
         return null;

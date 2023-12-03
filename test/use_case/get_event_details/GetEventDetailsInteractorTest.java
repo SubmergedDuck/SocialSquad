@@ -29,13 +29,13 @@ import static org.junit.Assert.*;
  */
 public class GetEventDetailsInteractorTest {
     private Event currentEvent;
+    private InMemoryEventsDataAccessObject dataAccessObject = new InMemoryEventsDataAccessObject();
+
 
     @Before
     public void init() throws IOException {
         EventFactory eventFactory = new CommonEventFactory();
         LocationFactory locationFactory = new CommonLocationFactory();
-        InMemoryEventsDataAccessObject dataAccessObject = new InMemoryEventsDataAccessObject();
-
         Location eventLocation;
         try{
             eventLocation = locationFactory.makeLocation("(47.64054,-122.12934)");
@@ -72,7 +72,8 @@ public class GetEventDetailsInteractorTest {
                 assertEquals(expectedOutput,actualOutput);
             }
         };
-        GetEventDetailsInputData inputData = new GetEventDetailsInputData(currentEvent.getEventID());
-
+        GetEventDetailsInputData inputData = new GetEventDetailsInputData(currentEvent.getEventID(), false);
+        GetEventDetailsInteractor interactor = new GetEventDetailsInteractor(mockPresenter, dataAccessObject);
+        interactor.execute(inputData);
     }
 }

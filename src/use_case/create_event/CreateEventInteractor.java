@@ -2,8 +2,6 @@ package use_case.create_event;
 
 import entity.Events.Event;
 import entity.Events.EventFactory;
-import entity.Events.InviteOnlyEventFactory;
-import entity.Events.RestrictedEventFactory;
 import entity.Location.Location;
 import entity.Location.LocationFactory;
 
@@ -19,7 +17,7 @@ import java.util.ArrayList;
  * created or not.
  */
 public class CreateEventInteractor implements CreateEventInputBoundary{
-    final CreateEventDataAccessInterface eventDataAccessObject;
+    final CreateEventEventDataAccessInterface eventDataAccessObject;
     final CreateEventDataAccessInterface userDataAccessObject;
     final CreateEventOutputBoundary createEventPresenter;
     final EventFactory eventFactory;
@@ -34,7 +32,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
      * @param eventFactory an event factory
      * @param locationFactory a location factory
      */
-    public CreateEventInteractor(CreateEventDataAccessInterface eventDataAccessObject,
+    public CreateEventInteractor(CreateEventEventDataAccessInterface eventDataAccessObject,
                                  CreateEventDataAccessInterface userDataAccessObject,CreateEventOutputBoundary createEventPresenter,
                                  EventFactory eventFactory, LocationFactory locationFactory){
         this.eventDataAccessObject = eventDataAccessObject;
@@ -100,7 +98,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
 
         try {
             Location location = locationFactory.makeLocation(input.getLocation());
-        } catch (IOException e){
+        } catch (IOException | IndexOutOfBoundsException e){
             allErrors.add("invalid coordinates");
         }
 

@@ -397,7 +397,7 @@ public class SignupView extends javax.swing.JFrame implements ActionListener, Pr
         if (evt.getSource().equals(SignUp_BUTTON)) {
             signupController.execute(Username_TEXTFIELD.getText(),"",
                     String.valueOf(Password_PASSWORDFIELD.getPassword()),
-                    String.valueOf(Password_PASSWORDFIELD1.getPassword()),"","","",false);
+                    String.valueOf(Password_PASSWORDFIELD1.getPassword()),"tempsex","0","tempcontact",false);
             System.out.println("sign up");
         }
     }//GEN-LAST:event_SignUp_BUTTONActionPerformed

@@ -1,9 +1,8 @@
 package data_access;
 
 import entity.Users.User;
-import use_case.look_up_participant_info.LookupPariticpantInfoDataAccessInterface;
-import use_case.look_up_participant_info.LookupParticipantInfoInputData;
-import use_case.search_event.SearchEventOutputData;
+import unused_usecases___.usecases.look_up_participant_info.LookupPariticpantInfoDataAccessInterface;
+import unused_usecases___.usecases.look_up_participant_info.LookupParticipantInfoInputData;
 
 import java.util.HashMap;
 

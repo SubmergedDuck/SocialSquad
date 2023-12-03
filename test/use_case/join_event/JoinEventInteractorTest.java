@@ -8,11 +8,14 @@ import entity.Location.Location;
 import entity.Location.LocationFactory;
 import entity.Users.CommonUser;
 import entity.Users.User;
+import interface_adapter.join_event.JoinEventState;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for JoinEventInteractor.
@@ -56,7 +59,7 @@ public class JoinEventInteractorTest {
 
         };
 
-        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent, "Anna");
+        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent.getEventID(), "Anna");
         JoinEventUserDataAccessInterface joinEventUsersDataAccessObject = inMemoryUsersDataAccessObject;
         JoinEventEventDataAccessInterface joinEventEventsDataAccessObject = inMemoryEventsDataAccessObject;
 
@@ -86,6 +89,84 @@ public class JoinEventInteractorTest {
 
         // get the first event in the user's joinedEvents list
         Event evtInArray = inMemoryUsersDataAccessObject.getUserJoinedEvents("Anna").get(0);
+
+    }
+    @Test
+    public void testHasJoinedEvent() {
+        ArrayList<String> testPeopleJoined = new ArrayList<>();
+
+        User testUser =  new CommonUser("Anna", "123", 20, "m", "test@gmail.com");
+        Event testEvent = new CommonEvent(12345, "test event", "OrganizerBobTheBuilder",
+                null, testPeopleJoined, null, null, "type", "description",
+                false, 10);
+
+        inMemoryEventsDataAccessObject.save(testEvent);
+        inMemoryCurrentUserDAO.loginCurrentUser(testUser);
+        inMemoryUsersDataAccessObject.save(testUser);
+        testEvent.getPeopleJoined().add(testUser.getUsername()); // Make the user join the event
+
+
+        JoinEventOutputBoundary joinEventPresenter = new JoinEventOutputBoundary() {
+            @Override // Mock Presenter
+            public void prepareSuccessView(JoinEventOutputData outputData) {
+                fail("prepare success view is called");
+            }
+
+            @Override // Mock Presenter
+            public void prepareFailView(JoinEventOutputData outputData) {
+                String failReason = outputData.getFailureReason();
+                assert (failReason.equals("Note: You have already joined this event!"));
+            }
+
+        };
+
+        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent.getEventID(), testUser.getUsername());
+
+        joinEventInteractor = new JoinEventInteractor(joinEventPresenter, inMemoryUsersDataAccessObject,
+                inMemoryEventsDataAccessObject, inMemoryCurrentUserDAO);
+
+        joinEventInteractor.execute(joinEventInputDataAnna);
+
+    }
+
+    @Test
+    public void testEventFull() {
+        ArrayList<String> testPeopleJoined = new ArrayList<>();
+
+        User testUser =  new CommonUser("Anna", "123", 20, "m", "test@gmail.com");
+        Event testEvent = new CommonEvent(12345, "test event", "OrganizerBobTheBuilder",
+                null, testPeopleJoined, null, null, "type", "description",
+                false, 1);
+
+        inMemoryEventsDataAccessObject.save(testEvent);
+        inMemoryCurrentUserDAO.loginCurrentUser(testUser);
+        inMemoryUsersDataAccessObject.save(testUser);
+        testEvent.getPeopleJoined().add(testUser.getUsername()); // Make the user join the event
+        assert testEvent.getCapacity() == testEvent.getPeopleJoined().size(); // Event is full.
+
+
+        JoinEventOutputBoundary joinEventPresenter = new JoinEventOutputBoundary() {
+            @Override // Mock Presenter
+            public void prepareSuccessView(JoinEventOutputData outputData) {
+                fail("prepare success view is called");
+            }
+
+            @Override // Mock Presenter
+            public void prepareFailView(JoinEventOutputData outputData) {
+                String failReason = outputData.getFailureReason();
+                assert (failReason.equals("Note: Event is at full capacity!"));
+                assert outputData.getPeopleJoined().contains("Anna");
+                assert !outputData.getPeopleJoined().contains("another user");
+            }
+
+        };
+
+        JoinEventInputData inputData= new JoinEventInputData(testEvent.getEventID(), "another user");
+
+        joinEventInteractor = new JoinEventInteractor(joinEventPresenter, inMemoryUsersDataAccessObject,
+                inMemoryEventsDataAccessObject, inMemoryCurrentUserDAO);
+
+        joinEventInteractor.execute(inputData);
 
     }
 }

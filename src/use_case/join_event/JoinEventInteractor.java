@@ -44,7 +44,8 @@ public class JoinEventInteractor implements JoinEventInputBoundary {
 
     public void execute(JoinEventInputData joinEventInputData) {
         String username = joinEventInputData.getUsername();
-        Event event = joinEventInputData.getEvent();
+        int eventID = joinEventInputData.getEventID();
+        Event event = eventsDataAccessObject.getEvent(eventID);
         String capacity = eventsDataAccessObject.getCapacity(event.getEventID());
 
         ArrayList<String> getPeopleJoined = eventsDataAccessObject.getPeopleJoined(event.getEventID());
