@@ -98,7 +98,7 @@ public class CreateEventInteractor implements CreateEventInputBoundary{
 
         try {
             Location location = locationFactory.makeLocation(input.getLocation());
-        } catch (IOException e){
+        } catch (IOException | IndexOutOfBoundsException e){
             allErrors.add("invalid coordinates");
         }
 

@@ -47,7 +47,7 @@ public class CreateEventInteractorTest {
             }
         };
         //Creates regular event with an invalid input. Here, there is no owner.
-        CreateEventInputData testInput = new CreateEventInputData("Bob", "", "(4-122.12934)", "2004 11:30",
+        CreateEventInputData testInput = new CreateEventInputData("Bob", "", "fake coordinates", "2004 11:30",
                 "", "Have fun!", "abc");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
                 inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
