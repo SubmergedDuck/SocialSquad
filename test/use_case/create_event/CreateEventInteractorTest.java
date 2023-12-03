@@ -73,6 +73,7 @@ public class CreateEventInteractorTest {
                 "Movie night", "Have fun!", "10");
         CreateEventInteractor createEventInteractor = new CreateEventInteractor(inMemoryEventsDataAccessObject,
                 inMemoryUsersDataAccessObject,mockPresenter,new CommonEventFactory(), new CommonLocationFactory());
+        createEventInteractor.execute(testInput);
     }
 
     /**
