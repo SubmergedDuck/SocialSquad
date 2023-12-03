@@ -43,7 +43,7 @@ public class GSMInteractor implements GSMInputBoundary{
         HashMap<Integer, String> numToCoordinates = numToCoordinates(numToEvent);
         String imageSize = inputData.getWidth() + "," + inputData.getHeight();
         BufferedImage generatedImage = APIDataAccessObject.generateMap(formattedCoordinates, numToCoordinates, imageSize);
-        GSMOutputData outputData = new GSMOutputData(generatedImage, numToEvent);
+        GSMOutputData outputData = new GSMOutputData(generatedImage);
         presenter.prepareView(outputData);
     }
     private HashMap<Integer,String> numToCoordinates(HashMap<Integer, Event> numToEvent){

@@ -10,8 +10,6 @@ import data_access.InMemoryUsersDataAccessObject;
 import entity.Location.CommonLocationFactory;
 import entity.Users.CommonUser;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_account.CreateAccountController;
-import interface_adapter.create_account.CreateAccountPresesnter;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
@@ -19,9 +17,6 @@ import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
-import use_case.create_account.CreateAccountInputBoundary;
-import use_case.create_account.CreateAccountInteractor;
-import use_case.create_account.CreateAccountOutputBoundary;
 import use_case.login.*;
 
 import javax.swing.*;
@@ -459,7 +454,6 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         SignupViewModel signupViewModel = new SignupViewModel();
         GetCurrentUserViewModel getCurrentUserViewModel = new GetCurrentUserViewModel();
         LoginOutputBoundary presenter = new LoginPresenter(viewManagerModel,loggedInViewModel,loginViewModel, getCurrentUserViewModel);
-        CreateAccountOutputBoundary createAccountOutputBoundary = new CreateAccountPresesnter(viewManagerModel,signupViewModel,loginViewModel);
 
 
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
@@ -467,8 +461,6 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
 
         LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter, new InMemoryCurrentUserDAO(),new CommonLocationFactory());
         LoginController loginController  = new LoginController(interactor);
-        CreateAccountInputBoundary createAccountInputBoundary = new CreateAccountInteractor(createAccountOutputBoundary);
-        CreateAccountController createAccountController = new CreateAccountController(createAccountInputBoundary);
         LoginView loginView = new LoginView(loginViewModel,loginController, signupViewModel);
         loginViewModel.addPropertyChangeListener(loginView);
 

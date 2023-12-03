@@ -1,7 +1,6 @@
 package interface_adapter.create_event;
 
 import use_case.create_event.CreateEventOutputBoundary;
-import use_case.create_event.CreateEventOutputData;
 
 public class CreateEventPresenter implements CreateEventOutputBoundary {
     private final CreateEventViewModel createEventViewModel;

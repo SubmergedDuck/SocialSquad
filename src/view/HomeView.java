@@ -453,6 +453,12 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 inMemoryCurrentUserDAO.changeUser(testUser);
                 inMemoryUsersDataAccessObject.save(testUser);
 
+                GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
+                GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(gsmViewModel);
+                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), inMemoryUsersDataAccessObject,
+                        inMemoryEventsDataAccessObject, generateStaticMapPresenter);
+                GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
+
                 // put the test user as the user logged in
                 GetCurrentUserState getCurrentUserState = getCurrentUserViewModel.getState();
                 getCurrentUserState.setUsername(testUser.getUsername());
@@ -497,7 +503,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 GetCurrentUserController getCurrentUserController1 = new GetCurrentUserController(getCurrentUserInteractor);
 
                 SearchNearbyView view = new SearchNearbyView(searchNearbyViewModel, getEventDetailsController, backOutController);
-                CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel);
+                CreateEventView createEventView = new CreateEventView(createEventViewModel, createEventController, backOutController, getCurrentUserViewModel, generateStaticMapController);
                 createEventViewModel.addPropertyChangeListener(createEventView);
                 createEventViewModel.addPropertyChangeListener(view);
                 EventDetailsView eventDetailsView = new EventDetailsView(getEventDetailsViewModel, joinEventController, joinEventViewModel,
@@ -516,11 +522,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
                 LoggedInOutputBoundary loggedInPresenter = new LoggedInPresenter(viewManagerModel, loggedInViewModel1, new LoginViewModel(),myEventViewModel);
                 LoggedInInputBoundary loggedInInteractor = new LoggedInInteractor(inMemoryUsersDataAccessObject, loggedInPresenter);
                 LoggedInController loggedInController = new LoggedInController(loggedInInteractor);
-                GenerateStaticMapViewModel gsmViewModel = new GenerateStaticMapViewModel();
-                GenerateStaticMapPresenter generateStaticMapPresenter = new GenerateStaticMapPresenter(gsmViewModel);
-                GSMInteractor generateStaticMapInteractor = new GSMInteractor(new GenerateStaticMapBody(), inMemoryUsersDataAccessObject,
-                        inMemoryEventsDataAccessObject, generateStaticMapPresenter);
-                GenerateStaticMapController generateStaticMapController = new GenerateStaticMapController(generateStaticMapInteractor);
+
                 HomeView homeView = null;
                 try {
                     homeView = new HomeView(loggedInViewModel1, loggedInController, searchNearbyController, createEventController,createEventViewModel,getCurrentUserViewModel,

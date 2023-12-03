@@ -7,16 +7,13 @@ import java.util.Map;
 
 public class GSMOutputData {
     private final BufferedImage generatedMap;
-    private final Map<Integer, Event> pinToEvent;
 
     /**
      * Constructor for GSM output data.
      * @param generatedMap the image of the generated map
-     * @param pinToEvent
      */
-    public GSMOutputData(BufferedImage generatedMap, Map<Integer, Event> pinToEvent){
+    public GSMOutputData(BufferedImage generatedMap){
         this.generatedMap = generatedMap;
-        this.pinToEvent = pinToEvent;
     }
 
     /**
@@ -24,6 +21,4 @@ public class GSMOutputData {
      * @return the map created by the API call.
      */
     public BufferedImage getGeneratedMap(){return this.generatedMap;}
-
-    Map<Integer, Event> pinToEvent(){return this.pinToEvent;}
 }

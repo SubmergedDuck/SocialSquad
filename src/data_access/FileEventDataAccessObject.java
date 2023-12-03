@@ -16,6 +16,7 @@ import use_case.leave_event.LeaveEventEventDataAccessInterface;
 import unused_usecases___.usecases.remove_participant.RemoveParticipantDataAccessInterface;
 import unused_usecases___.usecases.search_event.SearchEventDataAccessInterface;
 import unused_usecases___.usecases.search_event.SearchEventInputData;
+import use_case.my_event.MyEventDataAccessInterface;
 import use_case.search_nearby.SearchNearbyDataAccessInterface;
 import use_case.search_nearby.SearchNearbyInputData;
 import unused_usecases___.usecases.view_participants.ViewParticipantsDataAccessInterface;
@@ -31,7 +32,7 @@ import java.util.*;
 public class FileEventDataAccessObject implements SearchEventDataAccessInterface,
         RemoveParticipantDataAccessInterface, ViewParticipantsDataAccessInterface, GetDirectionEventDataAccessInterface,
         GetEventDetailsDataAccessInterface, CreateEventDataAccessInterface, SearchNearbyDataAccessInterface,GSMEventDataAccessInterface,
-        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface, LeaveEventEventDataAccessInterface {
+        CreateEventEventDataAccessInterface, JoinEventEventDataAccessInterface, LeaveEventEventDataAccessInterface, MyEventDataAccessInterface {
     private final File eventDatabase;
     private final Map<String, Integer> headers = new LinkedHashMap<>();
     private final Map<Integer, Event> eventsToID = new HashMap<>();
@@ -159,17 +160,6 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
      * @return the element seperator
      */
     public String getElementSeperator(){return this.elementSeperator;}
-    private String formatStringList(ArrayList<String> stringList){
-        String currentString = "";
-        for (int i = 0; i < stringList.size(); i++){
-            if (i == stringList.size() - 1){
-                currentString = currentString + stringList.get(i);
-            } else {
-                currentString = currentString + stringList.get(i) + elementSeperator;
-            }
-        }
-        return currentString;
-    }
 
     @Override
     public HashMap<Integer, Event> getEvents(int amount) {
@@ -263,6 +253,7 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
     public void userJoinEvent(String username, Integer eventID) {
         Event event = eventsToID.get(eventID);
         event.getPeopleJoined().add(username);
+        save();
     }
 
     @Override
@@ -291,6 +282,16 @@ public class FileEventDataAccessObject implements SearchEventDataAccessInterface
 
     @Override
     public List<String> getParticipants(Integer eventID) {
+        return null;
+    }
+
+    @Override
+    public List<Event> getJoinedEvents(String username) {
+        return null;
+    }
+
+    @Override
+    public List<Event> getCreatedEvents(String username) {
         return null;
     }
 }
