@@ -26,10 +26,12 @@ public class JoinEventUseCaseFactory {
     private JoinEventUseCaseFactory(){}
 
         public static EventDetailsView create(GetEventDetailsViewModel getEventDetailsViewModel, JoinEventController joinEventController,
-                                              BackOutController backOutController, GetDirectionController getDirectionController,
-                                              GetDirectionViewModel getDirectionViewModel, GetCurrentUserViewModel currentUserViewModel,
+                                              JoinEventViewModel joinEventViewModel, BackOutController backOutController,
+                                              GetDirectionController getDirectionController,
+                                              GetDirectionViewModel getDirectionViewModel,
+                                              GetCurrentUserViewModel currentUserViewModel,
                                               GetCurrentUserController getCurrentUserController) {
-            return new EventDetailsView(getEventDetailsViewModel, joinEventController, backOutController, getDirectionController,
+            return new EventDetailsView(getEventDetailsViewModel, joinEventController, joinEventViewModel,backOutController, getDirectionController,
                     getDirectionViewModel, currentUserViewModel, getCurrentUserController);
 
         }
