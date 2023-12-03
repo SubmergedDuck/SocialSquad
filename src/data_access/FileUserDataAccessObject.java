@@ -66,7 +66,7 @@ public class FileUserDataAccessObject implements RemoveParticipantDataAccessInte
                     String[] collectionJoinedEvents = joinedEvents.split(elementSeperator);
                     String createdEvents = userValues[headers.get("createdEvents")];
                     String[] collectionCreatedEvents = createdEvents.split(elementSeperator);
-                    User user = userFactory.create(username,password,age,sex,contact);
+                    User user = this.userFactory.create(username,password,age,sex,contact);
 
                     ArrayList<Event> userJoinedEvents = user.getJoinedEvents();
                     ArrayList<Event> userCreatedEvents = user.getCreatedEvents();
