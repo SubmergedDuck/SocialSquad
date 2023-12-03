@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class MainFileTest {
 
     @Test
-    public void main() throws IOException {
+    public void testMain() throws IOException {
         MainFile.main(new String[]{});
     }
 }
