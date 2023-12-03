@@ -34,15 +34,21 @@ public class GetIDsInteractorTest {
                 joinedUsers, new ArrayList<String>(), LocalDateTime.now(), "test event", "description",
                 false, 20);
         ArrayList<Event> joinedEvents = user.getJoinedEvents();
+        ArrayList<Event> createdEvents = user.getCreatedEvents();
         joinedEvents.add(event);
         ArrayList<Integer> joinedIDs = new ArrayList<>();
+        ArrayList<Integer> createdIDs = new ArrayList<>();
         for (Event joinedEvent : joinedEvents){
             joinedIDs.add(joinedEvent.getEventID());
+        }
+        for (Event createdEvent : createdEvents){
+            createdIDs.add(createdEvent.getEventID());
         }
         inMemoryUsersDataAccessObject.save(user);
         GetIDsOutputBoundary mockPresenter = new GetIDsOutputBoundary() {
             @Override
             public void prepareView(GetIDsOutputData outputData) {
+                assertEquals(false, outputData.isCreated());
                 for (int eventID : outputData.getEventIDs()){
                     if (!joinedIDs.contains(eventID)){
                         fail();
@@ -50,6 +56,22 @@ public class GetIDsInteractorTest {
                 }
             }
         };
+        GetIDsOutputBoundary mockPresenter2 = new GetIDsOutputBoundary() {
+            @Override
+            public void prepareView(GetIDsOutputData outputData) {
+                assertEquals(true,outputData.isCreated());
+                for (int eventID : outputData.getEventIDs()){
+                    if (!createdEvents.contains(eventID)){
+                        fail();
+                    }
+                }
+            }
+        };
         GetIDsInteractor getIDsInteractor = new GetIDsInteractor(inMemoryUsersDataAccessObject,mockPresenter);
+        GetIDsInteractor getIDsInteractor2 = new GetIDsInteractor(inMemoryUsersDataAccessObject,mockPresenter2);
+        GetIDsInputData inputData = new GetIDsInputData(user.getUsername(), false);
+        GetIDsInputData inputData2 = new GetIDsInputData(user.getUsername(), true);
+        getIDsInteractor.execute(inputData);
+        getIDsInteractor2.execute(inputData2);
     }
 }
