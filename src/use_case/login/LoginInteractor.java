@@ -20,15 +20,18 @@ import java.io.IOException;
 public class LoginInteractor implements LoginInputBoundary {
     final LoginUserDataAccessInterface userDataAccessObject;
 
+    final LoginCurrentUserDataAccessInterface currentUserDataAccessObject;
 
     final LoginOutputBoundary loginPresenter;
 
+    final LocationFactory locationFactory;
 
     public LoginInteractor(LoginUserDataAccessInterface userDataAccessInterface,
-                           LoginOutputBoundary loginOutputBoundary) {
+                           LoginOutputBoundary loginOutputBoundary, LoginCurrentUserDataAccessInterface currentUserDataAccessObject, LocationFactory locationFactory) {
         this.userDataAccessObject = userDataAccessInterface;
         this.loginPresenter = loginOutputBoundary;
-
+        this.currentUserDataAccessObject = currentUserDataAccessObject;
+        this.locationFactory = locationFactory;
     }
 
     @Override
@@ -37,61 +40,59 @@ public class LoginInteractor implements LoginInputBoundary {
         String password = loginInputData.getPassword();
         ViewModel viewModel = loginInputData.getViewModel();
         if (viewModel != null && viewModel.getViewName() !=null && !viewModel.getViewName().isEmpty()) {
-            LoginOutputData outputData = new LoginOutputData(null, true);
-            loginPresenter.prepareLinkView(outputData, viewModel);
+            loginPresenter.prepareLinkView(viewModel);
         } else if (!userDataAccessObject.existsByName(username)) {
-            LoginOutputData outputData = new LoginOutputData(null, false);
-            loginPresenter.prepareFailView(outputData, username + ": Account does not exist.");
+            loginPresenter.prepareFailView(username + ": Account does not exist.");
         } else {
             String pwd = userDataAccessObject.get(username).getPassword();
             if (!password.equals(pwd)) {
-                LoginOutputData outputData = new LoginOutputData(null, false);
-                loginPresenter.prepareFailView(outputData, "Incorrect password for " + username + ".");
-//            } else {
-//                User user = userDataAccessObject.get(loginInputData.getUsername());
-//                String[] currentCoordinates = CoordinatesFromIP.getCoordinates();
-//                String formattedCoordinates = String.format("(%s,%s)",currentCoordinates[0], currentCoordinates[1]);
-//                Location userLocation = locationFactory.makeLocation(formattedCoordinates);
-//                user.setLocation(userLocation);
-//                LoginOutputData loginOutputData = new LoginOutputData(user.getUsername(), false);
-//                loginPresenter.prepareSuccessView(loginOutputData);
+                loginPresenter.prepareFailView("Incorrect password for " + username + ".");
+            } else {
+                User user = userDataAccessObject.get(loginInputData.getUsername());
+                String[] currentCoordinates = CoordinatesFromIP.getCoordinates();
+                String formattedCoordinates = String.format("(%s,%s)",currentCoordinates[0], currentCoordinates[1]);
+                Location userLocation = locationFactory.makeLocation(formattedCoordinates);
+                user.setLocation(userLocation);
+                LoginOutputData loginOutputData = new LoginOutputData(user.getUsername(), false);
+                loginPresenter.prepareSuccessView(loginOutputData);
             }
         }
     }
 
-//
-//
-//    public static void main(String[] args) throws IOException {
-//        ViewManagerModel viewManagerModel = new ViewManagerModel();
-//        SignupViewModel signupViewmodel = new SignupViewModel();
-//        LoginViewModel loginViewModel = new LoginViewModel();
-//        LoginOutputBoundary presenter = new LoginOutputBoundary() {
-//            @Override
-//            public void prepareSuccessView(LoginOutputData user) {
-//                System.out.println("sign in succeed");
-//            }
-//
-//            @Override
-//            public void prepareLinkView(ViewModel viewModel) {
-//
-//            }
-//
-//            @Override
-//            public void prepareFailView(String error) {
-//                System.out.println("sign in failed");
-//            }
-//
-//        };
-//
-//        LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
-//        LoginInputBoundary interactor = new LoginInteractor(inMemoryUserDAO, presenter);
-//        inMemoryUserDAO.save(new CommonUser("user1","aa",2,"",""));
-//        LoginInputData inputData = new LoginInputData("user1", "aa",null);
-//        interactor.execute(inputData);
-//        LoginInputData inputData2 = new LoginInputData("user1", "bb",null);
-//        interactor.execute(inputData2);
-//        LoginInputData inputData3 = new LoginInputData("user2", "aa",null);
-//        interactor.execute(inputData3);
-//
-//    }
+
+
+    public static void main(String[] args) throws IOException {
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        SignupViewModel signupViewmodel = new SignupViewModel();
+        LoginViewModel loginViewModel = new LoginViewModel();
+        LoginOutputBoundary presenter = new LoginOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoginOutputData user) {
+                System.out.println("sign in succeed");
+            }
+
+            @Override
+            public void prepareLinkView(ViewModel viewModel) {
+
+            }
+
+            @Override
+            public void prepareFailView(String error) {
+                System.out.println("sign in failed");
+            }
+
+        };
+
+        LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
+        LoginInputBoundary interactor = new LoginInteractor(inMemoryUserDAO, presenter, new InMemoryCurrentUserDAO(),
+                new CommonLocationFactory());
+        inMemoryUserDAO.save(new CommonUser("user1","aa",2,"",""));
+        LoginInputData inputData = new LoginInputData("user1", "aa",null);
+        interactor.execute(inputData);
+        LoginInputData inputData2 = new LoginInputData("user1", "bb",null);
+        interactor.execute(inputData2);
+        LoginInputData inputData3 = new LoginInputData("user2", "aa",null);
+        interactor.execute(inputData3);
+
+    }
 }

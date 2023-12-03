@@ -51,7 +51,7 @@ public class LoginUseCaseFactory {
         UserFactory userFactory = new CommonUserFactory();
 
         LoginInputBoundary loginInteractor = new LoginInteractor(
-                userDataAccessObject, loginOutputBoundary);
+                userDataAccessObject, loginOutputBoundary,currentUserDataAccessObject, new CommonLocationFactory());
 
         return new LoginController(loginInteractor);
     }

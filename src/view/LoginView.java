@@ -459,7 +459,7 @@ public class LoginView extends JFrame implements ActionListener, PropertyChangeL
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         inMemoryUserDAO.save(new CommonUser("aa","aaa",1,"",""));
 
-        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter);
+        LoginInputBoundary interactor = new LoginInteractor(new InMemoryUsersDataAccessObject(),presenter, new InMemoryCurrentUserDAO(),new CommonLocationFactory());
         LoginController loginController  = new LoginController(interactor);
         LoginView loginView = new LoginView(loginViewModel,loginController, signupViewModel);
         loginViewModel.addPropertyChangeListener(loginView);
