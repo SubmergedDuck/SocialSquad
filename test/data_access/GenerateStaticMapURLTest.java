@@ -15,7 +15,9 @@ public class GenerateStaticMapURLTest {
         assert(coordinates.length == 2);
         String formattedCoordinates = coordinates[0] + "," + coordinates[1];
         GenerateStaticMapURL newGenerator = new GenerateStaticMapURL();
-        BufferedImage image = newGenerator.generateMap(formattedCoordinates, new HashMap<Integer, String>(), "500,500");
+        HashMap<Integer, String> otherCoordinates = new HashMap<>();
+        otherCoordinates.put(0, formattedCoordinates);
+        BufferedImage image = newGenerator.generateMap(formattedCoordinates, otherCoordinates, "500,500");
         assert(!(image == null));
     }
 }
