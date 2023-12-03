@@ -1,5 +1,6 @@
 package app;
 
+import data_access.CoordinatesFromIP;
 import entity.Location.CommonLocationFactory;
 import entity.Users.CommonUserFactory;
 import entity.Users.UserFactory;
@@ -51,7 +52,7 @@ public class LoginUseCaseFactory {
         UserFactory userFactory = new CommonUserFactory();
 
         LoginInputBoundary loginInteractor = new LoginInteractor(
-                userDataAccessObject, loginOutputBoundary,currentUserDataAccessObject, new CommonLocationFactory());
+                userDataAccessObject, loginOutputBoundary,currentUserDataAccessObject, new CommonLocationFactory(), new CoordinatesFromIP());
 
         return new LoginController(loginInteractor);
     }

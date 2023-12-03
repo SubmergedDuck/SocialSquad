@@ -1,6 +1,7 @@
 package data_access;
 
 import org.junit.Test;
+import use_case.common_interfaces.GetCoordinatesIP;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -11,7 +12,8 @@ import static org.junit.Assert.*;
 public class GenerateStaticMapURLTest {
     @Test
     public void getMap() throws IOException {
-        String[] coordinates = CoordinatesFromIP.getCoordinates();
+        GetCoordinatesIP getCoordinatesIP = new CoordinatesFromIP();
+        String[] coordinates = getCoordinatesIP.getCoordinates();
         assert(coordinates.length == 2);
         String formattedCoordinates = coordinates[0] + "," + coordinates[1];
         GenerateStaticMapURL newGenerator = new GenerateStaticMapURL();

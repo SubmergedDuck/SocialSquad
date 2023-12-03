@@ -3,6 +3,7 @@ package app;
 import data_access.*;
 import entity.Events.CommonEventFactory;
 import entity.Location.CommonLocationFactory;
+import entity.Location.Location;
 import entity.Users.CommonUserFactory;
 import entity.Users.User;
 import interface_adapter.ViewManagerModel;
@@ -15,6 +16,7 @@ import interface_adapter.generate_static_map.GenerateStaticMapPresenter;
 import interface_adapter.generate_static_map.GenerateStaticMapViewModel;
 import interface_adapter.get_current_user.GetCurrentUserController;
 import interface_adapter.get_current_user.GetCurrentUserPresenter;
+import interface_adapter.get_current_user.GetCurrentUserState;
 import interface_adapter.get_current_user.GetCurrentUserViewModel;
 import interface_adapter.get_direction.GetDirectionController;
 import interface_adapter.get_direction.GetDirectionPresenter;
@@ -80,10 +82,8 @@ public class MainFile {
         FileEventDataAccessObject fileEventDataAccessObject = new FileEventDataAccessObject("events.csv",new CommonEventFactory(),new CommonLocationFactory(),formatter);
         FileUserDataAccessObject fileUserDataAccessObject = new FileUserDataAccessObject("users.csv", new CommonUserFactory(), fileEventDataAccessObject);
         InMemoryCurrentUserDAO currentUserDAO = new InMemoryCurrentUserDAO();
-        CommonUserFactory userFactory = new CommonUserFactory();
-        User temporaryUser = userFactory.create("username","123",5,"m","contact");
-        currentUserDAO.changeUser(temporaryUser);
-        fileUserDataAccessObject.save(temporaryUser);
+
+        setUpTempUser(currentUserDAO,fileUserDataAccessObject,getCurrentUserViewModel);
 
         //Create controllers
         BackOutController backOutController = BackOutUseCaseFactory.createBackOutUseCase(viewManagerModel);
@@ -119,6 +119,7 @@ public class MainFile {
                 createEventController, createEventViewModel, getCurrentUserViewModel, generateStaticMapController,generateStaticMapViewModel,myEventViewModel);
         views.add(loggedInView.getRootPane(), loggedInView.viewName);
         loggedInViewModel.addPropertyChangeListener(loggedInView); // Because HomeView constructor doesn't add the view to the view model.
+        getCurrentUserViewModel.addPropertyChangeListener(loggedInView);
 
         MyEventsView myEventsView = MyEventUseCaseFactory.create(viewManagerModel,myEventViewModel,fileUserDataAccessObject,
                 getIDsController,getIDsViewModel,getCurrentUserController,backOutController,getCurrentUserViewModel,
@@ -143,5 +144,19 @@ public class MainFile {
 
         application.pack();
         application.setVisible(true);
+    }
+
+    private static void setUpTempUser(InMemoryCurrentUserDAO currentUserDAO, FileUserDataAccessObject fileUserDataAccessObject,
+                               GetCurrentUserViewModel getCurrentUserViewModel) throws IOException {
+        CommonUserFactory userFactory = new CommonUserFactory();
+        CommonLocationFactory locationFactory = new CommonLocationFactory();
+        Location temporaryLocation = locationFactory.makeLocation("(50,-75)");
+        User temporaryUser = userFactory.create("username","123",5,"m","contact");
+        temporaryUser.setLocation(temporaryLocation);
+        currentUserDAO.changeUser(temporaryUser);
+        GetCurrentUserState tempState = getCurrentUserViewModel.getState();
+        tempState.setUserCoordinates(temporaryUser.getLocation().getCoordinates());
+        tempState.setUsername(temporaryUser.getUsername());
+        fileUserDataAccessObject.save(temporaryUser);
     }
 }

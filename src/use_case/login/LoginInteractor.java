@@ -13,6 +13,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
+import use_case.common_interfaces.GetCoordinatesIP;
 import use_case.signup.*;
 
 import java.io.IOException;
@@ -26,12 +27,16 @@ public class LoginInteractor implements LoginInputBoundary {
 
     final LocationFactory locationFactory;
 
+    final GetCoordinatesIP getCoordinatesIP;
+
     public LoginInteractor(LoginUserDataAccessInterface userDataAccessInterface,
-                           LoginOutputBoundary loginOutputBoundary, LoginCurrentUserDataAccessInterface currentUserDataAccessObject, LocationFactory locationFactory) {
+                           LoginOutputBoundary loginOutputBoundary, LoginCurrentUserDataAccessInterface currentUserDataAccessObject, LocationFactory locationFactory,
+                           GetCoordinatesIP getCoordinatesIP) {
         this.userDataAccessObject = userDataAccessInterface;
         this.loginPresenter = loginOutputBoundary;
         this.currentUserDataAccessObject = currentUserDataAccessObject;
         this.locationFactory = locationFactory;
+        this.getCoordinatesIP = getCoordinatesIP;
     }
 
     @Override
@@ -49,11 +54,11 @@ public class LoginInteractor implements LoginInputBoundary {
                 loginPresenter.prepareFailView("Incorrect password for " + username + ".");
             } else {
                 User user = userDataAccessObject.get(loginInputData.getUsername());
-                String[] currentCoordinates = CoordinatesFromIP.getCoordinates();
+                String[] currentCoordinates = getCoordinatesIP.getCoordinates();
                 String formattedCoordinates = String.format("(%s,%s)",currentCoordinates[0], currentCoordinates[1]);
                 Location userLocation = locationFactory.makeLocation(formattedCoordinates);
                 user.setLocation(userLocation);
-                LoginOutputData loginOutputData = new LoginOutputData(user.getUsername(), false);
+                LoginOutputData loginOutputData = new LoginOutputData(user.getUsername(),currentCoordinates);
                 loginPresenter.prepareSuccessView(loginOutputData);
             }
         }
@@ -85,7 +90,7 @@ public class LoginInteractor implements LoginInputBoundary {
 
         LoginUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
         LoginInputBoundary interactor = new LoginInteractor(inMemoryUserDAO, presenter, new InMemoryCurrentUserDAO(),
-                new CommonLocationFactory());
+                new CommonLocationFactory(), new CoordinatesFromIP());
         inMemoryUserDAO.save(new CommonUser("user1","aa",2,"",""));
         LoginInputData inputData = new LoginInputData("user1", "aa",null);
         interactor.execute(inputData);
