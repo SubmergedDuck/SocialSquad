@@ -128,4 +128,44 @@ public class JoinEventInteractorTest {
         joinEventInteractor.execute(joinEventInputDataAnna);
 
     }
+
+    @Test
+    public void testEventFull() {
+        ArrayList<String> testPeopleJoined = new ArrayList<>();
+
+        User testUser =  new CommonUser("Anna", "123", 20, "m", "test@gmail.com");
+        Event testEvent = new CommonEvent(12345, "test event", "OrganizerBobTheBuilder",
+                null, testPeopleJoined, null, null, "type", "description",
+                false, 1);
+
+        inMemoryEventsDataAccessObject.save(testEvent);
+        inMemoryCurrentUserDAO.loginCurrentUser(testUser);
+        inMemoryUsersDataAccessObject.save(testUser);
+        testEvent.getPeopleJoined().add(testUser.getUsername()); // Make the user join the event
+        assert testEvent.getCapacity() == 0; // Event is full.
+
+
+        JoinEventOutputBoundary joinEventPresenter = new JoinEventOutputBoundary() {
+            @Override // Mock Presenter
+            public void prepareSuccessView(JoinEventOutputData outputData) {
+                fail("prepare success view is called");
+            }
+
+            @Override // Mock Presenter
+            public void prepareFailView(JoinEventOutputData outputData) {
+                String failReason = outputData.getFailureReason();
+                assert (failReason.equals("Note: You have already joined this event!"));
+            }
+
+        };
+
+        JoinEventInputData joinEventInputDataAnna = new JoinEventInputData(testEvent.getEventID(), "another user");
+
+        joinEventInteractor = new JoinEventInteractor(joinEventPresenter, inMemoryUsersDataAccessObject,
+                inMemoryEventsDataAccessObject, inMemoryCurrentUserDAO);
+
+        joinEventInteractor.execute(joinEventInputDataAnna);
+        assert testEvent.getPeopleJoined().contains("another user");
+
+    }
 }
