@@ -7,14 +7,11 @@ import interface_adapter.get_event_details.GetEventDetailsController;
 import interface_adapter.get_event_details.GetEventDetailsViewModel;
 import interface_adapter.get_ids.GetIDsController;
 import interface_adapter.get_ids.GetIDsViewModel;
-import interface_adapter.my_event.MyEventController;
-import interface_adapter.my_event.MyEventViewModel;
 import use_case.back_out.BackOutInputBoundary;
 import use_case.get_current_user.GetCurrentUserInputBoundary;
 import use_case.get_current_user.GetCurrentUserInteractor;
 import use_case.get_event_details.GetEventDetailsInputBoundary;
 import use_case.get_ids.GetIDsInputBoundary;
-import use_case.my_event.MyEventInputBoundary;
 import org.junit.Before;
 import org.junit.Test;
 
