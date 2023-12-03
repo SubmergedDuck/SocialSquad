@@ -52,35 +52,35 @@ public class SignupInteractor implements SignupInputBoundary {
         }
     }
 
-    public static void main(String[] args) {
-        ViewManagerModel viewManagerModel = new ViewManagerModel();
-        SignupViewModel signupViewmodel = new SignupViewModel();
-        LoginViewModel loginViewModel = new LoginViewModel();
-        CommonUserFactory factory = new CommonUserFactory();
-        SignupOutputBoundary presenter = new SignupOutputBoundary() {
-            @Override
-            public void prepareFailView(String error) {
-                System.out.println("sign up failed");
-            }
-
-            @Override
-            public void prepareSuccessView(SignupOutputData output) {
-                System.out.println("sign up succeed");
-
-            }
-
-            @Override
-            public void preparePreviousView() {
-                System.out.println("back succeed");
-            }
-        };
-        SignupUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
-        SignupInputBoundary interactor = new SignupInteractor(inMemoryUserDAO, presenter, factory);
-        SignupInputData inputData = new SignupInputData("user1", "", "123", "123", "1", "f", "contact",true);
-        interactor.execute(inputData);
-        SignupInputData inputData2 = new SignupInputData("user1", "", "123", "123", "1", "f", "contact",true);
-        interactor.execute(inputData2);
-        interactor.execute(inputData2);
-    }
+//    public static void main(String[] args) {
+//        ViewManagerModel viewManagerModel = new ViewManagerModel();
+//        SignupViewModel signupViewmodel = new SignupViewModel();
+//        LoginViewModel loginViewModel = new LoginViewModel();
+//        CommonUserFactory factory = new CommonUserFactory();
+//        SignupOutputBoundary presenter = new SignupOutputBoundary() {
+//            @Override
+//            public void prepareFailView(String error) {
+//                System.out.println("sign up failed");
+//            }
+//
+//            @Override
+//            public void prepareSuccessView(SignupOutputData output) {
+//                System.out.println("sign up succeed");
+//
+//            }
+//
+//            @Override
+//            public void preparePreviousView() {
+//                System.out.println("back succeed");
+//            }
+//        };
+//        SignupUserDataAccessInterface inMemoryUserDAO = new InMemoryUsersDataAccessObject();
+//        SignupInputBoundary interactor = new SignupInteractor(inMemoryUserDAO, presenter, factory);
+//        SignupInputData inputData = new SignupInputData("user1", "", "123", "123", "1", "f", "contact",true);
+//        interactor.execute(inputData);
+//        SignupInputData inputData2 = new SignupInputData("user1", "", "123", "123", "1", "f", "contact",true);
+//        interactor.execute(inputData2);
+//        interactor.execute(inputData2);
+//    }
 }
 

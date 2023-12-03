@@ -6,13 +6,13 @@ import entity.Users.User;
 import entity.Users.UserFactory;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
-class SignupInteractorTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+public class SignupInteractorTest {
     private InMemoryUsersDataAccessObject inMemoryUsersDataAccessObject;
 
     /**
