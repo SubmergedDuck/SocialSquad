@@ -35,17 +35,8 @@ import interface_adapter.logged_in.LoggedInPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
-import interface_adapter.search_nearby.SearchNearbyPresenter;
 import interface_adapter.search_nearby.SearchNearbyViewModel;
 import interface_adapter.signup.SignupViewModel;
-import use_case.generate_static_map.GSMInteractor;
-import use_case.get_current_user.GetCurrentUserInteractor;
-import use_case.get_direction.GetDirectionInteractor;
-import use_case.get_event_details.GetEventDetailsInteractor;
-import use_case.get_ids.GetIDsInteractor;
-import use_case.join_event.JoinEventInputBoundary;
-import use_case.loggedIn.LoggedInInteractor;
-import use_case.search_nearby.SearchNearbyInteractor;
 import view.*;
 
 import javax.swing.*;
