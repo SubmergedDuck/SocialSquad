@@ -52,6 +52,11 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class MainFile {
+    /**
+     * You are on the DEMO BRANCH.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         JFrame application = new JFrame("SocialSquad");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
