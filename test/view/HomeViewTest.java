@@ -11,7 +11,6 @@ import interface_adapter.logged_in.LoggedInController;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginViewModel;
-import interface_adapter.my_event.MyEventViewModel;
 import interface_adapter.search_nearby.SearchNearbyController;
 import interface_adapter.signup.SignupViewModel;
 import org.junit.Test;
