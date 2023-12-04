@@ -1,0 +1,134 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+'JoinEventUseCase Factory
+
+autonumber
+
+'Outside
+actor User
+database CSVDatabase
+
+'Data Access
+participant SocialSquad
+participant JoinEventUseCaseFactory
+participant DAOs
+
+'View
+participant ViewManager
+participant EventDetailsView
+
+'Interface Adapters
+box "Interface Adapters" #LightGreen
+    'Interface Adapters (General)'
+    participant ViewManagerModel
+    participant ViewModel
+
+    'Interface Adapters (JoinEvent)'
+    participant JoinEventViewModel
+    participant JoinEventPresenter
+    participant JoinEventController
+    participant JoinEventState
+end box
+
+'Application Business Rules
+box "Application Business Rules" #LightPink
+    participant JoinEventInteractor
+    participant DataAccessInterfaces << (I,#A1DDFF) >>
+end box
+
+'Enterprise Business Rules
+box "Enterprise Business Rules" #LightYellow
+    participant Entities
+end box
+
+
+
+
+
+'1 Start
+User -> SocialSquad: main
+activate SocialSquad #BlueViolet
+SocialSquad -> ViewManagerModel: <<Create>>
+activate ViewManagerModel #Green
+ViewManagerModel --> SocialSquad
+deactivate ViewManagerModel #Yellow
+SocialSquad -> ViewManager: <<Create>>
+activate ViewManager
+
+'Add view to ViewModelManager
+ViewManager -> ViewManagerModel : addPropertyChangeListener
+activate ViewManagerModel #Green
+ViewManagerModel --> ViewManager
+deactivate ViewManagerModel
+ViewManager --> SocialSquad
+deactivate ViewManager
+'7 End
+
+SocialSquad -> JoinEventViewModel: <<Create>>
+activate JoinEventViewModel #Green
+JoinEventViewModel -> ViewModel: <<Create>>
+activate ViewModel #Green
+ViewModel --> JoinEventViewModel
+deactivate ViewModel #Green
+JoinEventViewModel -> JoinEventState: <<Create>>
+activate JoinEventState #Green
+JoinEventState --> JoinEventViewModel
+deactivate JoinEventState #Green
+JoinEventViewModel --> SocialSquad
+deactivate JoinEventViewModel #Green
+'13 End
+
+'14 Start
+SocialSquad -> DAOs: <<Create>>
+activate DAOs
+DAOs -> CSVDatabase: <<Read>>
+DAOs -> DataAccessInterfaces: <<Implements>>
+activate DataAccessInterfaces #Crimson
+DataAccessInterfaces -> Entities
+activate Entities #Yellow
+Entities --> DataAccessInterfaces
+deactivate Entities #Yellow
+DataAccessInterfaces --> DAOs
+deactivate DataAccessInterfaces #Crimson
+DAOs --> SocialSquad
+deactivate DAOs
+'20 End
+
+
+'21 Start
+SocialSquad -> JoinEventUseCaseFactory: <<Create>>
+activate JoinEventUseCaseFactory
+
+'Controller
+JoinEventUseCaseFactory -> JoinEventController: <<Create>>
+activate JoinEventController #Green
+JoinEventController --> JoinEventUseCaseFactory
+deactivate JoinEventController
+
+'Use Case
+JoinEventUseCaseFactory -> JoinEventInteractor: <<Create>>
+activate JoinEventInteractor #Crimson
+JoinEventInteractor --> JoinEventUseCaseFactory
+deactivate JoinEventInteractor
+
+'Presenter
+JoinEventUseCaseFactory -> JoinEventPresenter: <<Create>>
+activate JoinEventPresenter #Green
+JoinEventPresenter --> JoinEventUseCaseFactory
+deactivate JoinEventPresenter
+
+JoinEventUseCaseFactory --> SocialSquad
+deactivate JoinEventUseCaseFactory
+
+
+'End Outside
+SocialSquad -> ViewManagerModel: firePropertyChanged
+activate ViewManagerModel #Green
+ViewManagerModel --> SocialSquad
+deactivate ViewManagerModel
+SocialSquad --> User: done
+
+
+
+
+@enduml
