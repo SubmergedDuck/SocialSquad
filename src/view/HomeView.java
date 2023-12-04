@@ -382,8 +382,7 @@ public class HomeView extends javax.swing.JFrame implements PropertyChangeListen
     private void SearchEvent_BUTTONActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         if (evt.getSource().equals(SearchEvent_BUTTON)) {
             try {
-                LocationFactory factory = new CommonLocationFactory();
-                Location userLocation = factory.makeLocation("(43.665510,-79.387280)");
+                String[] userLocation = getCurrentUserViewModel.getState().getUserCoordinates();
                 searchNearbyController.execute(userLocation);
 
             } catch (IOException e) {

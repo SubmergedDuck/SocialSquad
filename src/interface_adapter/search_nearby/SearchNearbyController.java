@@ -1,6 +1,5 @@
 package interface_adapter.search_nearby;
 
-import entity.Location.Location;
 import use_case.search_nearby.SearchNearbyInputBoundary;
 import use_case.search_nearby.SearchNearbyInputData;
 
@@ -13,11 +12,10 @@ public class SearchNearbyController {
 
     /**
      *
-     * @param location The location of the user.
+     * @param coordinates The location of the user.
      */
-    public void execute(Location location) throws Exception {
-        String[] strCoord = location.getCoordinates();
-        SearchNearbyInputData inputData = new SearchNearbyInputData(strCoord);
+    public void execute(String[] coordinates) throws Exception {
+        SearchNearbyInputData inputData = new SearchNearbyInputData(coordinates);
         interactor.execute(inputData);
     }
 }
