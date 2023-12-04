@@ -1,6 +1,5 @@
 package data_access;
 
-import entity.Location.CoordinatesToAddress;
 import use_case.common_interfaces.GetCoordinatesIP;
 
 import java.io.BufferedReader;
@@ -8,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-
 
 /**
  * This class is responsible for gathering the location information from one's ip using an API call.

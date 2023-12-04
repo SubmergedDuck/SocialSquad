@@ -1,6 +1,5 @@
 package interface_adapter.get_direction;
 
-import interface_adapter.ViewManagerModel;
 import use_case.get_direction.GetDirectionOutputBoundary;
 import use_case.get_direction.GetDirectionOutputData;
 

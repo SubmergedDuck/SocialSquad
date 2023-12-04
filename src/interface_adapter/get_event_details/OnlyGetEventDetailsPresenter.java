@@ -1,6 +1,5 @@
 package interface_adapter.get_event_details;
 
-import interface_adapter.ViewManagerModel;
 import use_case.get_event_details.GetEventDetailsOutputBoundary;
 import use_case.get_event_details.GetEventDetailsOutputData;
 

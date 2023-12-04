@@ -13,7 +13,7 @@ public class CommonUser implements User {
     private final Integer age;
     private final String sex;
     private String contact;
-    private Location location = null; // TODO: make API to get the user's location when the user logged in
+    private Location location = null;
 
 
     public CommonUser(String username, String password, Integer age, String sex, String contact) {

@@ -1,7 +1,5 @@
 package entity.Users;
 
-import entity.Location.Location;
-
 public class CommonUserFactory implements UserFactory {
 
     @Override

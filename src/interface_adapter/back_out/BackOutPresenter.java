@@ -1,8 +1,6 @@
 package interface_adapter.back_out;
 
-import interface_adapter.ViewManagerModel;
 import interface_adapter.ViewManagerModelAdapter;
-import interface_adapter.ViewModel;
 import use_case.back_out.BackOutOutputBoundary;
 
 public class BackOutPresenter implements BackOutOutputBoundary {

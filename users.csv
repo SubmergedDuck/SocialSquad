@@ -1,3 +1,5 @@
 username,password,age,sex,contact,joinedEvents,createdEvents
+testuser3,123,0,tempsex,tempcontact, , 
+testuser,123,0,tempsex,tempcontact, ,0
+testuser4,123,0,tempsex,tempcontact, ,1
 username,123,5,m,contact, , 
-kat,123,0,tempsex,tempcontact, ,0

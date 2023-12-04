@@ -1,7 +1,5 @@
 package entity.Location;
 
-import java.util.List;
-
 public class CommonLocation implements Location {
 
     private final String[] coordinates;

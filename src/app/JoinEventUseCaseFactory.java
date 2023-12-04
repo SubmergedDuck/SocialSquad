@@ -1,7 +1,5 @@
 package app;
 
-import entity.Events.EventFactory;
-import entity.Location.LocationFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.back_out.BackOutController;
 import interface_adapter.get_current_user.GetCurrentUserController;
