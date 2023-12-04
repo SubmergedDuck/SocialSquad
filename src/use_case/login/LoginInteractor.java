@@ -57,9 +57,9 @@ public class LoginInteractor implements LoginInputBoundary {
                 String[] currentCoordinates = getCoordinatesIP.getCoordinates();
                 String formattedCoordinates = String.format("(%s,%s)",currentCoordinates[0], currentCoordinates[1]);
 
-//                Location userLocation = locationFactory.makeLocation(formattedCoordinates);
-//                user.setLocation(userLocation);
-                LoginOutputData loginOutputData = new LoginOutputData(user.getUsername(), false);
+                Location userLocation = locationFactory.makeLocation(formattedCoordinates);
+                user.setLocation(userLocation);
+                LoginOutputData loginOutputData = new LoginOutputData(user.getUsername(), user.getLocation().getCoordinates());
                 loginPresenter.prepareSuccessView(loginOutputData);
             }
         }
