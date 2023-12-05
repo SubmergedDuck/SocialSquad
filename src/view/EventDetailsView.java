@@ -436,6 +436,8 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
         int eventID = getEventDetailsViewModel.getState().getEventID();
         getDirectionController.execute(currentUser,eventID,350,504);
     }
+
+
     /**
      * @param args the command line arguments
      */
@@ -539,6 +541,7 @@ public class EventDetailsView extends javax.swing.JFrame implements ActionListen
             BufferedImage generatedMap = state.getGeneratedImage();
             if (generatedMap != null){
                 getDirectionLabel = new JLabel(new ImageIcon(generatedMap));
+                getDirectionFrame = new JFrame();
                 getDirectionFrame.getContentPane().add(getDirectionLabel);
                 getDirectionFrame.pack();
                 if (!getDirectionFrame.isVisible()){
